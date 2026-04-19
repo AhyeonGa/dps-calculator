@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DPS 模擬器</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.92);
+      --panel-2: #1e293b;
+      --panel-3: rgba(2, 6, 23, 0.72);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #a78bfa;
+      --good: #22c55e;
+      --danger: #f87171;
+      --border: rgba(148, 163, 184, 0.18);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+      background: radial-gradient(circle at top, rgba(167, 139, 250, 0.18), transparent 35%), linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .hero,
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .hero p,
+    .muted,
+    .empty,
+    .note {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .tag,
+    .summary-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .tag {
+      background: rgba(167, 139, 250, 0.14);
+      color: #ddd6fe;
+    }
+
+    .summary-pill {
+      background: rgba(34, 197, 94, 0.14);
+      color: #bbf7d0;
+    }
+
+    .toolbar,
+    .grid,
+    .results,
+    .compact-grid,
+    .skill-grid,
+    .affix-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .toolbar,
+    .grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 18px;
+    }
+
+    .results {
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      margin-top: 18px;
+    }
+
+    .compact-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .skill-grid,
+    .affix-grid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      margin-top: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.16);
+    }
+
+    .stat {
+      background: var(--panel-3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat strong {
+      font-size: 30px;
+      line-height: 1.2;
+      color: white;
+      word-break: break-word;
+    }
+
+    .highlight {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.1), rgba(2, 6, 23, 0.84));
+    }
+
+    .roster-wrap {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .team-block {
+      background: rgba(2, 6, 23, 0.44);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .team-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .character-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: rgba(15, 23, 42, 0.82);
+    }
+
+    .character-row.active {
+      border-color: rgba(167, 139, 250, 0.45);
+      box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.2);
+    }
+
+    .char-name {
+      font-weight: 600;
+      color: white;
+    }
+
+    .char-sub,
+    .char-dps,
+    .team-dps {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .char-dps strong,
+    .team-dps strong {
+      color: #f8fafc;
+      font-size: 16px;
+    }
+
+    .btn,
+    .icon-btn {
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn {
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(167, 139, 250, 0.24), rgba(167, 139, 250, 0.12));
+      color: #f5f3ff;
+      border: 1px solid rgba(167, 139, 250, 0.3);
+    }
+
+    .btn:hover,
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .btn.secondary {
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.18);
+      color: var(--text);
+    }
+
+    .btn.danger,
+    .icon-btn.danger {
+      background: rgba(248, 113, 113, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      color: #fecaca;
+    }
+
+    .icon-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 12px;
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      color: var(--text);
+    }
+
+    .empty {
+      padding: 12px 0 4px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 20;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(1080px, 100%);
+      max-height: min(90vh, 100%);
+      overflow: auto;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sub-card {
+      background: rgba(2, 6, 23, 0.44);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .skill-item {
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .skill-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .note {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .character-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 16px; }
+      .card,
+      .modal-card { padding: 18px; }
+      .stat strong { font-size: 24px; }
+      .modal { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card hero">
+      <h1>DPS 模擬器</h1>
+      <p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
+      <div class="tag">最多 12 角色，4 隊</div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>戰鬥設定</h2>
+        <div class="summary-pill" id="partySummary">隊伍總 DPS：0</div>
+      </div>
+
+      <div class="toolbar">
+        <div>
+          <label for="monsterSelect">怪物</label>
+          <select id="monsterSelect"></select>
+        </div>
+        <div>
+          <label for="fightSeconds">戰鬥秒數</label>
+          <input id="fightSeconds" type="number" min="1" step="1" value="60" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button class="btn" id="openCharacterModal">角色設定</button>
+        </div>
+      </div>
+
+      <div class="roster-wrap" id="roster"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>核心結果</h2>
+        <p class="muted" id="selectedCharacterName">尚未選取角色</p>
+      </div>
+
+      <div class="results">
+        <div class="stat">
+          <span>非暴擊單擊</span>
+          <strong id="nonCritHit">-</strong>
+        </div>
+        <div class="stat">
+          <span>平均單擊傷害</span>
+          <strong id="avgHit">-</strong>
+        </div>
+        <div class="stat">
+          <span>有效攻速</span>
+          <strong id="effectiveAps">-</strong>
+        </div>
+        <div class="stat highlight">
+          <span>期望 DPS</span>
+          <strong id="dps">-</strong>
+        </div>
+        <div class="stat">
+          <span>本次戰鬥總傷</span>
+          <strong id="fightDamage">-</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="characterModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="section-head">
+        <h2 id="modalTitle">角色設定</h2>
+        <button class="icon-btn" id="closeModal" type="button">✕</button>
+      </div>
+
+      <div class="sub-card section-stack">
+        <h3>基本資料</h3>
+        <div class="compact-grid">
+          <div>
+            <label for="charName">角色名稱</label>
+            <input id="charName" type="text" placeholder="例如：主力輸出" />
+          </div>
+          <div>
+            <label for="charTeam">隊伍</label>
+            <select id="charTeam">
+              <option value="1">第 1 隊</option>
+              <option value="2">第 2 隊</option>
+              <option value="3">第 3 隊</option>
+              <option value="4">第 4 隊</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-card section-stack">
+        <h3>屬性</h3>
+        <div class="grid">
+          <div><label for="atk">ATK</label><input id="atk" type="number" step="0.01" value="0" /></div>
+          <div><label for="hp">HP</label><input id="hp" type="number" step="0.01" value="0" /></div>
+          <div><label for="pdef">PDEF</label><input id="pdef" type="number" step="0.01" value="0" /></div>
+          <div><label for="mdef">MDEF</label><input id="mdef" type="number" step="0.01" value="0" /></div>
+          <div><label for="aspd">ASPD（每次攻擊秒數）</label><input id="aspd" type="number" step="0.01" value="1" /></div>
+          <div><label for="pPen">P_PEN</label><input id="pPen" type="number" step="0.01" value="0" /></div>
+          <div><label for="mPen">M_PEN</label><input id="mPen" type="number" step="0.01" value="0" /></div>
+          <div><label for="crit">CRIT (%)</label><input id="crit" type="number" step="0.01" value="0" /></div>
+          <div><label for="critDmg">CRIT_DMG (%)</label><input id="critDmg" type="number" step="0.01" value="100" /></div>
+        </div>
+      </div>
+
+      <div class="sub-card section-stack">
+        <h3>武器詞綴（2）</h3>
+        <div id="weaponRows"></div>
+      </div>
+
+      <div class="sub-card section-stack">
+        <h3>Buff（3，常駐）</h3>
+        <div id="buffRows"></div>
+      </div>
+
+      <div class="sub-card section-stack">
+        <div class="section-head">
+          <h3>技能</h3>
+          <button class="btn secondary" id="addSkill" type="button">新增技能</button>
+        </div>
+        <div id="skillList"></div>
+        <p class="note">技能週期可直接填秒數，主動預設 10 秒，被動預設 5 秒。</p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelModal" type="button">取消</button>
+        <button class="btn" id="saveCharacter" type="button">儲存角色</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_CHARACTERS = 12;
+    const TEAM_COUNT = 4;
+
+    const MONSTERS = {
+      '普草人': { hp: 105, atk: 15, def: -3, pRes: -3, mRes: -3 },
+      '黑暗巨龍': { hp: 4801265, atk: 1119, def: 323, pRes: 323, mRes: 323 }
+    };
+
+    const EFFECT_OPTIONS = [
+      { value: 'none', label: '無' },
+      { value: 'atkPct', label: 'ATK%' },
+      { value: 'critPct', label: 'CRIT%' },
+      { value: 'penPct', label: 'PEN%' },
+      { value: 'finalDamagePct', label: '最終傷害%' },
+      { value: 'skillDamagePct', label: '技能傷害%' },
+      { value: 'pPenFlat', label: 'P_PEN' },
+      { value: 'mPenFlat', label: 'M_PEN' }
+    ];
+
+    const state = {
+      monsterKey: '普草人',
+      fightSeconds: 60,
+      characters: [],
+      selectedId: null,
+      editingId: null,
+      skillDrafts: []
+    };
+
+    const el = {
+      monsterSelect: document.getElementById('monsterSelect'),
+      fightSeconds: document.getElementById('fightSeconds'),
+      partySummary: document.getElementById('partySummary'),
+      roster: document.getElementById('roster'),
+      selectedCharacterName: document.getElementById('selectedCharacterName'),
+      nonCritHit: document.getElementById('nonCritHit'),
+      avgHit: document.getElementById('avgHit'),
+      effectiveAps: document.getElementById('effectiveAps'),
+      dps: document.getElementById('dps'),
+      fightDamage: document.getElementById('fightDamage'),
+      modal: document.getElementById('characterModal'),
+      modalTitle: document.getElementById('modalTitle'),
+      charName: document.getElementById('charName'),
+      charTeam: document.getElementById('charTeam'),
+      atk: document.getElementById('atk'),
+      hp: document.getElementById('hp'),
+      pdef: document.getElementById('pdef'),
+      mdef: document.getElementById('mdef'),
+      aspd: document.getElementById('aspd'),
+      pPen: document.getElementById('pPen'),
+      mPen: document.getElementById('mPen'),
+      crit: document.getElementById('crit'),
+      critDmg: document.getElementById('critDmg'),
+      weaponRows: document.getElementById('weaponRows'),
+      buffRows: document.getElementById('buffRows'),
+      skillList: document.getElementById('skillList')
+    };
+
+    const nf = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 });
+
+    function uid(prefix = 'id') {
+      return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+    }
+
+    function num(value) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function optionsHtml(selectedValue = 'none') {
+      return EFFECT_OPTIONS.map((option) => `<option value="${option.value}" ${option.value === selectedValue ? 'selected' : ''}>${option.label}</option>`).join('');
+    }
+
+    function createEffectRows(container, prefix, count) {
+      container.innerHTML = '';
+      for (let i = 0; i < count; i += 1) {
+        const row = document.createElement('div');
+        row.className = 'affix-grid';
+        row.innerHTML = `
+          <div>
+            <label>${prefix} ${i + 1} 類型</label>
+            <select data-kind="type" data-index="${i}">${optionsHtml()}</select>
+          </div>
+          <div>
+            <label>${prefix} ${i + 1} 數值</label>
+            <input data-kind="value" data-index="${i}" type="number" step="0.01" value="0" />
+          </div>
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function createSkillDraft(skill = {}) {
+      return {
+        id: skill.id || uid('skill'),
+        name: skill.name || '',
+        damageType: skill.damageType || 'physical',
+        hits: skill.hits ?? 1,
+        hitMultiplier: skill.hitMultiplier ?? 1,
+        cycle: skill.cycle ?? 10,
+        preset: skill.preset || 'active'
+      };
+    }
+
+    function renderSkills() {
+      el.skillList.innerHTML = '';
+
+      if (!state.skillDrafts.length) {
+        const empty = document.createElement('p');
+        empty.className = 'empty';
+        empty.textContent = '目前沒有技能。';
+        el.skillList.appendChild(empty);
+        return;
+      }
+
+      state.skillDrafts.forEach((skill, index) => {
+        const item = document.createElement('div');
+        item.className = 'skill-item';
+        item.innerHTML = `
+          <div class="skill-top">
+            <strong>${skill.name || `技能 ${index + 1}`}</strong>
+            <button class="icon-btn danger" type="button" data-remove-skill="${skill.id}">刪除</button>
+          </div>
+          <div class="skill-grid">
+            <div>
+              <label>技能名稱</label>
+              <input data-skill="name" data-id="${skill.id}" type="text" value="${escapeHtml(skill.name)}" />
+            </div>
+            <div>
+              <label>傷害類型</label>
+              <select data-skill="damageType" data-id="${skill.id}">
+                <option value="physical" ${skill.damageType === 'physical' ? 'selected' : ''}>物理</option>
+                <option value="magic" ${skill.damageType === 'magic' ? 'selected' : ''}>魔法</option>
+              </select>
+            </div>
+            <div>
+              <label>次數</label>
+              <input data-skill="hits" data-id="${skill.id}" type="number" step="0.01" value="${skill.hits}" />
+            </div>
+            <div>
+              <label>單次倍率</label>
+              <input data-skill="hitMultiplier" data-id="${skill.id}" type="number" step="0.01" value="${skill.hitMultiplier}" />
+            </div>
+            <div>
+              <label>週期（秒）</label>
+              <input data-skill="cycle" data-id="${skill.id}" type="number" step="0.01" value="${skill.cycle}" />
+            </div>
+            <div>
+              <label>預設</label>
+              <select data-skill="preset" data-id="${skill.id}">
+                <option value="active" ${skill.preset === 'active' ? 'selected' : ''}>主動 10 秒</option>
+                <option value="passive" ${skill.preset === 'passive' ? 'selected' : ''}>被動 5 秒</option>
+                <option value="custom" ${skill.preset === 'custom' ? 'selected' : ''}>自訂</option>
+              </select>
+            </div>
+          </div>
+        `;
+        el.skillList.appendChild(item);
+      });
+    }
+
+    function escapeHtml(value = '') {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    function initMonsterSelect() {
+      el.monsterSelect.innerHTML = Object.keys(MONSTERS)
+        .map((key) => `<option value="${key}">${key}</option>`)
+        .join('');
+      el.monsterSelect.value = state.monsterKey;
+    }
+
+    function readEffectRows(container) {
+      const rows = [];
+      const rowCount = container.querySelectorAll('[data-kind="type"]').length;
+      for (let i = 0; i < rowCount; i += 1) {
+        rows.push({
+          type: container.querySelector(`[data-kind="type"][data-index="${i}"]`).value,
+          value: num(container.querySelector(`[data-kind="value"][data-index="${i}"]`).value)
+        });
+      }
+      return rows;
+    }
+
+    function fillEffectRows(container, rows) {
+      const types = container.querySelectorAll('[data-kind="type"]');
+      const values = container.querySelectorAll('[data-kind="value"]');
+      types.forEach((node, index) => {
+        node.value = rows[index]?.type || 'none';
+      });
+      values.forEach((node, index) => {
+        node.value = rows[index]?.value ?? 0;
+      });
+    }
+
+    function aggregateEffects(character) {
+      const totals = {
+        atkPct: 0,
+        critPct: 0,
+        penPct: 0,
+        finalDamagePct: 0,
+        skillDamagePct: 0,
+        pPenFlat: 0,
+        mPenFlat: 0
+      };
+
+      [...character.weapons, ...character.buffs].forEach((entry) => {
+        if (!entry || !totals.hasOwnProperty(entry.type)) return;
+        totals[entry.type] += num(entry.value);
+      });
+
+      return totals;
+    }
+
+    function getDefenseContext(monster, damageType, totalPen) {
+      const resistance = damageType === 'magic' ? monster.mRes : monster.pRes;
+      const effectivePen = Math.max(totalPen - resistance, 0);
+      const penRate = effectivePen / (effectivePen + 100);
+      const effectiveDefense = (monster.def - totalPen) * (1 - penRate);
+      const damageMultiplier = 100 / (100 + effectiveDefense);
+      return { resistance, effectivePen, penRate, effectiveDefense, damageMultiplier };
+    }
+
+    function computeCharacter(character, monster, fightSeconds) {
+      const totals = aggregateEffects(character);
+      const attackFrequency = 1 / Math.max(num(character.aspd), 1);
+      const autoDps = num(character.atk) * 2 * attackFrequency;
+
+      const critRate = num(character.crit) / 100 + totals.critPct / 100;
+      const critDmg = num(character.critDmg) / 100;
+      const critFactor = (1 - critRate) + critRate * critDmg + Math.max(critRate - 1, 0) * 0.5;
+
+      const atkFactor = 1 + totals.atkPct / 100;
+      const finalDamageFactor = 1 + totals.finalDamagePct / 100;
+      const skillDamageFactor = 1 + totals.skillDamagePct / 100;
+      const penFactor = 1 + totals.penPct / 100;
+
+      const skills = character.skills.map((skill) => {
+        const cycle = num(skill.cycle);
+        if (cycle <= 0) {
+          return { ...skill, skillMultiplier: 0, nonCritCast: 0, avgCast: 0, dps: 0 };
+        }
+
+        const basePen = skill.damageType === 'magic' ? num(character.mPen) + totals.mPenFlat : num(character.pPen) + totals.pPenFlat;
+        const totalPen = basePen * penFactor;
+        const defense = getDefenseContext(monster, skill.damageType, totalPen);
+        const skillMultiplier = num(skill.hits) * num(skill.hitMultiplier);
+        const nonCritCast = skillMultiplier * num(character.atk) * atkFactor * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
+        const avgCast = nonCritCast * critFactor;
+        const dps = avgCast / cycle;
+
+        return {
+          ...skill,
+          skillMultiplier,
+          nonCritCast,
+          avgCast,
+          dps
+        };
+      });
+
+      const skillDps = skills.reduce((sum, skill) => sum + skill.dps, 0);
+      const totalDps = autoDps + skillDps;
+      const firstSkill = skills[0];
+
+      return {
+        autoDps,
+        totalDps,
+        fightDamage: totalDps * fightSeconds,
+        attackFrequency,
+        nonCritHit: num(character.atk) * 2,
+        avgHit: firstSkill ? firstSkill.avgCast : num(character.atk) * 2,
+        skills
+      };
+    }
+
+    function partyComputations() {
+      const monster = MONSTERS[state.monsterKey];
+      return state.characters.map((character) => ({
+        character,
+        result: computeCharacter(character, monster, state.fightSeconds)
+      }));
+    }
+
+    function formatValue(value, suffix = '') {
+      if (!Number.isFinite(value)) {
+        return value > 0 ? `∞${suffix}` : `-${suffix}`;
+      }
+      return `${nf.format(value)}${suffix}`;
+    }
+
+    function renderRoster() {
+      const computations = partyComputations();
+      const partyDps = computations.reduce((sum, entry) => sum + entry.result.totalDps, 0);
+      el.partySummary.textContent = `隊伍總 DPS：${formatValue(partyDps)}`;
+      el.roster.innerHTML = '';
+
+      for (let team = 1; team <= TEAM_COUNT; team += 1) {
+        const teamEntries = computations.filter((entry) => Number(entry.character.team) === team);
+        const teamDps = teamEntries.reduce((sum, entry) => sum + entry.result.totalDps, 0);
+        const block = document.createElement('div');
+        block.className = 'team-block';
+
+        const title = document.createElement('div');
+        title.className = 'team-title';
+        title.innerHTML = `<h3>第 ${team} 隊</h3><div class="team-dps">隊伍 DPS：<strong>${formatValue(teamDps)}</strong></div>`;
+        block.appendChild(title);
+
+        if (!teamEntries.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty';
+          empty.textContent = '尚未加入角色';
+          block.appendChild(empty);
+        }
+
+        teamEntries.forEach(({ character, result }) => {
+          const row = document.createElement('div');
+          row.className = `character-row${character.id === state.selectedId ? ' active' : ''}`;
+          row.innerHTML = `
+            <div>
+              <div class="char-name">${escapeHtml(character.name || '未命名角色')}</div>
+              <div class="char-sub">技能數：${character.skills.length}</div>
+            </div>
+            <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
+            <button class="icon-btn" type="button" data-select-id="${character.id}">選取</button>
+            <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
+              <button class="icon-btn" type="button" data-edit-id="${character.id}">編輯</button>
+              <button class="icon-btn danger" type="button" data-delete-id="${character.id}">刪除</button>
+            </div>
+          `;
+          block.appendChild(row);
+        });
+
+        el.roster.appendChild(block);
+      }
+    }
+
+    function renderResults() {
+      if (!state.selectedId) {
+        el.selectedCharacterName.textContent = '尚未選取角色';
+        el.nonCritHit.textContent = '-';
+        el.avgHit.textContent = '-';
+        el.effectiveAps.textContent = '-';
+        el.dps.textContent = '-';
+        el.fightDamage.textContent = '-';
+        return;
+      }
+
+      const character = state.characters.find((item) => item.id === state.selectedId);
+      if (!character) {
+        state.selectedId = null;
+        renderResults();
+        return;
+      }
+
+      const result = computeCharacter(character, MONSTERS[state.monsterKey], state.fightSeconds);
+      el.selectedCharacterName.textContent = character.name || '未命名角色';
+      el.nonCritHit.textContent = formatValue(result.nonCritHit);
+      el.avgHit.textContent = formatValue(result.avgHit);
+      el.effectiveAps.textContent = formatValue(result.attackFrequency, ' 次/秒');
+      el.dps.textContent = formatValue(result.totalDps);
+      el.fightDamage.textContent = formatValue(result.fightDamage);
+    }
+
+    function renderAll() {
+      renderRoster();
+      renderResults();
+    }
+
+    function openModal(character = null) {
+      state.editingId = character?.id || null;
+      el.modalTitle.textContent = character ? '編輯角色' : '角色設定';
+
+      el.charName.value = character?.name || '';
+      el.charTeam.value = String(character?.team || 1);
+      el.atk.value = character?.atk ?? 0;
+      el.hp.value = character?.hp ?? 0;
+      el.pdef.value = character?.pdef ?? 0;
+      el.mdef.value = character?.mdef ?? 0;
+      el.aspd.value = character?.aspd ?? 1;
+      el.pPen.value = character?.pPen ?? 0;
+      el.mPen.value = character?.mPen ?? 0;
+      el.crit.value = character?.crit ?? 0;
+      el.critDmg.value = character?.critDmg ?? 100;
+      fillEffectRows(el.weaponRows, character?.weapons || []);
+      fillEffectRows(el.buffRows, character?.buffs || []);
+      state.skillDrafts = (character?.skills || []).map((skill) => createSkillDraft(skill));
+      renderSkills();
+      el.modal.classList.add('open');
+      el.modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      el.modal.classList.remove('open');
+      el.modal.setAttribute('aria-hidden', 'true');
+      state.editingId = null;
+      state.skillDrafts = [];
+    }
+
+    function saveCharacter() {
+      const character = {
+        id: state.editingId || uid('char'),
+        name: el.charName.value.trim(),
+        team: num(el.charTeam.value) || 1,
+        atk: num(el.atk.value),
+        hp: num(el.hp.value),
+        pdef: num(el.pdef.value),
+        mdef: num(el.mdef.value),
+        aspd: num(el.aspd.value),
+        pPen: num(el.pPen.value),
+        mPen: num(el.mPen.value),
+        crit: num(el.crit.value),
+        critDmg: num(el.critDmg.value),
+        weapons: readEffectRows(el.weaponRows),
+        buffs: readEffectRows(el.buffRows),
+        skills: state.skillDrafts.map((skill) => ({
+          id: skill.id,
+          name: skill.name,
+          damageType: skill.damageType,
+          hits: num(skill.hits),
+          hitMultiplier: num(skill.hitMultiplier),
+          cycle: num(skill.cycle),
+          preset: skill.preset || 'custom'
+        }))
+      };
+
+      if (!state.editingId && state.characters.length >= MAX_CHARACTERS) {
+        return;
+      }
+
+      const index = state.characters.findIndex((item) => item.id === character.id);
+      if (index >= 0) {
+        state.characters[index] = character;
+      } else {
+        state.characters.push(character);
+      }
+
+      if (!state.selectedId) {
+        state.selectedId = character.id;
+      }
+      if (state.editingId === state.selectedId || !state.selectedId) {
+        state.selectedId = character.id;
+      }
+
+      closeModal();
+      renderAll();
+    }
+
+    function removeCharacter(id) {
+      state.characters = state.characters.filter((item) => item.id !== id);
+      if (state.selectedId === id) {
+        state.selectedId = state.characters[0]?.id || null;
+      }
+      renderAll();
+    }
+
+    function attachEvents() {
+      document.getElementById('openCharacterModal').addEventListener('click', () => {
+        if (state.characters.length >= MAX_CHARACTERS) return;
+        openModal();
+      });
+
+      document.getElementById('closeModal').addEventListener('click', closeModal);
+      document.getElementById('cancelModal').addEventListener('click', closeModal);
+      document.getElementById('saveCharacter').addEventListener('click', saveCharacter);
+
+      el.monsterSelect.addEventListener('change', (event) => {
+        state.monsterKey = event.target.value;
+        renderAll();
+      });
+
+      el.fightSeconds.addEventListener('input', (event) => {
+        state.fightSeconds = Math.max(1, num(event.target.value));
+        renderAll();
+      });
+
+      el.roster.addEventListener('click', (event) => {
+        const target = event.target;
+        const selectId = target.getAttribute('data-select-id');
+        const editId = target.getAttribute('data-edit-id');
+        const deleteId = target.getAttribute('data-delete-id');
+
+        if (selectId) {
+          state.selectedId = selectId;
+          renderAll();
+          return;
+        }
+
+        if (editId) {
+          const character = state.characters.find((item) => item.id === editId);
+          if (character) openModal(character);
+          return;
+        }
+
+        if (deleteId) {
+          removeCharacter(deleteId);
+        }
+      });
+
+      document.getElementById('addSkill').addEventListener('click', () => {
+        state.skillDrafts.push(createSkillDraft());
+        renderSkills();
+      });
+
+      el.skillList.addEventListener('input', (event) => {
+        const target = event.target;
+        const id = target.getAttribute('data-id');
+        const key = target.getAttribute('data-skill');
+        if (!id || !key) return;
+        const skill = state.skillDrafts.find((item) => item.id === id);
+        if (!skill) return;
+        skill[key] = target.value;
+      });
+
+      el.skillList.addEventListener('change', (event) => {
+        const target = event.target;
+        const id = target.getAttribute('data-id');
+        const key = target.getAttribute('data-skill');
+        if (!id || !key) return;
+        const skill = state.skillDrafts.find((item) => item.id === id);
+        if (!skill) return;
+
+        if (key === 'preset') {
+          skill.preset = target.value;
+          if (target.value === 'active') skill.cycle = 10;
+          if (target.value === 'passive') skill.cycle = 5;
+          renderSkills();
+          return;
+        }
+
+        skill[key] = target.value;
+      });
+
+      el.skillList.addEventListener('click', (event) => {
+        const removeId = event.target.getAttribute('data-remove-skill');
+        if (!removeId) return;
+        state.skillDrafts = state.skillDrafts.filter((item) => item.id !== removeId);
+        renderSkills();
+      });
+
+      el.modal.addEventListener('click', (event) => {
+        if (event.target === el.modal) closeModal();
+      });
+    }
+
+    createEffectRows(el.weaponRows, '武器', 2);
+    createEffectRows(el.buffRows, 'Buff', 3);
+    initMonsterSelect();
+    attachEvents();
+    renderAll();
+  </script>
+</body>
+</html>
