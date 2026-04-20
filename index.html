@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DPS 模擬器</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DPS 模擬器</title>
+<style>
     :root {
       color-scheme: dark;
       --bg: #020617;
@@ -370,138 +371,177 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="card hero">
-      <h1>DPS 模擬器</h1>
-      <p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
-      <div class="tag">最多 12 角色，4 隊</div>
-    </section>
-
-    <section class="card">
-      <div class="section-head">
-        <h2>戰鬥設定</h2>
-        <div class="summary-pill" id="partySummary">隊伍總 DPS：0</div>
-      </div>
-
-      <div class="toolbar">
-        <div>
-          <label for="monsterSelect">怪物</label>
-          <select id="monsterSelect"></select>
-        </div>
-        <div>
-          <label for="fightSeconds">戰鬥秒數</label>
-          <input id="fightSeconds" type="number" min="1" step="1" value="60" />
-        </div>
-        <div>
-          <label>&nbsp;</label>
-          <button class="btn" id="openCharacterModal">角色設定</button>
-        </div>
-      </div>
-
-      <div class="roster-wrap" id="roster"></div>
-    </section>
-
-    <section class="card">
-      <div class="section-head">
-        <h2>核心結果</h2>
-        <p class="muted" id="selectedCharacterName">尚未選取角色</p>
-      </div>
-
-      <div class="results">
-        <div class="stat">
-          <span>非暴擊單擊</span>
-          <strong id="nonCritHit">-</strong>
-        </div>
-        <div class="stat">
-          <span>平均單擊傷害</span>
-          <strong id="avgHit">-</strong>
-        </div>
-        <div class="stat">
-          <span>有效攻速</span>
-          <strong id="effectiveAps">-</strong>
-        </div>
-        <div class="stat highlight">
-          <span>期望 DPS</span>
-          <strong id="dps">-</strong>
-        </div>
-        <div class="stat">
-          <span>本次戰鬥總傷</span>
-          <strong id="fightDamage">-</strong>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <div class="modal" id="characterModal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="section-head">
-        <h2 id="modalTitle">角色設定</h2>
-        <button class="icon-btn" id="closeModal" type="button">✕</button>
-      </div>
-
-      <div class="sub-card section-stack">
-        <h3>基本資料</h3>
-        <div class="compact-grid">
-          <div>
-            <label for="charName">角色名稱</label>
-            <input id="charName" type="text" placeholder="例如：主力輸出" />
-          </div>
-          <div>
-            <label for="charTeam">隊伍</label>
-            <select id="charTeam">
-              <option value="1">第 1 隊</option>
-              <option value="2">第 2 隊</option>
-              <option value="3">第 3 隊</option>
-              <option value="4">第 4 隊</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="sub-card section-stack">
-        <h3>屬性</h3>
-        <div class="grid">
-          <div><label for="atk">ATK</label><input id="atk" type="number" step="0.01" value="0" /></div>
-          <div><label for="hp">HP</label><input id="hp" type="number" step="0.01" value="0" /></div>
-          <div><label for="pdef">PDEF</label><input id="pdef" type="number" step="0.01" value="0" /></div>
-          <div><label for="mdef">MDEF</label><input id="mdef" type="number" step="0.01" value="0" /></div>
-          <div><label for="aspd">ASPD（每次攻擊秒數）</label><input id="aspd" type="number" step="0.01" value="1" /></div>
-          <div><label for="pPen">P_PEN</label><input id="pPen" type="number" step="0.01" value="0" /></div>
-          <div><label for="mPen">M_PEN</label><input id="mPen" type="number" step="0.01" value="0" /></div>
-          <div><label for="crit">CRIT (%)</label><input id="crit" type="number" step="0.01" value="0" /></div>
-          <div><label for="critDmg">CRIT_DMG (%)</label><input id="critDmg" type="number" step="0.01" value="100" /></div>
-        </div>
-      </div>
-
-      <div class="sub-card section-stack">
-        <h3>武器詞綴（2）</h3>
-        <div id="weaponRows"></div>
-      </div>
-
-      <div class="sub-card section-stack">
-        <h3>Buff（3，常駐）</h3>
-        <div id="buffRows"></div>
-      </div>
-
-      <div class="sub-card section-stack">
-        <div class="section-head">
-          <h3>技能</h3>
-          <button class="btn secondary" id="addSkill" type="button">新增技能</button>
-        </div>
-        <div id="skillList"></div>
-        <p class="note">技能週期可直接填秒數，主動預設 10 秒，被動預設 5 秒。</p>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn secondary" id="cancelModal" type="button">取消</button>
-        <button class="btn" id="saveCharacter" type="button">儲存角色</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
+<div class="wrap">
+<section class="card hero">
+<h1>DPS 模擬器</h1>
+<p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
+<div class="tag">最多 12 角色，4 隊</div>
+<div id="advisorBox" style="
+  margin-top:16px;
+  padding:14px;
+  border-radius:12px;
+  background:#020617;
+  border:1px solid rgba(148,163,184,0.2);
+  font-size:14px;
+  line-height:1.6;
+">
+  軍師建議：等待計算...
+</div><div id="affixAdvisor" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.22);font-size:13px;line-height:1.6;color:#ddd6fe;">詞綴建議：等待分析...</div>
+</section>
+<section class="card">
+<div class="section-head">
+<h2>戰鬥設定</h2>
+<div class="summary-pill" id="partySummary">隊伍總 DPS：0</div>
+</div>
+<div class="toolbar">
+<div>
+<label for="monsterSelect">怪物</label>
+<select id="monsterSelect"></select>
+</div>
+<div>
+<label for="fightSeconds">戰鬥秒數</label>
+<input id="fightSeconds" min="1" step="1" type="number" value="60"/>
+</div>
+<div>
+<label> </label>
+<button class="btn" id="openCharacterModal">新增角色</button>
+</div>
+</div>
+<div class="roster-wrap" id="roster"></div>
+</section>
+<section class="card">
+<div class="section-head">
+<h2>核心結果</h2>
+<p class="muted" id="selectedCharacterName">尚未選取角色</p>
+</div>
+<div class="results">
+<div class="stat">
+<span>非暴擊傷害</span>
+<strong id="nonCritHit">-</strong>
+</div>
+<div class="stat">
+<span>暴擊傷害</span>
+<strong id="avgHit">-</strong>
+</div>
+<div class="stat">
+<span>有效攻速</span>
+<strong id="effectiveAps">-</strong>
+</div>
+<div class="stat highlight">
+<span>期望 DPS</span>
+<strong id="dps">-</strong>
+</div>
+<div class="stat">
+<span>本次戰鬥總傷</span>
+<strong id="fightDamage">-</strong>
+</div>
+</div>
+</section>
+</div>
+<div aria-hidden="true" class="modal" id="characterModal">
+<div class="modal-card">
+<div class="section-head">
+<h2 id="modalTitle"></h2>
+<button class="icon-btn" id="closeModal" type="button">✕</button>
+</div>
+<div class="sub-card section-stack">
+<div class="compact-grid">
+<div>
+<label for="charName">角色名稱</label>
+<input id="charName" placeholder="例如：主力輸出" type="text"/>
+</div>
+<div>
+<label for="charTeam">隊伍</label>
+<select id="charTeam">
+<option value="1">第 1 隊</option>
+<option value="2">第 2 隊</option>
+<option value="3">第 3 隊</option>
+<option value="4">第 4 隊</option>
+</select>
+</div>
+<div>
+<label for="charTemplate">角色模板</label>
+<select id="charTemplate">
+<option value="蘭德克莉特">蘭德克莉特</option>
+</select>
+</div>
+<div>
+<label for="charLeader">隊長</label>
+<select id="charLeader">
+<option value="0">否</option>
+<option value="1">是</option>
+</select>
+</div>
+</div>
+</div>
+<div class="sub-card section-stack">
+<h3>屬性</h3>
+<div class="grid">
+<div><label for="atk">攻擊力</label><input id="atk" step="0.01" type="number" value="0"/></div>
+<div><label for="hp">生命值</label><input id="hp" step="0.01" type="number" value="0"/></div>
+<div><label for="pdef">物理防禦</label><input id="pdef" step="0.01" type="number" value="0"/></div>
+<div><label for="mdef">魔法防禦</label><input id="mdef" step="0.01" type="number" value="0"/></div>
+<div><label for="aspd">攻擊間隔（秒）</label><input id="aspd" step="0.01" type="number" value="1"/></div>
+<div><label for="pPen">物理穿透</label><input id="pPen" step="0.01" type="number" value="0"/></div>
+<div><label for="mPen">魔法穿透</label><input id="mPen" step="0.01" type="number" value="0"/></div>
+<div><label for="crit">暴擊率 (%)</label><input id="crit" step="0.01" type="number" value="0"/></div>
+<div><label for="critDmg">暴擊傷害 (%)</label><input id="critDmg" step="0.01" type="number" value="100"/></div>
+</div>
+</div>
+<div class="sub-card section-stack">
+<h3>武器詞綴</h3>
+<div id="weaponRows"></div>
+</div>
+<div class="sub-card section-stack">
+<h3>Buff（3，常駐）</h3>
+<div id="buffRows"></div>
+</div>
+<div class="sub-card section-stack">
+<div class="section-head">
+<h3>技能</h3>
+<button class="btn secondary" id="addSkill" type="button">新增技能</button>
+</div>
+<div id="skillList"></div>
+<p class="note">技能週期可直接填秒數。</p>
+</div>
+<div class="modal-actions">
+<button class="btn secondary" id="cancelModal" type="button">取消</button>
+<button class="btn" id="saveCharacter" type="button">儲存角色</button>
+</div>
+<div style="
+position:sticky;
+bottom:0;
+background:rgba(15,23,42,0.9);
+backdrop-filter:blur(10px);
+padding:14px;
+border-top:1px solid rgba(148,163,184,0.2);
+display:flex;
+justify-content:flex-end;
+gap:10px;
+"><button class="btn" id="saveCharacterSticky" style="padding:10px 18px;border-radius:10px;background:linear-gradient(180deg,#7c3aed,#5b21b6);color:#fff;border:none;">儲存角色</button></div></div>
+</div>
+<script>
     const MAX_CHARACTERS = 12;
     const TEAM_COUNT = 4;
+
+    const CHARACTER_TEMPLATES = {
+      '蘭德克莉特': {
+        atk: 1466,
+        hp: 5453,
+        pdef: 312,
+        mdef: 409,
+        aspd: 2,
+        pPen: 409,
+        mPen: 373,
+        crit: 34,
+        critDmg: 104,
+        skills: [
+          { name: '1C', damageType: 'physical', hits: 1, hitMultiplier: 2.5, cycle: 10 },
+          { name: '2C', damageType: 'physical', hits: 1, hitMultiplier: 3.75, cycle: 10 },
+          { name: '3C', damageType: 'physical', hits: 1, hitMultiplier: 14.09, cycle: 10 }
+        ]
+      }
+    };
 
     const MONSTERS = {
       '普草人': { hp: 105, atk: 15, def: -3, pRes: -3, mRes: -3 },
@@ -510,13 +550,13 @@
 
     const EFFECT_OPTIONS = [
       { value: 'none', label: '無' },
-      { value: 'atkPct', label: 'ATK%' },
-      { value: 'critPct', label: 'CRIT%' },
-      { value: 'penPct', label: 'PEN%' },
+      { value: 'atkPct', label: '攻擊力%' },
+      { value: 'critPct', label: '暴擊率%' },
+      { value: 'penPct', label: '穿透%' },
       { value: 'finalDamagePct', label: '最終傷害%' },
       { value: 'skillDamagePct', label: '技能傷害%' },
-      { value: 'pPenFlat', label: 'P_PEN' },
-      { value: 'mPenFlat', label: 'M_PEN' }
+      { value: 'pPenFlat', label: '物理穿透' },
+      { value: 'mPenFlat', label: '魔法穿透' }
     ];
 
     const state = {
@@ -543,6 +583,8 @@
       modalTitle: document.getElementById('modalTitle'),
       charName: document.getElementById('charName'),
       charTeam: document.getElementById('charTeam'),
+      charTemplate: document.getElementById('charTemplate'),
+      charLeader: document.getElementById('charLeader'),
       atk: document.getElementById('atk'),
       hp: document.getElementById('hp'),
       pdef: document.getElementById('pdef'),
@@ -572,6 +614,28 @@
       return EFFECT_OPTIONS.map((option) => `<option value="${option.value}" ${option.value === selectedValue ? 'selected' : ''}>${option.label}</option>`).join('');
     }
 
+    function applyCharacterTemplate(templateName) {
+      const template = CHARACTER_TEMPLATES[templateName];
+      if (!template) return;
+
+      if (!el.charName.value.trim()) el.charName.value = templateName;
+      el.atk.value = template.atk ?? 0;
+      el.hp.value = template.hp ?? 0;
+      el.pdef.value = template.pdef ?? 0;
+      el.mdef.value = template.mdef ?? 0;
+      el.aspd.value = template.aspd ?? 1;
+      el.pPen.value = template.pPen ?? 0;
+      el.mPen.value = template.mPen ?? 0;
+      el.crit.value = template.crit ?? 0;
+      el.critDmg.value = template.critDmg ?? 100;
+      state.skillDrafts = (template.skills || []).map((skill) => createSkillDraft(skill));
+      renderSkills();
+    }
+
+    function clearCharacterTemplateSelection() {
+      el.charTemplate.value = '';
+    }
+
     function createEffectRows(container, prefix, count) {
       container.innerHTML = '';
       for (let i = 0; i < count; i += 1) {
@@ -598,8 +662,7 @@
         damageType: skill.damageType || 'physical',
         hits: skill.hits ?? 1,
         hitMultiplier: skill.hitMultiplier ?? 1,
-        cycle: skill.cycle ?? 10,
-        preset: skill.preset || 'active'
+        cycle: skill.cycle ?? 10
       };
     }
 
@@ -645,14 +708,6 @@
             <div>
               <label>週期（秒）</label>
               <input data-skill="cycle" data-id="${skill.id}" type="number" step="0.01" value="${skill.cycle}" />
-            </div>
-            <div>
-              <label>預設</label>
-              <select data-skill="preset" data-id="${skill.id}">
-                <option value="active" ${skill.preset === 'active' ? 'selected' : ''}>主動 10 秒</option>
-                <option value="passive" ${skill.preset === 'passive' ? 'selected' : ''}>被動 5 秒</option>
-                <option value="custom" ${skill.preset === 'custom' ? 'selected' : ''}>自訂</option>
-              </select>
             </div>
           </div>
         `;
@@ -728,12 +783,14 @@
 
     function computeCharacter(character, monster, fightSeconds) {
       const totals = aggregateEffects(character);
-      const attackFrequency = 1 / Math.max(num(character.aspd), 1);
-      const autoDps = num(character.atk) * 2 * attackFrequency;
+      const actionInterval = Math.max(num(character.aspd), 0.01);
+      const attackFrequency = 1 / actionInterval;
+      let leaderBonus = character.isLeader ? 1.1 : 1;
+const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
 
-      const critRate = num(character.crit) / 100 + totals.critPct / 100;
-      const critDmg = num(character.critDmg) / 100;
-      const critFactor = (1 - critRate) + critRate * critDmg + Math.max(critRate - 1, 0) * 0.5;
+      const critRate = Math.max(0, num(character.crit) / 100 + totals.critPct / 100);
+      const critMultiplier = 1 + num(character.critDmg) / 100;
+      const critFactor = (1 - Math.min(critRate, 1)) + Math.min(critRate, 1) * critMultiplier + Math.max(critRate - 1, 0) * 0.5;
 
       const atkFactor = 1 + totals.atkPct / 100;
       const finalDamageFactor = 1 + totals.finalDamagePct / 100;
@@ -752,6 +809,7 @@
         const skillMultiplier = num(skill.hits) * num(skill.hitMultiplier);
         const nonCritCast = skillMultiplier * num(character.atk) * atkFactor * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
         const avgCast = nonCritCast * critFactor;
+        const critCast = nonCritCast * critMultiplier;
         const dps = avgCast / cycle;
 
         return {
@@ -759,21 +817,24 @@
           skillMultiplier,
           nonCritCast,
           avgCast,
+          critCast,
           dps
         };
       });
 
       const skillDps = skills.reduce((sum, skill) => sum + skill.dps, 0);
-      const totalDps = autoDps + skillDps;
+      const totalDps = (autoDps + skillDps) * (character.isLeader ? 1.05 : 1);
       const firstSkill = skills[0];
+      const fallbackNonCrit = num(character.atk) * 2;
+      const fallbackCrit = fallbackNonCrit * critMultiplier;
 
       return {
         autoDps,
         totalDps,
         fightDamage: totalDps * fightSeconds,
         attackFrequency,
-        nonCritHit: num(character.atk) * 2,
-        avgHit: firstSkill ? firstSkill.avgCast : num(character.atk) * 2,
+        nonCritHit: firstSkill ? firstSkill.nonCritCast : fallbackNonCrit,
+        critHit: firstSkill ? firstSkill.critCast : fallbackCrit,
         skills
       };
     }
@@ -822,8 +883,8 @@
           row.className = `character-row${character.id === state.selectedId ? ' active' : ''}`;
           row.innerHTML = `
             <div>
-              <div class="char-name">${escapeHtml(character.name || '未命名角色')}</div>
-              <div class="char-sub">技能數：${character.skills.length}</div>
+              <div class="char-name">${escapeHtml(character.name || '未命名角色')}${character.isLeader ? ' 👑' : ''}</div>
+              <div class="char-sub">技能數：${character.skills.length}${character.isLeader ? '｜隊長' : ''}</div>
             </div>
             <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
             <button class="icon-btn" type="button" data-select-id="${character.id}">選取</button>
@@ -847,6 +908,8 @@
         el.effectiveAps.textContent = '-';
         el.dps.textContent = '-';
         el.fightDamage.textContent = '-';
+        const affixBox = document.getElementById('affixAdvisor');
+        if (affixBox) affixBox.innerText = '詞綴推薦：請先選取角色';
         return;
       }
 
@@ -860,10 +923,22 @@
       const result = computeCharacter(character, MONSTERS[state.monsterKey], state.fightSeconds);
       el.selectedCharacterName.textContent = character.name || '未命名角色';
       el.nonCritHit.textContent = formatValue(result.nonCritHit);
-      el.avgHit.textContent = formatValue(result.avgHit);
+      el.avgHit.textContent = formatValue(result.critHit);
       el.effectiveAps.textContent = formatValue(result.attackFrequency, ' 次/秒');
       el.dps.textContent = formatValue(result.totalDps);
-      el.fightDamage.textContent = formatValue(result.fightDamage);
+      el.fightDamage.textContent = Math.floor(result.fightDamage).toLocaleString();
+
+      const advisor = getAdvisorV2(character);
+      const box = document.getElementById("advisorBox");
+      if (box) {
+        box.innerText = "軍師建議：\n" + advisor.text;
+        box.style.color = advisor.color;
+
+    const affixBox = document.getElementById("affixAdvisor");
+    if (affixBox) {
+      affixBox.innerText = getAffixSuggestion(character);
+    }
+      }
     }
 
     function renderAll() {
@@ -873,10 +948,12 @@
 
     function openModal(character = null) {
       state.editingId = character?.id || null;
-      el.modalTitle.textContent = character ? '編輯角色' : '角色設定';
+      el.modalTitle.textContent = character ? '編輯角色' : '新增角色';
 
       el.charName.value = character?.name || '';
       el.charTeam.value = String(character?.team || 1);
+      clearCharacterTemplateSelection();
+      el.charLeader.value = character?.isLeader ? '1' : '0';
       el.atk.value = character?.atk ?? 0;
       el.hp.value = character?.hp ?? 0;
       el.pdef.value = character?.pdef ?? 0;
@@ -906,6 +983,7 @@
         id: state.editingId || uid('char'),
         name: el.charName.value.trim(),
         team: num(el.charTeam.value) || 1,
+        isLeader: el.charLeader.value === '1',
         atk: num(el.atk.value),
         hp: num(el.hp.value),
         pdef: num(el.pdef.value),
@@ -923,8 +1001,7 @@
           damageType: skill.damageType,
           hits: num(skill.hits),
           hitMultiplier: num(skill.hitMultiplier),
-          cycle: num(skill.cycle),
-          preset: skill.preset || 'custom'
+          cycle: num(skill.cycle)
         }))
       };
 
@@ -939,6 +1016,16 @@
         state.characters.push(character);
       }
 
+      if (character.isLeader) {
+        state.characters = state.characters.map((item) => {
+          if (item.id === character.id) return item;
+          if (Number(item.team) === Number(character.team)) {
+            return { ...item, isLeader: false };
+          }
+          return item;
+        });
+      }
+
       if (!state.selectedId) {
         state.selectedId = character.id;
       }
@@ -947,7 +1034,83 @@
       }
 
       closeModal();
-      renderAll();
+      
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
     }
 
     function removeCharacter(id) {
@@ -955,7 +1118,83 @@
       if (state.selectedId === id) {
         state.selectedId = state.characters[0]?.id || null;
       }
-      renderAll();
+      
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
     }
 
     function attachEvents() {
@@ -968,15 +1207,172 @@
       document.getElementById('cancelModal').addEventListener('click', closeModal);
       document.getElementById('saveCharacter').addEventListener('click', saveCharacter);
 
+      el.charTemplate.addEventListener('change', (event) => {
+        applyCharacterTemplate(event.target.value);
+      });
+
       el.monsterSelect.addEventListener('change', (event) => {
         state.monsterKey = event.target.value;
-        renderAll();
+        
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
       });
 
       el.fightSeconds.addEventListener('input', (event) => {
         state.fightSeconds = Math.max(1, num(event.target.value));
-        renderAll();
+        
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
       });
+
 
       el.roster.addEventListener('click', (event) => {
         const target = event.target;
@@ -986,7 +1382,83 @@
 
         if (selectId) {
           state.selectedId = selectId;
-          renderAll();
+          
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
           return;
         }
 
@@ -997,7 +1469,9 @@
         }
 
         if (deleteId) {
-          removeCharacter(deleteId);
+          if (confirm("確定要刪除這個角色？")) {
+    removeCharacter(deleteId);
+}
         }
       });
 
@@ -1024,14 +1498,6 @@
         const skill = state.skillDrafts.find((item) => item.id === id);
         if (!skill) return;
 
-        if (key === 'preset') {
-          skill.preset = target.value;
-          if (target.value === 'active') skill.cycle = 10;
-          if (target.value === 'passive') skill.cycle = 5;
-          renderSkills();
-          return;
-        }
-
         skill[key] = target.value;
       });
 
@@ -1042,21 +1508,95 @@
         renderSkills();
       });
 
-      el.modal.addEventListener('click', (event) => {
-        if (event.target === el.modal) closeModal();
-      });
+      // 已移除點擊外部關閉，避免誤觸
     }
 
     createEffectRows(el.weaponRows, '武器', 2);
     createEffectRows(el.buffRows, 'Buff', 3);
     initMonsterSelect();
     attachEvents();
-    renderAll();
+
+document.getElementById("saveCharacterSticky")?.addEventListener("click", saveCharacter);
+    
+function getAdvisorV2(character) {
+  if (!character) return { text: "尚未選擇角色", color: "#999" };
+
+  const atk = Number(character.atk);
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+
+  const skillMul = character.skills[0]?.hitMultiplier * character.skills[0]?.hits || 1;
+
+  const base = atk * skillMul * (1 + critRate * critDmg);
+
+  const atkGain = ((atk * 1.1 * skillMul * (1 + critRate * critDmg)) - base) / base;
+  const critGain = ((atk * skillMul * (1 + (critRate + 0.1) * critDmg)) - base) / base;
+  const critDmgGain = ((atk * skillMul * (1 + critRate * (critDmg + 0.2))) - base) / base;
+
+  const best = Math.max(atkGain, critGain, critDmgGain);
+
+  let bestText = "";
+  let color = "#66ff99";
+
+  if (best === critGain) {
+    bestText = "🔴 最優先：暴擊率";
+    color = "#f87171";
+  } else if (best === critDmgGain) {
+    bestText = "🟡 次優先：暴擊傷害";
+    color = "#facc15";
+  } else {
+    bestText = "🟢 可提升：攻擊力";
+    color = "#22c55e";
+  }
+
+  return {
+    text:
+      bestText + "\n\n" +
+      "📊 提升比較：\n" +
+      "攻擊 +10% → +" + (atkGain * 100).toFixed(1) + "%\n" +
+      "暴擊 +10% → +" + (critGain * 100).toFixed(1) + "%\n" +
+      "暴傷 +20% → +" + (critDmgGain * 100).toFixed(1) + "%",
+    color
+  };
+}
+
+
+
+function getAffixSuggestion(character) {
+  if (!character) return "詞綴推薦：請先選取角色";
+
+  const critRate = Number(character.crit) / 100;
+  const critDmg = Number(character.critDmg) / 100;
+  const atk = Number(character.atk);
+
+  let suggestions = [];
+
+  if (critRate < 0.4) suggestions.push("暴擊率%");
+  if (critDmg < 1.5) suggestions.push("暴擊傷害%");
+  if (atk < 2000) suggestions.push("攻擊力%");
+
+  if (suggestions.length === 0) {
+    suggestions.push("最終傷害%", "技能傷害%");
+  }
+
+  return "詞綴推薦：" + suggestions.join(" / ");
+}
+
+
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('characterModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});
+
+renderAll();
   </script>
-
 <div style="position:fixed;bottom:10px;right:10px;font-size:12px;opacity:0.5;color:#999;">
-build: v1.0.1
+build: v1.2.0
 </div>
-
 </body>
 </html>
