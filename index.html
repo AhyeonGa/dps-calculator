@@ -438,6 +438,34 @@
 </div>
 </section>
 </div>
+
+    <section class="card" id="debugCard">
+      <div class="section-head">
+        <h2>儲存 Debug</h2>
+        <p class="muted">確認自動儲存與讀取是否正常</p>
+      </div>
+
+      <div class="results">
+        <div class="stat">
+          <span>儲存狀態</span>
+          <strong id="saveStatus">未啟動</strong>
+        </div>
+        <div class="stat">
+          <span>最後儲存時間</span>
+          <strong id="saveTime">-</strong>
+        </div>
+        <div class="stat">
+          <span>角色數量</span>
+          <strong id="saveCharacterCount">0</strong>
+        </div>
+      </div>
+
+      <p class="note" id="saveDebugText" style="margin-top:12px;">尚未開始。</p>
+      <div class="modal-actions" style="margin-top:12px; justify-content:flex-start;">
+        <button class="btn secondary" id="forceSaveBtn" type="button">手動測試儲存</button>
+      </div>
+    </section>
+
 <div aria-hidden="true" class="modal" id="characterModal">
 <div class="modal-card">
 <div class="section-head">
@@ -944,6 +972,7 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
     function renderAll() {
       renderRoster();
       renderResults();
+      saveStateToLocal();
     }
 
     function openModal(character = null) {
@@ -1480,6 +1509,10 @@ renderAll();
         renderSkills();
       });
 
+      document.getElementById('forceSaveBtn')?.addEventListener('click', () => {
+        saveStateToLocal();
+      });
+
       el.skillList.addEventListener('input', (event) => {
         const target = event.target;
         const id = target.getAttribute('data-id');
@@ -1511,9 +1544,62 @@ renderAll();
       // 已移除點擊外部關閉，避免誤觸
     }
 
+
+    const STORAGE_KEY = 'dps_simulator_save_v3';
+
+    function updateSaveDebug(status, detail = '') {
+      const statusEl = document.getElementById('saveStatus');
+      const timeEl = document.getElementById('saveTime');
+      const countEl = document.getElementById('saveCharacterCount');
+      const textEl = document.getElementById('saveDebugText');
+
+      if (statusEl) statusEl.textContent = status;
+      if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+      if (countEl) countEl.textContent = String(state.characters.length);
+      if (textEl) textEl.textContent = detail || '正常';
+    }
+
+    function saveStateToLocal() {
+      try {
+        const payload = {
+          monsterKey: state.monsterKey,
+          fightSeconds: state.fightSeconds,
+          characters: state.characters,
+          selectedId: state.selectedId
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        updateSaveDebug('已儲存', 'localStorage 寫入成功');
+      } catch (err) {
+        updateSaveDebug('失敗', '儲存錯誤：' + err.message);
+      }
+    }
+
+    function loadStateFromLocal() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          updateSaveDebug('未找到', '目前沒有舊存檔，先新增角色再按 F5 測試');
+          return;
+        }
+        const payload = JSON.parse(raw);
+        state.monsterKey = payload.monsterKey || state.monsterKey;
+        state.fightSeconds = Number(payload.fightSeconds) || state.fightSeconds;
+        state.characters = Array.isArray(payload.characters) ? payload.characters : [];
+        state.selectedId = payload.selectedId || (state.characters[0]?.id || null);
+        updateSaveDebug('已載入', '成功讀取舊資料');
+      } catch (err) {
+        updateSaveDebug('失敗', '讀取錯誤：' + err.message);
+      }
+    }
+
+
+    loadStateFromLocal();
+
     createEffectRows(el.weaponRows, '武器', 2);
     createEffectRows(el.buffRows, 'Buff', 3);
     initMonsterSelect();
+    el.monsterSelect.value = state.monsterKey;
+    el.fightSeconds.value = state.fightSeconds;
     attachEvents();
 
 document.getElementById("saveCharacterSticky")?.addEventListener("click", saveCharacter);
