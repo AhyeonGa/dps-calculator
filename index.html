@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DPS 模擬器 v50.1 安全優化版</title>
+<title>DPS 模擬器 v63 全自動測試角色版</title>
 <style>
     :root {
       color-scheme: dark;
@@ -625,12 +625,54 @@
       border:1px solid rgba(148, 163, 184, 0.18);
     }
 
+
+    .debug-panel {
+      margin-top: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 16px;
+      background: rgba(2, 6, 23, 0.44);
+      padding: 16px;
+      display: none;
+    }
+    .debug-panel.open { display:block; }
+    .debug-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap:12px;
+      margin-top: 12px;
+    }
+    .debug-box {
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    .debug-box span {
+      display:block;
+      color:#94a3b8;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .debug-box strong {
+      display:block;
+      color:#f8fafc;
+      font-size:20px;
+      line-height:1.25;
+      word-break: break-word;
+    }
+    .debug-list {
+      margin-top: 12px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <section class="card hero">
-<h1>DPS 模擬器</h1>
+<h1>DPS 模擬器 v60</h1>
 <p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
 <div class="tag">最多 12 角色，4 隊</div>
 <div class="tag">支援模板也會顯示自身 DPS</div>
@@ -656,7 +698,9 @@
 </div>
 <div>
 <label> </label>
-<button class="btn" id="openCharacterModal">新增角色</button>
+<div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button>
+<button class="btn danger" onclick="clearTestChars()">一鍵清除測試角色</button>
+<button class="btn" onclick="toggleDebug()">Debug模式</button></button></div>
 </div>
 </div>
 <div class="roster-wrap" id="roster"></div>
@@ -664,7 +708,10 @@
 <section class="card">
 <div class="section-head">
 <h2>核心結果</h2>
+<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
 <p class="muted" id="selectedCharacterName">尚未選取角色</p>
+<button class="btn secondary" id="quickEditSelected" type="button">快速調整所選角色</button>
+</div>
 </div>
 <div class="results">
 <div class="stat highlight">
@@ -672,13 +719,37 @@
 <strong id="dps">-</strong>
 </div>
 <div class="stat">
-<span>生成效率</span>
+<span>有效攻速</span>
 <strong id="effectiveAps">-</strong>
 </div>
 <div class="stat">
 <span>總傷害 (DMG)</span>
 <strong id="fightDamage">-</strong>
 </div>
+
+<div class="debug-panel" id="calcDebugPanel">
+  <div class="section-head">
+    <h3>Debug 計算過程</h3>
+    <p class="muted">直接看目前所選角色每一段怎麼算</p>
+  </div>
+  <div class="debug-grid">
+    <div class="debug-box"><span>基礎攻擊</span><strong id="dbgBaseAtk">-</strong></div>
+    <div class="debug-box"><span>攻擊加成後</span><strong id="dbgAtkAfterBuff">-</strong></div>
+    <div class="debug-box"><span>技能總倍率</span><strong id="dbgSkillMultiplier">-</strong></div>
+    <div class="debug-box"><span>非暴擊單次</span><strong id="dbgNonCrit">-</strong></div>
+    <div class="debug-box"><span>暴擊單次</span><strong id="dbgCrit">-</strong></div>
+    <div class="debug-box"><span>平均單次</span><strong id="dbgAvg">-</strong></div>
+    <div class="debug-box"><span>實際暴擊率</span><strong id="dbgCritRate">-</strong></div>
+    <div class="debug-box"><span>暴擊倍率</span><strong id="dbgCritMultiplier">-</strong></div>
+    <div class="debug-box"><span>原始週期</span><strong id="dbgRawCycle">-</strong></div>
+    <div class="debug-box"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
+    <div class="debug-box"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
+    <div class="debug-box"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
+  </div>
+  <div class="debug-list" id="dbgBuffSummary">Buff：-</div>
+  <div class="debug-list" id="dbgSkillSummary">技能：-</div>
+</div>
+
 </div>
 </section>
 </div>
@@ -716,7 +787,7 @@
 <div class="compact-grid">
 <div>
 <label for="charName">角色名稱</label>
-<input id="charName" placeholder="例如：主力輸出" type="text"/>
+<input id="charName" placeholder="例如：主力輸出 / 攻速1 / 生命測試1" type="text"/>
 </div>
 <div>
 <label for="charTeam">隊伍</label>
@@ -747,13 +818,7 @@
 <label>&nbsp;</label>
 <button class="btn secondary" id="applyGrade6Btn" type="button">套用六星資料</button>
 </div>
-<div>
-<label for="charLeader">隊長</label>
-<select id="charLeader">
-<option value="0">否</option>
-<option value="1">是</option>
-</select>
-</div>
+<input id="charLeader" type="hidden" value="0"/>
 </div>
 <div class="mode-note-badge" id="grade6Info">六星資料庫：未套用</div>
 </div>
@@ -795,8 +860,20 @@
 <p class="note">一般模式：直接填遊戲內目前看到的攻擊力 / 生命值。進階模式：角色ATK = 初始攻擊 + (等級 - 1) × 每級攻擊成長；角色HP = 初始生命 + (等級 - 1) × 每級生命成長；最終ATK = 角色ATK + 武器ATK + 固定攻擊加成；DPS = 各技能平均單次傷害 ÷ 各自週期後加總；未設定技能時才用攻擊週期計算基礎 DPS。</p>
 </div>
 <div class="sub-card section-stack">
-<h3>Buff（3，常駐）</h3>
+<div class="section-head">
+<h3>自身 Buff（可自訂）</h3>
+<button class="btn secondary" id="addSelfBuff" type="button">新增自身 Buff</button>
+</div>
 <div id="buffRows"></div>
+<p class="note">這裡只加在角色自己身上，適合自身被動、自身增益、自身穿透。可自由新增、停用、命名。</p>
+</div>
+<div class="sub-card section-stack">
+<div class="section-head">
+<h3>團隊 Buff（POB 自訂）</h3>
+<button class="btn secondary" id="addTeamBuff" type="button">新增團隊 Buff</button>
+</div>
+<div id="teamBuffRows"></div>
+<p class="note">可自訂是否啟用、名稱、效果，並可選擇是否也影響自己。九尾這種「給隊友、不給自己」可直接在這裡定義。</p>
 </div>
 <div class="sub-card section-stack">
 <div class="section-head">
@@ -817,7 +894,7 @@
 </div>
 <div class="live-preview-grid">
 <div class="live-preview-stat"><span>每秒輸出 (DPS)</span><strong id="previewDps">-</strong></div>
-<div class="live-preview-stat"><span>生成效率</span><strong id="previewAps">-</strong></div>
+<div class="live-preview-stat"><span>有效攻速</span><strong id="previewAps">-</strong></div>
 <div class="live-preview-stat"><span>總傷害 (DMG)</span><strong id="previewFightDamage">-</strong></div>
 </div>
 </div>
@@ -847,12 +924,53 @@
       return Array.from(map.values());
     }
 
-    const GRADE6_DATABASE = Object.fromEntries(
+    const BASE_GRADE6_DATABASE = Object.fromEntries(
       GRADE6_DATABASE_RAW.map((entry) => [entry.character, {
         ...entry,
         skills: dedupeGrade6Skills(entry.skills || [])
       }])
     );
+
+    const GRADE6_PROFESSION_META = {
+      WA: { label: '戰士', placeholderPrefix: '新戰士' },
+      PA: { label: '聖騎', placeholderPrefix: '新聖騎' },
+      AR: { label: '弓手', placeholderPrefix: '新弓手' },
+      HU: { label: '獵人', placeholderPrefix: '新獵人' },
+      WI: { label: '法師', placeholderPrefix: '新法師' },
+      PR: { label: '祭師', placeholderPrefix: '新祭師' }
+    };
+
+    const GRADE6_PLACEHOLDERS = (() => {
+      const result = {};
+      Object.entries(GRADE6_PROFESSION_META).forEach(([code, meta]) => {
+        for (let index = 1; index <= 2; index += 1) {
+          const key = `NEW_${code}_${index}`;
+          result[key] = {
+            character: key,
+            displayName: `${meta.placeholderPrefix}${index}`,
+            professionCode: code,
+            isPlaceholder: true,
+            summary: {
+              categories: ['placeholder'],
+              triggers: ['手動輸入'],
+              knownTotalMultiplier: 0,
+              selfBlocks: 0,
+              allyBlocks: 0,
+              buffs: [],
+              unknownHitAssets: [],
+              notes: ['這是保留給新版角色的占位資料，請手動填入目前看到的面板與技能。']
+            },
+            skills: []
+          };
+        }
+      });
+      return result;
+    })();
+
+    const GRADE6_DATABASE = {
+      ...BASE_GRADE6_DATABASE,
+      ...GRADE6_PLACEHOLDERS
+    };
 
     
     const GRADE6_NAME_ZH = {
@@ -885,17 +1003,43 @@
       BLIZZARD: '暴雪',
       DOROTHY: '桃樂絲',
       KORIN: '柯琳',
-      RACHEAL: '瑞秋'
+      RACHEAL: '瑞秋',
+      NEW_WA_1: '新戰士1',
+      NEW_WA_2: '新戰士2',
+      NEW_PA_1: '新聖騎1',
+      NEW_PA_2: '新聖騎2',
+      NEW_AR_1: '新弓手1',
+      NEW_AR_2: '新弓手2',
+      NEW_HU_1: '新獵人1',
+      NEW_HU_2: '新獵人2',
+      NEW_WI_1: '新法師1',
+      NEW_WI_2: '新法師2',
+      NEW_PR_1: '新祭師1',
+      NEW_PR_2: '新祭師2'
     };
 
+    function inferProfessionCode(entryOrKey) {
+      const entry = typeof entryOrKey === 'string' ? GRADE6_DATABASE[entryOrKey] : entryOrKey;
+      if (!entry) return '';
+      if (entry.professionCode) return entry.professionCode;
+      const firstSkillId = (entry.skills || []).find((skill) => skill?.id)?.id || '';
+      const match = firstSkillId.match(/^SK_([A-Z]{2})_/);
+      return match ? match[1] : '';
+    }
+
     function getGrade6DisplayName(key = '') {
-      return GRADE6_NAME_ZH[String(key || '').trim()] || String(key || '').trim();
+      const en = String(key || '').trim();
+      const zh = GRADE6_NAME_ZH[en];
+      if (zh) return `${zh} (${en})`;
+      const entry = GRADE6_DATABASE[en];
+      if (entry?.displayName) return `${entry.displayName} (${en})`;
+      return en;
     }
 
     function getCharacterDisplayName(character) {
       if (!character) return '未命名角色';
       const key = character.grade6Key || character.character || character.name || '';
-      return getGrade6DisplayName(key) || character.name || '未命名角色';
+      return getGrade6DisplayName(key) || `${character.name || '未命名角色'}`;
     }
 
 const CHARACTER_TEMPLATES = {
@@ -925,8 +1069,10 @@ const CHARACTER_TEMPLATES = {
         mPen: 0,
         crit: 0,
         critDmg: 100,
-        buffs: [{ type: 'critPct', value: 56 }],
-        aura: { key: 'fox-crit-56', label: '九尾狐 暴擊率+56%', effects: [{ type: 'critPct', value: 56 }] },
+        buffs: [],
+        selfBuffs: [],
+        teamBuffs: [{ label: '九尾狐 暴擊率+56%', type: 'critPct', value: 56, enabled: true, applyToSelf: false }],
+        aura: null,
         skills: []
       },
       'Nurspy': {
@@ -938,8 +1084,10 @@ const CHARACTER_TEMPLATES = {
         mPen: 0,
         crit: 0,
         critDmg: 100,
-        buffs: [{ type: 'atkPct', value: 12 }],
-        aura: { key: 'nurspy-atk-12', label: 'Nurspy ATK+12%', effects: [{ type: 'atkPct', value: 12 }] },
+        buffs: [],
+        selfBuffs: [],
+        teamBuffs: [{ label: 'Nurspy ATK+12%', type: 'atkPct', value: 12, enabled: true, applyToSelf: true }],
+        aura: null,
         skills: []
       },
       'Randgrid': {
@@ -993,6 +1141,21 @@ const CHARACTER_TEMPLATES = {
       effectiveAps: document.getElementById('effectiveAps'),
       dps: document.getElementById('dps'),
       fightDamage: document.getElementById('fightDamage'),
+      calcDebugPanel: document.getElementById('calcDebugPanel'),
+      dbgBaseAtk: document.getElementById('dbgBaseAtk'),
+      dbgAtkAfterBuff: document.getElementById('dbgAtkAfterBuff'),
+      dbgSkillMultiplier: document.getElementById('dbgSkillMultiplier'),
+      dbgNonCrit: document.getElementById('dbgNonCrit'),
+      dbgCrit: document.getElementById('dbgCrit'),
+      dbgAvg: document.getElementById('dbgAvg'),
+      dbgCritRate: document.getElementById('dbgCritRate'),
+      dbgCritMultiplier: document.getElementById('dbgCritMultiplier'),
+      dbgRawCycle: document.getElementById('dbgRawCycle'),
+      dbgEffectiveCycle: document.getElementById('dbgEffectiveCycle'),
+      dbgDefenseMultiplier: document.getElementById('dbgDefenseMultiplier'),
+      dbgFinalDps: document.getElementById('dbgFinalDps'),
+      dbgBuffSummary: document.getElementById('dbgBuffSummary'),
+      dbgSkillSummary: document.getElementById('dbgSkillSummary'),
       effectiveBuffInfo: document.getElementById('effectiveBuffInfo'),
       effectiveStatInfo: document.getElementById('effectiveStatInfo'),
       modal: document.getElementById('characterModal'),
@@ -1025,6 +1188,7 @@ const CHARACTER_TEMPLATES = {
       crit: document.getElementById('crit'),
       critDmg: document.getElementById('critDmg'),
       buffRows: document.getElementById('buffRows'),
+      teamBuffRows: document.getElementById('teamBuffRows'),
       skillList: document.getElementById('skillList')
     };
 
@@ -1041,16 +1205,41 @@ const CHARACTER_TEMPLATES = {
 
     function populateGrade6Select() {
       if (!el.grade6Key) return;
-      const options = ['<option value="">未選擇</option>']
-        .concat(Object.keys(GRADE6_DATABASE).sort().map((key) => `<option value="${key}">${getGrade6DisplayName(key)}</option>`));
-      el.grade6Key.innerHTML = options.join('');
+      const groups = {};
+      Object.keys(GRADE6_PROFESSION_META).forEach((code) => { groups[code] = []; });
+
+      Object.keys(GRADE6_DATABASE)
+        .filter((key) => key !== 'THOR_BASIC_ATK')
+        .sort((a, b) => getGrade6DisplayName(a).localeCompare(getGrade6DisplayName(b), 'zh-Hant'))
+        .forEach((key) => {
+          const entry = GRADE6_DATABASE[key];
+          const code = inferProfessionCode(entry);
+          if (!groups[code]) groups[code] = [];
+          groups[code].push(`<option value="${key}">${getGrade6DisplayName(key)}${entry?.isPlaceholder ? '｜待輸入' : ''}</option>`);
+        });
+
+      const html = ['<option value="">未選擇</option>'];
+      Object.entries(GRADE6_PROFESSION_META).forEach(([code, meta]) => {
+        const options = groups[code] || [];
+        if (!options.length) return;
+        html.push(`<optgroup label="${meta.label}">${options.join('')}</optgroup>`);
+      });
+      el.grade6Key.innerHTML = html.join('');
     }
 
     function updateGrade6Info(key = '') {
       if (!el.grade6Info) return;
       const entry = key ? GRADE6_DATABASE[key] : null;
       if (!entry) {
-        el.grade6Info.textContent = '六星資料庫：未套用';
+        const currentCount = Object.keys(BASE_GRADE6_DATABASE).filter((name) => name !== 'THOR_BASIC_ATK').length;
+        const placeholderCount = Object.keys(GRADE6_PLACEHOLDERS).length;
+        el.grade6Info.textContent = `六星資料庫：正式 ${currentCount} 隻｜新版占位 ${placeholderCount} 隻`;
+        return;
+      }
+      if (entry.isPlaceholder) {
+        const code = inferProfessionCode(entry);
+        const jobLabel = GRADE6_PROFESSION_META[code]?.label || '未知職業';
+        el.grade6Info.textContent = `六星資料庫：${getGrade6DisplayName(key)}｜${jobLabel}｜新版占位資料，請手動輸入面板、Buff、技能倍率`;
         return;
       }
       const triggerText = (entry.summary?.triggers || []).join(' / ') || '未標記';
@@ -1097,9 +1286,16 @@ const CHARACTER_TEMPLATES = {
         updateGrade6Info('');
         return;
       }
-      if (!el.charName.value.trim()) el.charName.value = entry.character || entry.displayName || '';
+      if (!el.charName.value.trim()) {
+        el.charName.value = entry.isPlaceholder ? (entry.displayName || entry.character || '') : (entry.character || entry.displayName || '');
+      }
       const baseCycle = Math.max(0.01, num(el.攻擊週期?.value) || 2);
-      state.skillDrafts = buildImportedSkillDrafts(key, baseCycle);
+      const importedSkills = buildImportedSkillDrafts(key, baseCycle);
+      if (entry.isPlaceholder && !importedSkills.length && !state.skillDrafts.length) {
+        state.skillDrafts = [createSkillDraft({ name: '3C', damageType: 'physical', hits: 1, hitMultiplier: 0, cycle: 6 })];
+      } else if (importedSkills.length) {
+        state.skillDrafts = importedSkills;
+      }
       renderSkills();
       updateGrade6Info(key);
       updateLivePreview();
@@ -1171,7 +1367,8 @@ const CHARACTER_TEMPLATES = {
       el.mPen.value = template.mPen ?? 0;
       el.crit.value = template.crit ?? 0;
       el.critDmg.value = template.critDmg ?? 100;
-      fillEffectRows(el.buffRows, cloneRows(template.buffs || []));
+      fillEffectRows(el.buffRows, cloneRows(template.selfBuffs || template.buffs || []));
+      fillEffectRows(el.teamBuffRows, cloneRows(template.teamBuffs || []));
       state.skillDrafts = (template.skills || []).map((skill) => createSkillDraft(skill));
       renderSkills();
       updateLivePreview();
@@ -1184,20 +1381,67 @@ const CHARACTER_TEMPLATES = {
     function createEffectRows(container, prefix, count) {
       container.innerHTML = '';
       for (let i = 0; i < count; i += 1) {
-        const row = document.createElement('div');
-        row.className = 'affix-grid';
-        row.innerHTML = `
-          <div>
-            <label>${prefix} ${i + 1} 類型</label>
-            <select data-kind="type" data-index="${i}">${optionsHtml()}</select>
-          </div>
-          <div>
-            <label>${prefix} ${i + 1} 數值</label>
-            <input data-kind="value" data-index="${i}" type="number" step="1" value="0" />
-          </div>
-        `;
-        container.appendChild(row);
+        appendEffectRow(container, prefix, {});
       }
+      refreshEffectRowIndexes(container, prefix);
+    }
+
+    function appendEffectRow(container, prefix, entry = {}) {
+      const isTeam = container?.id === 'teamBuffRows';
+      const row = document.createElement('div');
+      row.className = 'skill-item effect-item';
+      row.innerHTML = `
+        <div class="skill-top">
+          <strong>${escapeHtml(entry.label || prefix)}</strong>
+          <button class="icon-btn danger" type="button" data-remove-effect="1">刪除</button>
+        </div>
+        <div class="affix-grid">
+          <div>
+            <label>Buff 名稱</label>
+            <input data-kind="label" type="text" value="${escapeHtml(entry.label || '')}" placeholder="例如：九尾 3C 暴擊" />
+          </div>
+          <div>
+            <label>效果類型</label>
+            <select data-kind="type">${optionsHtml(entry.type || 'none')}</select>
+          </div>
+          <div>
+            <label>數值</label>
+            <input data-kind="value" type="number" step="1" value="${entry.value ?? 0}" />
+          </div>
+          <div>
+            <label>啟用</label>
+            <select data-kind="enabled">
+              <option value="1" ${(entry.enabled ?? true) ? 'selected' : ''}>啟用</option>
+              <option value="0" ${(entry.enabled ?? true) ? '' : 'selected'}>停用</option>
+            </select>
+          </div>
+          ${isTeam ? `<div>
+            <label>也影響自己</label>
+            <select data-kind="applyToSelf">
+              <option value="1" ${(entry.applyToSelf ?? true) ? 'selected' : ''}>是</option>
+              <option value="0" ${(entry.applyToSelf ?? true) ? '' : 'selected'}>否</option>
+            </select>
+          </div>` : ''}
+          <div>
+            <label>條件備註</label>
+            <input data-kind="condition" type="text" value="${escapeHtml(entry.condition || '')}" placeholder="例如：3C 後 8 秒" />
+          </div>
+        </div>
+      `;
+      container.appendChild(row);
+      refreshEffectRowIndexes(container, prefix);
+    }
+
+    function refreshEffectRowIndexes(container, prefix = 'Buff') {
+      const rows = Array.from(container.querySelectorAll('.effect-item'));
+      rows.forEach((row, index) => {
+        row.querySelectorAll('[data-kind]').forEach((node) => {
+          node.setAttribute('data-index', String(index));
+        });
+        const title = row.querySelector('.skill-top strong');
+        const labelInput = row.querySelector('[data-kind="label"]');
+        if (title) title.textContent = (labelInput?.value || `${prefix} ${index + 1}`).trim();
+      });
     }
 
     function getSkillCycleByName(name, manualCycle = 2) {
@@ -1285,25 +1529,30 @@ const CHARACTER_TEMPLATES = {
 
     function readEffectRows(container) {
       const rows = [];
-      const rowCount = container.querySelectorAll('[data-kind="type"]').length;
-      for (let i = 0; i < rowCount; i += 1) {
-        rows.push({
-          type: container.querySelector(`[data-kind="type"][data-index="${i}"]`).value,
-          value: num(container.querySelector(`[data-kind="value"][data-index="${i}"]`).value)
-        });
-      }
+      const items = Array.from(container.querySelectorAll('.effect-item'));
+      items.forEach((item, index) => {
+        const type = item.querySelector('[data-kind="type"]')?.value || 'none';
+        const value = num(item.querySelector('[data-kind="value"]')?.value);
+        const enabled = (item.querySelector('[data-kind="enabled"]')?.value || '1') === '1';
+        const label = (item.querySelector('[data-kind="label"]')?.value || '').trim();
+        const condition = (item.querySelector('[data-kind="condition"]')?.value || '').trim();
+        const applyToSelfNode = item.querySelector('[data-kind="applyToSelf"]');
+        const applyToSelf = applyToSelfNode ? applyToSelfNode.value === '1' : true;
+        if (type === 'none' && value === 0 && !label && !condition) return;
+        rows.push({ type, value, enabled, label, condition, applyToSelf, order: index });
+      });
       return rows;
     }
 
     function fillEffectRows(container, rows) {
-      const types = container.querySelectorAll('[data-kind="type"]');
-      const values = container.querySelectorAll('[data-kind="value"]');
-      types.forEach((node, index) => {
-        node.value = rows[index]?.type || 'none';
-      });
-      values.forEach((node, index) => {
-        node.value = rows[index]?.value ?? 0;
-      });
+      container.innerHTML = '';
+      const prefix = container?.id === 'teamBuffRows' ? '團隊Buff' : '自身Buff';
+      const source = Array.isArray(rows) && rows.length ? rows : [];
+      source.forEach((row) => appendEffectRow(container, prefix, row));
+      if (!source.length) {
+        appendEffectRow(container, prefix, {});
+      }
+      refreshEffectRowIndexes(container, prefix);
     }
 
     function getDerivedStats(character) {
@@ -1353,14 +1602,37 @@ const CHARACTER_TEMPLATES = {
         mPenFlat: 0
       };
       const ownLabels = [];
+      const teamLabels = [];
 
-      (character.buffs || []).forEach((entry) => {
-        if (!entry || !Object.prototype.hasOwnProperty.call(totals, entry.type)) return;
+      const selfBuffs = Array.isArray(character.selfBuffs) ? character.selfBuffs : (Array.isArray(character.buffs) ? character.buffs : []);
+
+      selfBuffs.forEach((entry) => {
+        if (!entry || entry.enabled === false || !Object.prototype.hasOwnProperty.call(totals, entry.type)) return;
         totals[entry.type] += num(entry.value);
         if (entry.type !== 'none' && num(entry.value) !== 0) {
           const opt = EFFECT_OPTIONS.find((item) => item.value === entry.type);
-          ownLabels.push(`${opt ? opt.label : entry.type} ${num(entry.value) > 0 ? '+' : ''}${num(entry.value)}`);
+          const prefix = entry.label ? `${entry.label}` : `自身 ${opt ? opt.label : entry.type}`;
+          const conditionText = entry.condition ? `（${entry.condition}）` : '';
+          ownLabels.push(`${prefix}${conditionText} ${num(entry.value) > 0 ? '+' : ''}${num(entry.value)}`);
         }
+      });
+
+      allCharacters.forEach((mate) => {
+        if (!mate || Number(mate.team) !== Number(character.team)) return;
+        const sharedBuffs = Array.isArray(mate.teamBuffs) ? mate.teamBuffs : [];
+        sharedBuffs.forEach((entry) => {
+          if (!entry || entry.enabled === false || !Object.prototype.hasOwnProperty.call(totals, entry.type)) return;
+          if (mate.id === character.id && entry.applyToSelf === false) return;
+          totals[entry.type] += num(entry.value);
+          if (entry.type !== 'none' && num(entry.value) !== 0) {
+            const opt = EFFECT_OPTIONS.find((item) => item.value === entry.type);
+            const ownerName = mate.id === character.id ? '自己團隊Buff' : getCharacterDisplayName(mate);
+            const baseLabel = entry.label || (opt ? opt.label : entry.type);
+            const conditionText = entry.condition ? `（${entry.condition}）` : '';
+            const selfNote = mate.id === character.id ? '' : (entry.applyToSelf === false ? '〔不含施放者〕' : '');
+            teamLabels.push(`${ownerName}：${baseLabel}${conditionText}${selfNote} ${num(entry.value) > 0 ? '+' : ''}${num(entry.value)}`);
+          }
+        });
       });
 
       const auraInfo = collectTeamAuraEffects(character, allCharacters);
@@ -1368,7 +1640,7 @@ const CHARACTER_TEMPLATES = {
         totals[key] += auraInfo.totals[key] || 0;
       });
 
-      return { totals, ownLabels, auraLabels: auraInfo.labels };
+      return { totals, ownLabels, teamLabels, auraLabels: auraInfo.labels };
     }
 
     function getDefenseContext(monster, damageType, totalPen) {
@@ -1384,6 +1656,8 @@ const CHARACTER_TEMPLATES = {
       const effectInfo = aggregateEffects(character, state.characters);
       const totals = effectInfo.totals;
       const derived = getDerivedStats(character);
+      const leaderChanceFactor = character?.isLeader ? 1.1 : 1;
+      const effectiveCycle = Math.max(0.01, derived.攻擊週期 / leaderChanceFactor);
 
       const critRate = Math.min(Math.max(0, num(character.crit) / 100 + totals.critPct / 100), 1);
       const critPower = Math.max(0, num(character.critDmg) / 100);
@@ -1403,9 +1677,10 @@ const CHARACTER_TEMPLATES = {
         const nonCritCast = derived.finalAtk * atkFactor * skillMultiplier * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
         const critCast = nonCritCast * critMultiplier;
         const avgCast = nonCritCast * (1 - critRate) + critCast * critRate;
-        const skillCycle = Math.max(0.01, num(skill.cycle) || derived.攻擊週期);
+        const rawSkillCycle = Math.max(0.01, num(skill.cycle) || derived.攻擊週期);
+        const skillCycle = Math.max(0.01, rawSkillCycle / leaderChanceFactor);
         const dps = avgCast / skillCycle;
-        return { ...skill, cycle: skillCycle, skillMultiplier, nonCritCast, avgCast, critCast, dps };
+        return { ...skill, cycle: skillCycle, rawCycle: rawSkillCycle, skillMultiplier, nonCritCast, avgCast, critCast, dps };
       });
 
       const totalSkillMultiplier = skills.length
@@ -1428,23 +1703,49 @@ const CHARACTER_TEMPLATES = {
         : nonCritHit * (1 - critRate) + critHit * critRate;
       const totalDps = skills.length
         ? skills.reduce((sum, skill) => sum + skill.dps, 0)
-        : avgHit / derived.攻擊週期;
+        : avgHit / effectiveCycle;
 
       return {
+        debug: {
+          baseAtk: derived.finalAtk,
+          atkAfterBuff: derived.finalAtk * atkFactor,
+          skillMultiplierTotal: totalSkillMultiplier,
+          critRate,
+          critMultiplier,
+          rawCycle: derived.攻擊週期,
+          effectiveCycle,
+          defenseMultiplier: defense.damageMultiplier,
+          buffText: [
+            ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
+            ...effectInfo.ownLabels,
+            ...effectInfo.teamLabels,
+            ...effectInfo.auraLabels
+          ],
+          skillText: skills.length
+            ? skills.map((skill) => `${skill.name || '技能'}｜倍率 ${formatValue(skill.skillMultiplier)}｜週期 ${formatValue(skill.cycle)} 秒｜DPS ${formatValue(skill.dps)}`).join('\n')
+            : '未設定技能，使用基礎攻擊週期計算'
+        },
         autoDps: skills.length ? 0 : totalDps,
         totalDps,
         fightDamage: totalDps * fightSeconds,
-        attackFrequency: 1 / derived.攻擊週期,
+        attackFrequency: 1 / effectiveCycle,
         nonCritHit,
         critHit,
         avgHit,
         effectiveCritRate: critRate,
-        activeBuffText: [...effectInfo.ownLabels, ...effectInfo.auraLabels],
+        leaderChanceFactor,
+        activeBuffText: [
+          ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
+          ...effectInfo.ownLabels,
+          ...effectInfo.teamLabels,
+          ...effectInfo.auraLabels
+        ],
         effectiveStats: {
           roleAtk: derived.roleAtk,
           roleHp: derived.roleHp,
           finalAtk: derived.finalAtk,
-          攻擊週期: derived.攻擊週期,
+          攻擊週期: effectiveCycle,
+          原始攻擊週期: derived.攻擊週期,
           totalSkillMultiplier
         },
         skills
@@ -1549,7 +1850,7 @@ const CHARACTER_TEMPLATES = {
           row.innerHTML = `
             <div>
               <div class="char-name">${character.isLeader ? '👑 ' : ''}${escapeHtml(getCharacterDisplayName(character))}</div>
-              <div class="char-sub">技能：${(character.skills || []).length}${character.grade6Key ? '｜六星資料' : ''}${character.isLeader ? '｜隊長' : ''}</div>
+              <div class="char-sub">技能：${(character.skills || []).length}｜自身Buff：${((character.selfBuffs || character.buffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜團隊Buff：${((character.teamBuffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}${character.grade6Key ? '｜六星資料' : ''}${character.isLeader ? '｜隊長' : ''}</div>
             </div>
             <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
             <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
@@ -1581,6 +1882,8 @@ const CHARACTER_TEMPLATES = {
         if (el.effectiveBuffInfo) el.effectiveBuffInfo.textContent = '目前 Buff：-';
         if (el.effectiveStatInfo) el.effectiveStatInfo.textContent = '最終暴擊率：-';
         if (advisorBox) advisorBox.innerHTML = '尚未建立角色';
+        if (el.calcDebugPanel) el.calcDebugPanel.classList.toggle('open', debugMode);
+        ['dbgBaseAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgBuffSummary','dbgSkillSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
         return;
       }
 
@@ -1601,11 +1904,33 @@ const CHARACTER_TEMPLATES = {
       }
       if (el.effectiveStatInfo) {
         const stats = result.effectiveStats || {};
-        el.effectiveStatInfo.textContent = `實際暴擊率：${(result.effectiveCritRate * 100).toFixed(1)}%｜攻擊力：${formatValue(stats.finalAtk || 0)}｜技能總倍率：${formatValue(stats.totalSkillMultiplier || 0)}｜攻速(秒)：${formatValue(stats.攻擊週期 || 0)}`;
+        el.effectiveStatInfo.textContent = `實際暴擊率：${(result.effectiveCritRate * 100).toFixed(1)}%｜攻擊力：${formatValue(stats.finalAtk || 0)}｜技能總倍率：${formatValue(stats.totalSkillMultiplier || 0)}｜攻速(秒)：${formatValue(stats.攻擊週期 || 0)}${character?.isLeader ? '｜隊長加速：+10% 已套用' : ''}`;
       }
 
       if (advisorBox) {
         advisorBox.innerHTML = buildAdvisorHtml(character);
+      }
+
+      if (el.calcDebugPanel) {
+        el.calcDebugPanel.classList.toggle('open', debugMode);
+      }
+      if (debugMode) {
+        const stats = result.effectiveStats || {};
+        const dbg = result.debug || {};
+        setDebugText('dbgBaseAtk', formatValue(dbg.baseAtk || stats.finalAtk || 0));
+        setDebugText('dbgAtkAfterBuff', formatValue(dbg.atkAfterBuff || 0));
+        setDebugText('dbgSkillMultiplier', formatValue(dbg.skillMultiplierTotal || stats.totalSkillMultiplier || 0));
+        setDebugText('dbgNonCrit', formatValue(result.nonCritHit || 0));
+        setDebugText('dbgCrit', formatValue(result.critHit || 0));
+        setDebugText('dbgAvg', formatValue(result.avgHit || 0));
+        setDebugText('dbgCritRate', `${((dbg.critRate || result.effectiveCritRate || 0) * 100).toFixed(1)}%`);
+        setDebugText('dbgCritMultiplier', `x${formatValue(dbg.critMultiplier || 0)}`);
+        setDebugText('dbgRawCycle', `${formatValue(dbg.rawCycle || stats['原始攻擊週期'] || 0)} 秒`);
+        setDebugText('dbgEffectiveCycle', `${formatValue(dbg.effectiveCycle || stats['攻擊週期'] || 0)} 秒`);
+        setDebugText('dbgDefenseMultiplier', `x${formatValue(dbg.defenseMultiplier || 0)}`);
+        setDebugText('dbgFinalDps', formatValue(result.totalDps || 0));
+        setDebugText('dbgBuffSummary', `Buff：${(dbg.buffText || result.activeBuffText || []).length ? (dbg.buffText || result.activeBuffText).join('｜') : '無'}`);
+        setDebugText('dbgSkillSummary', `技能：${dbg.skillText || '未設定技能'}`);
       }
     }
 
@@ -1645,6 +1970,8 @@ const CHARACTER_TEMPLATES = {
         crit: num(el.crit.value),
         critDmg: num(el.critDmg.value),
         buffs: readEffectRows(el.buffRows),
+        selfBuffs: readEffectRows(el.buffRows),
+        teamBuffs: readEffectRows(el.teamBuffRows),
         skills: state.skillDrafts.map((skill) => ({
           id: skill.id,
           name: skill.name,
@@ -1712,7 +2039,8 @@ function buildCharacterFromForm() {
       el.mPen.value = character?.mPen ?? 0;
       el.crit.value = character?.crit ?? 0;
       el.critDmg.value = character?.critDmg ?? 100;
-      fillEffectRows(el.buffRows, character?.buffs || []);
+      fillEffectRows(el.buffRows, character?.selfBuffs || character?.buffs || []);
+      fillEffectRows(el.teamBuffRows, character?.teamBuffs || []);
       state.skillDrafts = (character?.skills || []).map((skill) => createSkillDraft(skill));
       renderSkills();
       syncDerivedFormStats();
@@ -1777,15 +2105,173 @@ function buildCharacterFromForm() {
       renderAll();
     }
 
-    function attachEvents() {
+    
+    function createSkill(name, hitMultiplier, cycle = 6, damageType = 'physical', hits = 1) {
+      return {
+        id: uid('skill'),
+        name,
+        damageType,
+        hits,
+        hitMultiplier,
+        cycle
+      };
+    }
+
+    function createTestCharacter({
+      name,
+      team = 1,
+      atk = 1400,
+      hp = 0,
+      pdef = 0,
+      mdef = 0,
+      pPen = 300,
+      mPen = 0,
+      crit = 0,
+      critDmg = 100,
+      cycle = 6,
+      hitMultiplier = 10,
+      damageType = 'physical',
+      selfBuffs = [],
+      teamBuffs = []
+    }) {
+      return {
+        id: uid('char'),
+        name,
+        team,
+        isLeader: false,
+        templateKey: '',
+        grade6Key: '',
+        calcMode: 'simple',
+        level: 60,
+        finalAtkInput: atk,
+        finalHpInput: hp,
+        initialAttDmg: atk,
+        growthAttDmg: 0,
+        initialHp: hp,
+        growthHp: 0,
+        weaponAtk: 0,
+        flatAttack: 0,
+        攻擊週期: cycle,
+        atk,
+        hp,
+        pdef,
+        mdef,
+        pPen,
+        mPen,
+        crit,
+        critDmg,
+        buffs: [...selfBuffs],
+        selfBuffs: [...selfBuffs],
+        teamBuffs: [...teamBuffs],
+        skills: [createSkill('3C', hitMultiplier, cycle, damageType, 1)]
+      };
+    }
+
+    function getDefaultTestCharacters() {
+      return [
+        createTestCharacter({ name: '攻速1', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
+        createTestCharacter({ name: '攻速2', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 3, hitMultiplier: 10 }),
+        createTestCharacter({ name: '攻速3', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 2, hitMultiplier: 10 }),
+        createTestCharacter({ name: '生命測試1', team: 1, atk: 1200, hp: 6000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
+        createTestCharacter({ name: '生命測試2', team: 1, atk: 1200, hp: 8000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 })
+      ];
+    }
+
+    function getCritTestCharacters() {
+      return [
+        createTestCharacter({ name: '暴擊0', team: 2, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
+        createTestCharacter({ name: '暴擊44', team: 2, atk: 1400, hp: 0, pPen: 300, crit: 44, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
+        createTestCharacter({ name: '暴擊100', team: 2, atk: 1400, hp: 0, pPen: 300, crit: 100, critDmg: 100, cycle: 6, hitMultiplier: 10 })
+      ];
+    }
+
+    function addPresetCharacters(presets, label) {
+      const existingNames = new Set(state.characters.map((item) => item.name));
+      const availableSlots = Math.max(0, MAX_CHARACTERS - state.characters.length);
+      const toAdd = presets.filter((item) => !existingNames.has(item.name)).slice(0, availableSlots);
+
+      if (!toAdd.length) {
+        alert(`${label}已經存在，或目前已達角色上限。`);
+        return;
+      }
+
+      state.characters = [...state.characters, ...toAdd];
+      if (!state.selectedId && state.characters.length) {
+        state.selectedId = state.characters[0].id;
+      }
+      normalizeLeaders();
+      renderAll();
+      alert(`已新增 ${toAdd.length} 隻${label}：${toAdd.map((item) => item.name).join('、')}`);
+    }
+
+    function generateTestCharacters() {
+      addPresetCharacters(getDefaultTestCharacters(), '攻速/生命測試角色');
+    }
+
+    function generateCritTestCharacters() {
+      addPresetCharacters(getCritTestCharacters(), '暴擊測試角色');
+    }
+
+
+function attachEvents() {
       document.getElementById('openCharacterModal').addEventListener('click', () => {
         if (state.characters.length >= MAX_CHARACTERS) return;
         openModal();
       });
 
+      document.getElementById('generateTestCharactersBtn')?.addEventListener('click', () => {
+        generateTestCharacters();
+      });
+
+      document.getElementById('generateCritTestCharactersBtn')?.addEventListener('click', () => {
+        generateCritTestCharacters();
+      });
+
+      document.getElementById('quickEditSelected')?.addEventListener('click', () => {
+        const character = state.characters.find((item) => item.id === state.selectedId);
+        if (!character) {
+          alert('請先選取角色。');
+          return;
+        }
+        openModal(character);
+      });
+
       document.getElementById('closeModal').addEventListener('click', closeModal);
       document.getElementById('cancelModal').addEventListener('click', closeModal);
       document.getElementById('saveCharacter').addEventListener('click', saveCharacter);
+
+      document.getElementById('addSelfBuff')?.addEventListener('click', () => {
+        appendEffectRow(el.buffRows, '自身Buff', {});
+        updateLivePreview();
+      });
+
+      document.getElementById('addTeamBuff')?.addEventListener('click', () => {
+        appendEffectRow(el.teamBuffRows, '團隊Buff', { applyToSelf: true, enabled: true });
+        updateLivePreview();
+      });
+
+      [el.buffRows, el.teamBuffRows].forEach((container) => {
+        container?.addEventListener('click', (event) => {
+          const btn = event.target.closest('[data-remove-effect]');
+          if (!btn) return;
+          const item = btn.closest('.effect-item');
+          if (!item) return;
+          item.remove();
+          const prefix = container.id === 'teamBuffRows' ? '團隊Buff' : '自身Buff';
+          if (!container.querySelector('.effect-item')) appendEffectRow(container, prefix, {});
+          refreshEffectRowIndexes(container, prefix);
+          updateLivePreview();
+        });
+        ['input','change'].forEach((evtName) => {
+          container?.addEventListener(evtName, (event) => {
+            const item = event.target.closest('.effect-item');
+            if (!item) return;
+            const prefix = container.id === 'teamBuffRows' ? '團隊Buff' : '自身Buff';
+            refreshEffectRowIndexes(container, prefix);
+            updateLivePreview();
+          });
+        });
+      });
 
       el.charTemplate.addEventListener('change', (event) => {
         applyCharacterTemplate(event.target.value);
@@ -2075,7 +2561,8 @@ function buildCharacterFromForm() {
 
     loadStateFromLocal();
 
-    createEffectRows(el.buffRows, 'Buff', 3);
+    createEffectRows(el.buffRows, '自身Buff', 1);
+    createEffectRows(el.teamBuffRows, '團隊Buff', 1);
     populateGrade6Select();
     initMonsterSelect();
     el.monsterSelect.value = state.monsterKey;
@@ -2335,5 +2822,54 @@ window.addEventListener("load", waitAndInit);
   }
 })();
 </script>
+
+<script>
+function clearTestChars(){
+  const names = ['攻速1','攻速2','攻速3','生命測試1','生命測試2','暴擊0','暴擊44','暴擊100'];
+  const before = Array.isArray(state.characters) ? state.characters.length : 0;
+  const remaining = (state.characters || []).filter((c) => !names.includes(c.name));
+  const removed = before - remaining.length;
+
+  if (removed <= 0) {
+    alert('目前沒有可清除的測試角色。');
+    return;
+  }
+
+  if (!confirm(`確定要清除 ${removed} 隻測試角色嗎？此操作不可復原。`)) {
+    return;
+  }
+
+  state.characters = remaining;
+
+  if (state.selectedId && !state.characters.some((c) => c.id === state.selectedId)) {
+    state.selectedId = state.characters.length ? state.characters[0].id : null;
+  }
+
+  normalizeLeaders();
+  renderAll();
+  alert(`已清除 ${removed} 隻測試角色。`);
+}
+</script>
+
+
+
+
+
+<script>
+let debugMode = false;
+
+function toggleDebug(){
+  debugMode = !debugMode;
+  const panel = document.getElementById('calcDebugPanel');
+  if (panel) panel.classList.toggle('open', debugMode);
+  renderResults();
+}
+
+function setDebugText(id, value){
+  const node = document.getElementById(id);
+  if (node) node.textContent = value;
+}
+</script>
+
 </body>
 </html>
