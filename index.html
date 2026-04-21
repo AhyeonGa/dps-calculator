@@ -735,6 +735,99 @@
       .debug-side-panel .debug-panel { max-height:none; }
     }
 
+
+    .fox-easter-egg {
+      position: fixed;
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 99999;
+      left: -120px;
+      top: 20vh;
+      opacity: 0;
+      transition: opacity 0.2s ease, filter 0.2s ease;
+      filter: drop-shadow(0 0 10px rgba(216, 180, 254, 0.55))
+              drop-shadow(0 0 22px rgba(167, 139, 250, 0.32));
+    }
+
+    .fox-easter-egg.active {
+      opacity: 1;
+    }
+
+    
+
+    @keyframes foxSparkFade {
+      0% { transform: scale(1); opacity: 0.95; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    .fox-glow-on .team-block,
+    .fox-glow-on .debug-panel,
+    .fox-glow-on .character-row.active {
+      box-shadow: 0 0 0 1px rgba(216, 180, 254, 0.14), 0 0 24px rgba(167, 139, 250, 0.16);
+    }
+
+    .fox-glow-on .char-meta-pill.passive-on,
+    .fox-glow-on .captain-chip,
+    .fox-glow-on .debug-mode-pill {
+      box-shadow: 0 0 14px rgba(167, 139, 250, 0.22);
+    }
+
+
+    
+
+    
+
+    
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    .fox-btn {
+      opacity: 0.92;
+      transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+    .fox-btn:hover {
+      opacity: 1;
+      filter: drop-shadow(0 0 6px rgba(167,139,250,0.45));
+    }
+    
+    
+
+
+    .config-toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 100002;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.96);
+      color: #f8fafc;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      pointer-events: none;
+    }
+    .config-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    
+
 </style>
 </head>
 <body>
@@ -767,9 +860,10 @@
 </div>
 <div>
 <label> </label>
-<div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button>
+<div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal" type="button">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button>
 <button class="btn danger" onclick="clearTestChars()">一鍵清除測試角色</button>
-<button class="btn" onclick="toggleDebug()">Debug模式</button></div>
+<button class="btn" onclick="toggleDebug()">Debug模式</button>
+</div>
 </div>
 </div>
 <div class="roster-wrap" id="roster"></div>
@@ -779,7 +873,6 @@
 <h2>核心結果</h2>
 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
 <p class="muted" id="selectedCharacterName">尚未選取角色</p>
-<button class="btn secondary" id="quickEditSelected" type="button">快速調整所選角色</button>
 </div>
 </div>
 <div class="results">
@@ -795,32 +888,30 @@
 <span>總傷害 (DMG)</span>
 <strong id="fightDamage">-</strong>
 </div>
-
 <div id="debugPanelInlineMount"><div class="debug-panel" id="calcDebugPanel">
-  <div class="section-head">
-    <h3>Debug 計算過程</h3>
-    <p class="muted">直接看目前所選角色每一段怎麼算</p>
-  </div>
-  <div class="debug-grid">
-    <div class="debug-box"><span>基礎攻擊</span><strong id="dbgBaseAtk">-</strong></div>
-    <div class="debug-box"><span>攻擊加成後</span><strong id="dbgAtkAfterBuff">-</strong></div>
-    <div class="debug-box"><span>技能總倍率</span><strong id="dbgSkillMultiplier">-</strong></div>
-    <div class="debug-box"><span>非暴擊單次</span><strong id="dbgNonCrit">-</strong></div>
-    <div class="debug-box"><span>暴擊單次</span><strong id="dbgCrit">-</strong></div>
-    <div class="debug-box"><span>平均單次</span><strong id="dbgAvg">-</strong></div>
-    <div class="debug-box"><span>實際暴擊率</span><strong id="dbgCritRate">-</strong></div>
-    <div class="debug-box"><span>暴擊倍率</span><strong id="dbgCritMultiplier">-</strong></div>
-    <div class="debug-box"><span>原始週期</span><strong id="dbgRawCycle">-</strong></div>
-    <div class="debug-box"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
-    <div class="debug-box"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
-    <div class="debug-box"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
-    <div class="debug-box"><span>職業被動 DPS</span><strong id="dbgPassiveDps">-</strong></div>
-  </div>
-  <div class="debug-list" id="dbgBuffSummary">Buff：-</div>
-  <div class="debug-list" id="dbgSkillSummary">技能：-</div>
-  <div class="debug-list" id="dbgPassiveSummary">職業被動：-</div>
+<div class="section-head">
+<h3>Debug 計算過程</h3>
+<p class="muted">直接看目前所選角色每一段怎麼算</p>
+</div>
+<div class="debug-grid">
+<div class="debug-box"><span>基礎攻擊</span><strong id="dbgBaseAtk">-</strong></div>
+<div class="debug-box"><span>攻擊加成後</span><strong id="dbgAtkAfterBuff">-</strong></div>
+<div class="debug-box"><span>技能總倍率</span><strong id="dbgSkillMultiplier">-</strong></div>
+<div class="debug-box"><span>非暴擊單次</span><strong id="dbgNonCrit">-</strong></div>
+<div class="debug-box"><span>暴擊單次</span><strong id="dbgCrit">-</strong></div>
+<div class="debug-box"><span>平均單次</span><strong id="dbgAvg">-</strong></div>
+<div class="debug-box"><span>實際暴擊率</span><strong id="dbgCritRate">-</strong></div>
+<div class="debug-box"><span>暴擊倍率</span><strong id="dbgCritMultiplier">-</strong></div>
+<div class="debug-box"><span>原始週期</span><strong id="dbgRawCycle">-</strong></div>
+<div class="debug-box"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
+<div class="debug-box"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
+<div class="debug-box"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
+<div class="debug-box"><span>職業被動 DPS</span><strong id="dbgPassiveDps">-</strong></div>
+</div>
+<div class="debug-list" id="dbgBuffSummary">Buff：-</div>
+<div class="debug-list" id="dbgSkillSummary">技能：-</div>
+<div class="debug-list" id="dbgPassiveSummary">職業被動：-</div>
 </div></div>
-
 </div>
 </section>
 </div><aside class="debug-side-panel" id="debugSidePanel"><div class="debug-mode-pill" id="debugModePill">Debug：關閉</div><div id="debugPanelSideMount"></div></aside></div>
@@ -886,7 +977,7 @@
 </select>
 </div>
 <div>
-<label>&nbsp;</label>
+<label> </label>
 <button class="btn secondary" id="applyGrade6Btn" type="button">套用六星資料</button>
 </div>
 <input id="charLeader" type="hidden" value="0"/>
@@ -904,7 +995,6 @@
 </select>
 </div>
 </div>
-
 <div class="grid" id="simpleStatsGrid">
 <div><label for="finalAtkInput">目前面板攻擊</label><input id="finalAtkInput" step="0.01" type="number" value="0"/></div>
 <div><label for="finalHpInput">目前面板生命</label><input id="finalHpInput" step="0.01" type="number" value="0"/></div>
@@ -916,7 +1006,6 @@
 <div><label for="crit">暴擊率 (%)</label><input id="crit" step="0.01" type="number" value="0"/></div>
 <div><label for="critDmg">暴擊傷害 (%)</label><input id="critDmg" step="0.01" type="number" value="100"/></div>
 </div>
-
 <div class="grid" id="advancedStatsGrid" style="display:none;">
 <div><label for="level">等級</label><input id="level" step="1" type="number" value="60"/></div>
 <div><label for="initialAttDmg">初始攻擊</label><input id="initialAttDmg" step="0.01" type="number" value="0"/></div>
@@ -925,8 +1014,8 @@
 <div><label for="growthHp">每級生命成長</label><input id="growthHp" step="0.01" type="number" value="0"/></div>
 <div><label for="weaponAtk">武器ATK</label><input id="weaponAtk" step="0.01" type="number" value="0"/></div>
 <div><label for="flatAttack">固定攻擊加成</label><input id="flatAttack" step="0.01" type="number" value="0"/></div>
-<div><label for="atk">角色ATK（自動）</label><input id="atk" step="0.01" type="number" value="0" readonly/></div>
-<div><label for="hp">角色HP（自動）</label><input id="hp" step="0.01" type="number" value="0" readonly/></div>
+<div><label for="atk">角色ATK（自動）</label><input id="atk" readonly="" step="0.01" type="number" value="0"/></div>
+<div><label for="hp">角色HP（自動）</label><input id="hp" readonly="" step="0.01" type="number" value="0"/></div>
 </div>
 <p class="note">一般模式：直接填遊戲內目前看到的攻擊力 / 生命值。進階模式：角色ATK = 初始攻擊 + (等級 - 1) × 每級攻擊成長；角色HP = 初始生命 + (等級 - 1) × 每級生命成長；最終ATK = 角色ATK + 武器ATK + 固定攻擊加成；DPS = 各技能平均單次傷害 ÷ 各自週期後加總；未設定技能時才用攻擊週期計算基礎 DPS。</p>
 </div>
@@ -1396,6 +1485,8 @@ const CHARACTER_TEMPLATES = {
       editingId: null,
       skillDrafts: []
     };
+
+    window.state = state;
 
     const el = {
       monsterSelect: document.getElementById('monsterSelect'),
@@ -2378,6 +2469,14 @@ function buildCharacterFromForm() {
       el.modal.setAttribute('aria-hidden', 'false');
     }
 
+    window.__safeOpenCharacterModal = function () {
+      if (state.characters.length >= MAX_CHARACTERS) {
+        alert(`最多只能建立 ${MAX_CHARACTERS} 隻角色`);
+        return;
+      }
+      openModal();
+    };
+
     function closeModal() {
       el.modal.classList.remove('open');
       el.modal.setAttribute('aria-hidden', 'true');
@@ -2550,9 +2649,10 @@ function buildCharacterFromForm() {
 
 
 function attachEvents() {
-      document.getElementById('openCharacterModal').addEventListener('click', () => {
-        if (state.characters.length >= MAX_CHARACTERS) return;
-        openModal();
+      document.getElementById('openCharacterModal')?.addEventListener('click', () => {
+        if (typeof window.__safeOpenCharacterModal === 'function') {
+          window.__safeOpenCharacterModal();
+        }
       });
 
       document.getElementById('generateTestCharactersBtn')?.addEventListener('click', () => {
@@ -2727,6 +2827,15 @@ function attachEvents() {
         const teamBlock = event.target.closest('.team-block');
         if (!row && !teamBlock) return;
         event.preventDefault();
+
+        const edge = 120;
+        const scrollStep = 18;
+        if (event.clientY < edge) {
+          window.scrollBy(0, -scrollStep);
+        } else if (event.clientY > window.innerHeight - edge) {
+          window.scrollBy(0, scrollStep);
+        }
+
         el.roster.querySelectorAll('.drag-over, .drag-over-team').forEach((node) => {
           node.classList.remove('drag-over', 'drag-over-team');
         });
@@ -2937,241 +3046,6 @@ document.getElementById("saveCharacterSticky")?.addEventListener("click", saveCh
       renderAll();
     
   </script>
-
-<script>
-function buildDebugPanel(data){
-  const panel = document.createElement('div');
-  panel.style = "position:fixed;right:0;top:0;width:400px;height:100%;overflow:auto;background:#111;color:#0f0;font-size:12px;z-index:9999;padding:10px;";
-  panel.innerHTML = "<h3>DEBUG 面板</h3>";
-
-  data.forEach(r=>{
-    const buffCount = (r.summary?.buffs || []).length;
-    const blockCount = (r.summary?.selfBlocks||0)+(r.summary?.allyBlocks||0);
-    const unknown = (r.summary?.unknownHitAssets||[]).length;
-    const mult = r.summary?.knownTotalMultiplier || 0;
-
-    let status = "正常";
-    let color = "#0f0";
-
-    if(mult===0 && unknown>0){ status="主傷未解析"; color="#ff0"; }
-    else if(mult===0 && (buffCount>0 || blockCount>0)){ status="純支援"; color="#0af"; }
-    else if(mult>0){ status="傷害型"; color="#0f0"; }
-
-    const div = document.createElement('div');
-    div.style = "border-bottom:1px solid #333;padding:4px;color:"+color;
-    div.innerText = `${r.character} | ${status} | 倍率:${mult}`;
-    panel.appendChild(div);
-  });
-
-  document.body.appendChild(panel);
-}
-
-function fixSummary(data){
-  data.forEach(r=>{
-    let mult = 0;
-    (r.skills||[]).forEach(s=>{
-      mult += (s.damage?.knownTotalMultiplier || 0);
-    });
-    r.summary.knownTotalMultiplier = mult;
-  });
-  return data;
-}
-
-window.addEventListener("load", ()=>{
-  if(window.skillData){
-    const fixed = fixSummary(window.skillData);
-    buildDebugPanel(fixed);
-    window.skillData = fixed;
-  }
-});
-</script>
-
-
-<script>
-function waitAndInit(){
-  if(window.skillData && Array.isArray(window.skillData)){
-    initDebug();
-  } else {
-    setTimeout(waitAndInit, 500);
-  }
-}
-
-function initDebug(){
-  const data = window.skillData;
-
-  const panel = document.createElement('div');
-  panel.style = "position:fixed;right:0;top:0;width:420px;height:100%;overflow:auto;background:#111;color:#0f0;font-size:12px;z-index:99999;padding:10px;";
-  panel.innerHTML = "<h3>DEBUG 面板</h3>";
-
-  data.forEach(r=>{
-    const buffCount = (r.summary?.buffs || []).length;
-    const blockCount = (r.summary?.selfBlocks||0)+(r.summary?.allyBlocks||0);
-    const unknown = (r.summary?.unknownHitAssets||[]).length;
-    const mult = r.summary?.knownTotalMultiplier || 0;
-
-    let status = "正常";
-    let color = "#0f0";
-
-    if(mult===0 && unknown>0){ status="主傷未解析"; color="#ff0"; }
-    else if(mult===0 && (buffCount>0 || blockCount>0)){ status="純支援"; color="#0af"; }
-    else if(mult>0){ status="傷害型"; color="#0f0"; }
-
-    const div = document.createElement('div');
-    div.style = "border-bottom:1px solid #333;padding:4px;color:"+color;
-    div.innerText = r.character + " | " + status + " | 倍率:" + mult;
-    panel.appendChild(div);
-  });
-
-  document.body.appendChild(panel);
-}
-
-window.addEventListener("load", waitAndInit);
-</script>
-
-
-
-<script>
-(function(){
-  function getRawData(){
-    try {
-      if (typeof GRADE6_DATABASE_RAW !== 'undefined' && Array.isArray(GRADE6_DATABASE_RAW)) return GRADE6_DATABASE_RAW;
-    } catch(e) {}
-    try {
-      if (typeof GRADE6_DATABASE !== 'undefined' && GRADE6_DATABASE && typeof GRADE6_DATABASE === 'object') {
-        return Object.values(GRADE6_DATABASE);
-      }
-    } catch(e) {}
-    return null;
-  }
-
-  function recalcSummary(data){
-    return (data || []).map(entry => {
-      const clone = JSON.parse(JSON.stringify(entry));
-      const skills = Array.isArray(clone.skills) ? clone.skills : [];
-      let knownTotal = 0;
-      let selfBlocks = 0;
-      let allyBlocks = 0;
-      const buffs = [];
-      const unknownHitAssets = [];
-      const notes = new Set((clone.summary && clone.summary.notes) || []);
-      const triggers = new Set();
-      const categories = new Set();
-
-      skills.forEach(s => {
-        if (s.trigger) triggers.add(s.trigger);
-        if (s.category) categories.add(s.category);
-        const dmg = s.damage || {};
-        knownTotal += Number(dmg.knownTotalMultiplier || 0);
-        (dmg.unknownHitAssets || []).forEach(x => unknownHitAssets.push(x));
-        (s.buffs || []).forEach(b => buffs.push(b));
-        const blocks = s.blocks || {};
-        selfBlocks += Number(blocks.self || 0);
-        allyBlocks += Number(blocks.others || 0);
-      });
-
-      clone.summary = clone.summary || {};
-      clone.summary.triggers = Array.from(triggers);
-      clone.summary.categories = Array.from(categories);
-      clone.summary.knownTotalMultiplier = Number(knownTotal.toFixed(6));
-      clone.summary.selfBlocks = selfBlocks;
-      clone.summary.allyBlocks = allyBlocks;
-      clone.summary.buffs = buffs;
-      clone.summary.unknownHitAssets = Array.from(new Set(unknownHitAssets.filter(Boolean)));
-      clone.summary.notes = Array.from(notes);
-      return clone;
-    });
-  }
-
-  function classify(entry){
-    const s = entry.summary || {};
-    const mult = Number(s.knownTotalMultiplier || 0);
-    const buffCount = (s.buffs || []).length;
-    const blockCount = Number(s.selfBlocks || 0) + Number(s.allyBlocks || 0);
-    const unknown = (s.unknownHitAssets || []).length;
-
-    if (mult === 0 && unknown > 0) return {status:"主傷未解析", color:"#facc15"};
-    if (mult === 0 && (buffCount > 0 || blockCount > 0)) return {status:"純支援", color:"#38bdf8"};
-    if (mult > 0) return {status:"傷害型", color:"#22c55e"};
-    return {status:"未解析", color:"#f87171"};
-  }
-
-  function renderDebugPanel(data){
-    let btn = document.getElementById('forceDebugBtn');
-    if (!btn){
-      btn = document.createElement('button');
-      btn.id = 'forceDebugBtn';
-      btn.textContent = 'DEBUG';
-      btn.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:100001;background:#111827;color:#fff;border:1px solid #64748b;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.35);';
-      document.body.appendChild(btn);
-    }
-
-    let panel = document.getElementById('forceDebugPanel');
-    if (!panel){
-      panel = document.createElement('div');
-      panel.id = 'forceDebugPanel';
-      panel.style.cssText = 'position:fixed;right:12px;top:12px;width:430px;max-height:calc(100vh - 80px);overflow:auto;background:#0b1220;color:#e5e7eb;border:1px solid #334155;border-radius:14px;padding:12px;z-index:100000;box-shadow:0 20px 40px rgba(0,0,0,.45);display:block;';
-      document.body.appendChild(panel);
-    }
-
-    const rows = data.map(entry => {
-      const c = classify(entry);
-      const s = entry.summary || {};
-      const mult = Number(s.knownTotalMultiplier || 0).toFixed(2);
-      const buffCount = (s.buffs || []).length;
-      const blockCount = Number(s.selfBlocks || 0) + Number(s.allyBlocks || 0);
-      const unknown = (s.unknownHitAssets || []).length;
-      return `
-        <div style="padding:8px 0;border-bottom:1px solid #1e293b;">
-          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
-            <strong style="color:#fff;">${getGrade6DisplayName(entry.character || entry.displayName || 'UNKNOWN')}</strong>
-            <span style="color:${c.color};font-weight:700;">${c.status}</span>
-          </div>
-          <div style="font-size:12px;color:#94a3b8;line-height:1.6;">
-            觸發：${(s.triggers || []).join(' / ') || '無'}｜
-            倍率：${mult}｜
-            Buff：${buffCount}｜
-            Block：${blockCount}｜
-            UnknownHit：${unknown}
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    panel.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;">
-        <h3 style="margin:0;color:#fff;font-size:16px;">DEBUG 面板</h3>
-        <button id="closeForceDebug" style="background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:6px 10px;cursor:pointer;">關閉</button>
-      </div>
-      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">
-        綠=傷害型｜藍=純支援｜黃=主傷未解析｜紅=未解析
-      </div>
-      ${rows || '<div style="color:#f87171;">沒有可用六星資料</div>'}
-    `;
-
-    btn.onclick = () => panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    const closeBtn = document.getElementById('closeForceDebug');
-    if (closeBtn) closeBtn.onclick = () => panel.style.display = 'none';
-  }
-
-  function init(){
-    const raw = getRawData();
-    if (!raw) {
-      console.warn('DEBUG 面板：找不到 GRADE6_DATABASE_RAW / GRADE6_DATABASE');
-      return;
-    }
-    const fixed = recalcSummary(raw);
-    window.__GRADE6_DEBUG_FIXED__ = fixed;
-    renderDebugPanel(fixed);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-</script>
-
 <script>
 function clearTestChars(){
   const names = ['攻速1','攻速2','攻速3','生命測試1','生命測試2','暴擊0','暴擊44','暴擊100'];
@@ -3199,12 +3073,6 @@ function clearTestChars(){
   alert(`已清除 ${removed} 隻測試角色。`);
 }
 </script>
-
-
-
-
-
-
 <script>
 let debugMode = false;
 
@@ -3239,7 +3107,111 @@ function setDebugText(id, value){
   if (node) node.textContent = value;
 }
 </script>
+<img alt="九尾狐彩蛋" class="fox-easter-egg" id="foxEasterEgg" src=""/>
+</div><script>
+(function () {
+  function safeSetValue(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.value = value;
+  }
 
+  function fallbackOpenCharacterModal() {
+    var modal = document.getElementById('characterModal');
+    if (!modal) {
+      throw new Error('找不到 characterModal');
+    }
 
-</body>
+    var title = document.getElementById('modalTitle');
+    if (title) title.textContent = '新增角色';
+
+    safeSetValue('charName', '');
+    safeSetValue('charTeam', '1');
+    safeSetValue('charTemplate', '');
+    safeSetValue('grade6Key', '');
+    safeSetValue('jobPassiveKey', '');
+    safeSetValue('jobPassiveEnabled', '1');
+    safeSetValue('charLeader', '0');
+    safeSetValue('calcMode', 'simple');
+    safeSetValue('level', '60');
+    safeSetValue('finalAtkInput', '0');
+    safeSetValue('finalHpInput', '0');
+    safeSetValue('initialAttDmg', '0');
+    safeSetValue('growthAttDmg', '0');
+    safeSetValue('initialHp', '0');
+    safeSetValue('growthHp', '0');
+    safeSetValue('weaponAtk', '0');
+    safeSetValue('flatAttack', '0');
+    safeSetValue('攻擊週期', '2');
+    safeSetValue('atk', '0');
+    safeSetValue('hp', '0');
+    safeSetValue('pdef', '0');
+    safeSetValue('mdef', '0');
+    safeSetValue('pPen', '0');
+    safeSetValue('mPen', '0');
+    safeSetValue('crit', '0');
+    safeSetValue('critDmg', '100');
+
+    var buffRows = document.getElementById('buffRows');
+    if (buffRows) buffRows.innerHTML = '';
+    var teamBuffRows = document.getElementById('teamBuffRows');
+    if (teamBuffRows) teamBuffRows.innerHTML = '';
+    var skillList = document.getElementById('skillList');
+    if (skillList) skillList.innerHTML = '';
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function protectedOpenCharacterModal() {
+    try {
+      if (typeof window.__safeOpenCharacterModal === 'function') {
+        window.__safeOpenCharacterModal();
+        var modal = document.getElementById('characterModal');
+        if (modal && modal.classList.contains('open')) return;
+      }
+      fallbackOpenCharacterModal();
+    } catch (err) {
+      console.error('新增角色主開啟流程失敗，已改用保底開啟：', err);
+      fallbackOpenCharacterModal();
+    }
+  }
+
+  function bindProtectedAddButton() {
+    var addBtn = document.getElementById('openCharacterModal');
+    if (!addBtn) return;
+
+    if (addBtn.dataset.protectedBound === '1') return;
+
+    var replacement = addBtn.cloneNode(true);
+    replacement.type = 'button';
+    replacement.removeAttribute('onclick');
+    replacement.dataset.protectedBound = '1';
+
+    addBtn.parentNode.replaceChild(replacement, addBtn);
+
+    replacement.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      protectedOpenCharacterModal();
+    }, true);
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    bindProtectedAddButton();
+
+    // Protection: if later scripts replace the button again, rebind it.
+    var root = document.body || document.documentElement;
+    if (!root || typeof MutationObserver === 'undefined') return;
+
+    var observer = new MutationObserver(function () {
+      var btn = document.getElementById('openCharacterModal');
+      if (btn && btn.dataset.protectedBound !== '1') {
+        bindProtectedAddButton();
+      }
+    });
+
+    observer.observe(root, { childList: true, subtree: true });
+  });
+})();
+</script></body>
 </html>
