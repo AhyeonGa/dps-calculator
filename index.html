@@ -745,9 +745,11 @@
     <div class="debug-box"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
     <div class="debug-box"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
     <div class="debug-box"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
+    <div class="debug-box"><span>職業被動 DPS</span><strong id="dbgPassiveDps">-</strong></div>
   </div>
   <div class="debug-list" id="dbgBuffSummary">Buff：-</div>
   <div class="debug-list" id="dbgSkillSummary">技能：-</div>
+  <div class="debug-list" id="dbgPassiveSummary">職業被動：-</div>
 </div>
 
 </div>
@@ -874,6 +876,34 @@
 </div>
 <div id="teamBuffRows"></div>
 <p class="note">可自訂是否啟用、名稱、效果，並可選擇是否也影響自己。九尾這種「給隊友、不給自己」可直接在這裡定義。</p>
+</div>
+<div class="sub-card section-stack">
+<div class="section-head">
+<h3>職業被動系統 v1</h3>
+</div>
+<div class="compact-grid">
+<div>
+<label for="jobPassiveKey">職業被動類型</label>
+<select id="jobPassiveKey">
+<option value="">未啟用</option>
+<option value="warrior">戰士｜懲罰之魂</option>
+<option value="paladin">聖騎士｜守護之魂</option>
+<option value="archer">弓箭手｜速射之魂</option>
+<option value="hunter">獵人｜必殺之魂</option>
+<option value="wizard">魔法師｜魔力之魂</option>
+<option value="priest">祭師｜慈愛之魂</option>
+</select>
+</div>
+<div>
+<label for="jobPassiveEnabled">被動是否啟用</label>
+<select id="jobPassiveEnabled">
+<option value="1">啟用</option>
+<option value="0">停用</option>
+</select>
+</div>
+</div>
+<div class="mode-note-badge" id="jobPassiveInfo">職業被動：未啟用</div>
+<p class="note">v1 先把四個傷害型被動接進總 DPS：戰士 / 聖騎 / 弓箭手 / 獵人。法師與祭師先顯示功能說明，不先算進 DPS。</p>
 </div>
 <div class="sub-card section-stack">
 <div class="section-head">
@@ -1121,6 +1151,172 @@ const CHARACTER_TEMPLATES = {
       { value: 'mPenFlat', label: '魔法穿透' }
     ];
 
+    const JOB_PASSIVE_PROFILES = {
+      warrior: {
+        key: 'warrior',
+        label: '戰士｜懲罰之魂',
+        kind: 'damage',
+        sourceStat: 'atk',
+        multiplier: 2.0,
+        interval: 5,
+        target: '周圍敵人',
+        canCrit: true,
+        useCritDamage: true,
+        summary: '每 5 秒對周圍造成攻擊力 200% 的固定傷害'
+      },
+      paladin: {
+        key: 'paladin',
+        label: '聖騎士｜守護之魂',
+        kind: 'damage',
+        sourceStat: 'hp',
+        multiplier: 0.25,
+        interval: 5,
+        target: '周圍敵人',
+        canCrit: true,
+        useCritDamage: true,
+        summary: '每 5 秒對周圍造成生命值 25% 的固定傷害'
+      },
+      archer: {
+        key: 'archer',
+        label: '弓箭手｜速射之魂',
+        kind: 'damage',
+        sourceStat: 'atk',
+        multiplier: 1.5,
+        interval: 5,
+        target: '最遠敵人',
+        canCrit: true,
+        useCritDamage: true,
+        summary: '每 5 秒對最遠的敵人造成攻擊力 150% 的固定傷害'
+      },
+      hunter: {
+        key: 'hunter',
+        label: '獵人｜必殺之魂',
+        kind: 'damage',
+        sourceStat: 'atk',
+        multiplier: 1.5,
+        interval: 5,
+        target: '最近敵人',
+        canCrit: true,
+        useCritDamage: true,
+        summary: '每 5 秒對最近的敵人造成攻擊力 150% 的固定傷害'
+      },
+      wizard: {
+        key: 'wizard',
+        label: '魔法師｜魔力之魂',
+        kind: 'utility',
+        interval: 5,
+        summary: '每 5 秒為隊伍生成 1 個方塊（v1 先顯示，不算進 DPS）'
+      },
+      priest: {
+        key: 'priest',
+        label: '祭師｜慈愛之魂',
+        kind: 'heal',
+        sourceStat: 'atk',
+        multiplier: 0.25,
+        interval: 3,
+        target: '最低生命友軍',
+        summary: '每 3 秒以攻擊力 25% 為生命值最低的友軍恢復生命（v1 先顯示，不算進 DPS）'
+      }
+    };
+
+    const PROFESSION_TO_PASSIVE = {
+      WA: 'warrior',
+      PA: 'paladin',
+      AR: 'archer',
+      HU: 'hunter',
+      WI: 'wizard',
+      PR: 'priest'
+    };
+
+    function inferPassiveKeyFromCharacter(character = {}) {
+      if (character.jobPassiveKey) return character.jobPassiveKey;
+      const gradeKey = character.grade6Key || character.character || '';
+      const professionCode = inferProfessionCode(gradeKey);
+      return PROFESSION_TO_PASSIVE[professionCode] || '';
+    }
+
+    function updateJobPassiveInfo(key = '') {
+      if (!el.jobPassiveInfo) return;
+      const profile = JOB_PASSIVE_PROFILES[key];
+      if (!profile) {
+        el.jobPassiveInfo.textContent = '職業被動：未啟用';
+        return;
+      }
+      const enabled = (el.jobPassiveEnabled?.value || '1') === '1' ? '已啟用' : '已停用';
+      el.jobPassiveInfo.textContent = `職業被動：${profile.label}｜${enabled}｜${profile.summary}`;
+    }
+
+    function autoAssignPassiveFromGrade6(key = '', force = false) {
+      const professionCode = inferProfessionCode(key);
+      const passiveKey = PROFESSION_TO_PASSIVE[professionCode] || '';
+      if (!el.jobPassiveKey) return;
+      if (force || !el.jobPassiveKey.value) {
+        el.jobPassiveKey.value = passiveKey;
+      }
+      updateJobPassiveInfo(el.jobPassiveKey.value || '');
+    }
+
+    function computeJobPassive(character, derived, critRate, critMultiplier, fightSeconds) {
+      const passiveKey = character?.jobPassiveKey || inferPassiveKeyFromCharacter(character);
+      const enabled = character?.jobPassiveEnabled !== false;
+      const profile = JOB_PASSIVE_PROFILES[passiveKey];
+      if (!enabled || !profile) {
+        return {
+          key: passiveKey || '',
+          enabled: false,
+          kind: 'none',
+          summary: '未啟用',
+          dps: 0,
+          totalDamage: 0,
+          nonCrit: 0,
+          crit: 0,
+          avg: 0,
+          baseValue: 0
+        };
+      }
+
+      if (profile.kind !== 'damage') {
+        let amount = 0;
+        if (profile.kind === 'heal') amount = derived.finalAtk * (profile.multiplier || 0);
+        return {
+          key: passiveKey,
+          enabled: true,
+          kind: profile.kind,
+          summary: profile.summary,
+          dps: 0,
+          totalDamage: 0,
+          nonCrit: amount,
+          crit: amount,
+          avg: amount,
+          baseValue: profile.sourceStat === 'atk' ? derived.finalAtk : derived.roleHp,
+          interval: profile.interval
+        };
+      }
+
+      const baseValue = profile.sourceStat === 'hp' ? derived.roleHp : derived.finalAtk;
+      const nonCrit = baseValue * profile.multiplier;
+      const crit = profile.canCrit ? nonCrit * (profile.useCritDamage ? critMultiplier : 1) : nonCrit;
+      const avg = profile.canCrit ? (nonCrit * (1 - critRate) + crit * critRate) : nonCrit;
+      const dps = avg / Math.max(0.01, profile.interval || 5);
+      return {
+        key: passiveKey,
+        enabled: true,
+        kind: profile.kind,
+        summary: profile.summary,
+        sourceStat: profile.sourceStat,
+        baseValue,
+        multiplier: profile.multiplier,
+        interval: profile.interval,
+        canCrit: profile.canCrit,
+        nonCrit,
+        crit,
+        avg,
+        dps,
+        totalDamage: dps * fightSeconds
+      };
+    }
+
+
     const state = {
       monsterKey: '普草人',
       fightSeconds: 60,
@@ -1154,6 +1350,8 @@ const CHARACTER_TEMPLATES = {
       dbgEffectiveCycle: document.getElementById('dbgEffectiveCycle'),
       dbgDefenseMultiplier: document.getElementById('dbgDefenseMultiplier'),
       dbgFinalDps: document.getElementById('dbgFinalDps'),
+      dbgPassiveDps: document.getElementById('dbgPassiveDps'),
+      dbgPassiveSummary: document.getElementById('dbgPassiveSummary'),
       dbgBuffSummary: document.getElementById('dbgBuffSummary'),
       dbgSkillSummary: document.getElementById('dbgSkillSummary'),
       effectiveBuffInfo: document.getElementById('effectiveBuffInfo'),
@@ -1165,6 +1363,9 @@ const CHARACTER_TEMPLATES = {
       charTemplate: document.getElementById('charTemplate'),
       grade6Key: document.getElementById('grade6Key'),
       grade6Info: document.getElementById('grade6Info'),
+      jobPassiveKey: document.getElementById('jobPassiveKey'),
+      jobPassiveEnabled: document.getElementById('jobPassiveEnabled'),
+      jobPassiveInfo: document.getElementById('jobPassiveInfo'),
       charLeader: document.getElementById('charLeader'),
       calcMode: document.getElementById('calcMode'),
       simpleStatsGrid: document.getElementById('simpleStatsGrid'),
@@ -1298,6 +1499,7 @@ const CHARACTER_TEMPLATES = {
       }
       renderSkills();
       updateGrade6Info(key);
+      autoAssignPassiveFromGrade6(key, false);
       updateLivePreview();
     }
 
@@ -1701,9 +1903,11 @@ const CHARACTER_TEMPLATES = {
       const avgHit = skills.length
         ? skills.reduce((sum, skill) => sum + skill.avgCast, 0)
         : nonCritHit * (1 - critRate) + critHit * critRate;
-      const totalDps = skills.length
+      const baseSkillDps = skills.length
         ? skills.reduce((sum, skill) => sum + skill.dps, 0)
         : avgHit / effectiveCycle;
+      const passive = computeJobPassive(character, derived, critRate, critMultiplier, fightSeconds);
+      const totalDps = baseSkillDps + (passive.dps || 0);
 
       return {
         debug: {
@@ -1715,6 +1919,8 @@ const CHARACTER_TEMPLATES = {
           rawCycle: derived.攻擊週期,
           effectiveCycle,
           defenseMultiplier: defense.damageMultiplier,
+          passiveDps: passive.dps || 0,
+          passiveText: passive.enabled ? `${JOB_PASSIVE_PROFILES[passive.key]?.label || passive.key}｜${passive.summary}${passive.kind === 'damage' ? `｜基底 ${formatValue(passive.baseValue)}｜非暴 ${formatValue(passive.nonCrit)}｜平均 ${formatValue(passive.avg)}｜DPS ${formatValue(passive.dps)}` : ''}` : '未啟用',
           buffText: [
             ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
             ...effectInfo.ownLabels,
@@ -1723,9 +1929,9 @@ const CHARACTER_TEMPLATES = {
           ],
           skillText: skills.length
             ? skills.map((skill) => `${skill.name || '技能'}｜倍率 ${formatValue(skill.skillMultiplier)}｜週期 ${formatValue(skill.cycle)} 秒｜DPS ${formatValue(skill.dps)}`).join('\n')
-            : '未設定技能，使用基礎攻擊週期計算'
+            : '未設定主技能，若有職業被動會只顯示被動 DPS'
         },
-        autoDps: skills.length ? 0 : totalDps,
+        autoDps: skills.length ? 0 : baseSkillDps,
         totalDps,
         fightDamage: totalDps * fightSeconds,
         attackFrequency: 1 / effectiveCycle,
@@ -1748,6 +1954,7 @@ const CHARACTER_TEMPLATES = {
           原始攻擊週期: derived.攻擊週期,
           totalSkillMultiplier
         },
+        passive,
         skills
       };
     }
@@ -1850,7 +2057,7 @@ const CHARACTER_TEMPLATES = {
           row.innerHTML = `
             <div>
               <div class="char-name">${character.isLeader ? '👑 ' : ''}${escapeHtml(getCharacterDisplayName(character))}</div>
-              <div class="char-sub">技能：${(character.skills || []).length}｜自身Buff：${((character.selfBuffs || character.buffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜團隊Buff：${((character.teamBuffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}${character.grade6Key ? '｜六星資料' : ''}${character.isLeader ? '｜隊長' : ''}</div>
+              <div class="char-sub">技能：${(character.skills || []).length}｜自身Buff：${((character.selfBuffs || character.buffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜團隊Buff：${((character.teamBuffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜職業被動：${(character.jobPassiveKey || inferPassiveKeyFromCharacter(character)) ? (character.jobPassiveEnabled === false ? '停用' : '啟用') : '無'}${character.grade6Key ? '｜六星資料' : ''}${character.isLeader ? '｜隊長' : ''}</div>
             </div>
             <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
             <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
@@ -1883,7 +2090,7 @@ const CHARACTER_TEMPLATES = {
         if (el.effectiveStatInfo) el.effectiveStatInfo.textContent = '最終暴擊率：-';
         if (advisorBox) advisorBox.innerHTML = '尚未建立角色';
         if (el.calcDebugPanel) el.calcDebugPanel.classList.toggle('open', debugMode);
-        ['dbgBaseAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgBuffSummary','dbgSkillSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
+        ['dbgBaseAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgPassiveDps','dbgBuffSummary','dbgSkillSummary','dbgPassiveSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
         return;
       }
 
@@ -1929,8 +2136,10 @@ const CHARACTER_TEMPLATES = {
         setDebugText('dbgEffectiveCycle', `${formatValue(dbg.effectiveCycle || stats['攻擊週期'] || 0)} 秒`);
         setDebugText('dbgDefenseMultiplier', `x${formatValue(dbg.defenseMultiplier || 0)}`);
         setDebugText('dbgFinalDps', formatValue(result.totalDps || 0));
+        setDebugText('dbgPassiveDps', formatValue(result.passive?.dps || 0));
         setDebugText('dbgBuffSummary', `Buff：${(dbg.buffText || result.activeBuffText || []).length ? (dbg.buffText || result.activeBuffText).join('｜') : '無'}`);
         setDebugText('dbgSkillSummary', `技能：${dbg.skillText || '未設定技能'}`);
+        setDebugText('dbgPassiveSummary', `職業被動：${dbg.passiveText || '未啟用'}`);
       }
     }
 
@@ -1950,6 +2159,8 @@ const CHARACTER_TEMPLATES = {
         isLeader: el.charLeader.value === '1',
         templateKey: el.charTemplate.value || '',
         grade6Key: el.grade6Key?.value || '',
+        jobPassiveKey: el.jobPassiveKey?.value || '',
+        jobPassiveEnabled: (el.jobPassiveEnabled?.value || '1') === '1',
         calcMode: el.calcMode.value || 'simple',
         level: num(el.level.value) || 1,
         finalAtkInput: num(el.finalAtkInput.value),
@@ -2018,7 +2229,10 @@ function buildCharacterFromForm() {
       el.charTeam.value = String(character?.team || 1);
       el.charTemplate.value = character?.templateKey || '';
       if (el.grade6Key) el.grade6Key.value = character?.grade6Key || '';
+      if (el.jobPassiveKey) el.jobPassiveKey.value = character?.jobPassiveKey || inferPassiveKeyFromCharacter(character) || '';
+      if (el.jobPassiveEnabled) el.jobPassiveEnabled.value = character?.jobPassiveEnabled === false ? '0' : '1';
       updateGrade6Info(character?.grade6Key || '');
+      updateJobPassiveInfo(el.jobPassiveKey?.value || '');
       el.charLeader.value = character?.isLeader ? '1' : '0';
       el.calcMode.value = character?.calcMode || 'simple';
       el.level.value = character?.level ?? 60;
@@ -2132,7 +2346,10 @@ function buildCharacterFromForm() {
       hitMultiplier = 10,
       damageType = 'physical',
       selfBuffs = [],
-      teamBuffs = []
+      teamBuffs = [],
+      jobPassiveKey = '',
+      jobPassiveEnabled = true,
+      includeDefaultSkill = true
     }) {
       return {
         id: uid('char'),
@@ -2141,6 +2358,8 @@ function buildCharacterFromForm() {
         isLeader: false,
         templateKey: '',
         grade6Key: '',
+        jobPassiveKey: '',
+        jobPassiveEnabled: true,
         calcMode: 'simple',
         level: 60,
         finalAtkInput: atk,
@@ -2163,7 +2382,9 @@ function buildCharacterFromForm() {
         buffs: [...selfBuffs],
         selfBuffs: [...selfBuffs],
         teamBuffs: [...teamBuffs],
-        skills: [createSkill('3C', hitMultiplier, cycle, damageType, 1)]
+        jobPassiveKey,
+        jobPassiveEnabled,
+        skills: includeDefaultSkill ? [createSkill('3C', hitMultiplier, cycle, damageType, 1)] : []
       };
     }
 
@@ -2172,8 +2393,8 @@ function buildCharacterFromForm() {
         createTestCharacter({ name: '攻速1', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
         createTestCharacter({ name: '攻速2', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 3, hitMultiplier: 10 }),
         createTestCharacter({ name: '攻速3', team: 1, atk: 1400, hp: 0, pPen: 300, crit: 0, critDmg: 100, cycle: 2, hitMultiplier: 10 }),
-        createTestCharacter({ name: '生命測試1', team: 1, atk: 1200, hp: 6000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 }),
-        createTestCharacter({ name: '生命測試2', team: 1, atk: 1200, hp: 8000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 10 })
+        createTestCharacter({ name: '生命測試1', team: 1, atk: 1200, hp: 6000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 0, jobPassiveKey: 'paladin', jobPassiveEnabled: true, includeDefaultSkill: false }),
+        createTestCharacter({ name: '生命測試2', team: 1, atk: 1200, hp: 8000, pPen: 300, crit: 0, critDmg: 100, cycle: 6, hitMultiplier: 0, jobPassiveKey: 'paladin', jobPassiveEnabled: true, includeDefaultSkill: false })
       ];
     }
 
@@ -2279,12 +2500,25 @@ function attachEvents() {
 
       el.grade6Key?.addEventListener('change', (event) => {
         updateGrade6Info(event.target.value);
+        autoAssignPassiveFromGrade6(event.target.value, false);
+        updateLivePreview();
+      });
+
+      el.jobPassiveKey?.addEventListener('change', () => {
+        updateJobPassiveInfo(el.jobPassiveKey.value || '');
+        updateLivePreview();
+      });
+
+      el.jobPassiveEnabled?.addEventListener('change', () => {
+        updateJobPassiveInfo(el.jobPassiveKey?.value || '');
+        updateLivePreview();
       });
 
       document.getElementById('applyGrade6Btn')?.addEventListener('click', () => {
         const key = el.grade6Key?.value || '';
         if (!key) return;
         applyGrade6Data(key);
+        autoAssignPassiveFromGrade6(key, false);
       });
 
       if (el.calcMode) {
