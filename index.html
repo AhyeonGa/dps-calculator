@@ -2057,5 +2057,239 @@ document.getElementById("saveCharacterSticky")?.addEventListener("click", saveCh
       renderAll();
     
   </script>
+
+<script>
+function buildDebugPanel(data){
+  const panel = document.createElement('div');
+  panel.style = "position:fixed;right:0;top:0;width:400px;height:100%;overflow:auto;background:#111;color:#0f0;font-size:12px;z-index:9999;padding:10px;";
+  panel.innerHTML = "<h3>DEBUG 面板</h3>";
+
+  data.forEach(r=>{
+    const buffCount = (r.summary?.buffs || []).length;
+    const blockCount = (r.summary?.selfBlocks||0)+(r.summary?.allyBlocks||0);
+    const unknown = (r.summary?.unknownHitAssets||[]).length;
+    const mult = r.summary?.knownTotalMultiplier || 0;
+
+    let status = "正常";
+    let color = "#0f0";
+
+    if(mult===0 && unknown>0){ status="主傷未解析"; color="#ff0"; }
+    else if(mult===0 && (buffCount>0 || blockCount>0)){ status="純支援"; color="#0af"; }
+    else if(mult>0){ status="傷害型"; color="#0f0"; }
+
+    const div = document.createElement('div');
+    div.style = "border-bottom:1px solid #333;padding:4px;color:"+color;
+    div.innerText = `${r.character} | ${status} | 倍率:${mult}`;
+    panel.appendChild(div);
+  });
+
+  document.body.appendChild(panel);
+}
+
+function fixSummary(data){
+  data.forEach(r=>{
+    let mult = 0;
+    (r.skills||[]).forEach(s=>{
+      mult += (s.damage?.knownTotalMultiplier || 0);
+    });
+    r.summary.knownTotalMultiplier = mult;
+  });
+  return data;
+}
+
+window.addEventListener("load", ()=>{
+  if(window.skillData){
+    const fixed = fixSummary(window.skillData);
+    buildDebugPanel(fixed);
+    window.skillData = fixed;
+  }
+});
+</script>
+
+
+<script>
+function waitAndInit(){
+  if(window.skillData && Array.isArray(window.skillData)){
+    initDebug();
+  } else {
+    setTimeout(waitAndInit, 500);
+  }
+}
+
+function initDebug(){
+  const data = window.skillData;
+
+  const panel = document.createElement('div');
+  panel.style = "position:fixed;right:0;top:0;width:420px;height:100%;overflow:auto;background:#111;color:#0f0;font-size:12px;z-index:99999;padding:10px;";
+  panel.innerHTML = "<h3>DEBUG 面板</h3>";
+
+  data.forEach(r=>{
+    const buffCount = (r.summary?.buffs || []).length;
+    const blockCount = (r.summary?.selfBlocks||0)+(r.summary?.allyBlocks||0);
+    const unknown = (r.summary?.unknownHitAssets||[]).length;
+    const mult = r.summary?.knownTotalMultiplier || 0;
+
+    let status = "正常";
+    let color = "#0f0";
+
+    if(mult===0 && unknown>0){ status="主傷未解析"; color="#ff0"; }
+    else if(mult===0 && (buffCount>0 || blockCount>0)){ status="純支援"; color="#0af"; }
+    else if(mult>0){ status="傷害型"; color="#0f0"; }
+
+    const div = document.createElement('div');
+    div.style = "border-bottom:1px solid #333;padding:4px;color:"+color;
+    div.innerText = r.character + " | " + status + " | 倍率:" + mult;
+    panel.appendChild(div);
+  });
+
+  document.body.appendChild(panel);
+}
+
+window.addEventListener("load", waitAndInit);
+</script>
+
+
+
+<script>
+(function(){
+  function getRawData(){
+    try {
+      if (typeof GRADE6_DATABASE_RAW !== 'undefined' && Array.isArray(GRADE6_DATABASE_RAW)) return GRADE6_DATABASE_RAW;
+    } catch(e) {}
+    try {
+      if (typeof GRADE6_DATABASE !== 'undefined' && GRADE6_DATABASE && typeof GRADE6_DATABASE === 'object') {
+        return Object.values(GRADE6_DATABASE);
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  function recalcSummary(data){
+    return (data || []).map(entry => {
+      const clone = JSON.parse(JSON.stringify(entry));
+      const skills = Array.isArray(clone.skills) ? clone.skills : [];
+      let knownTotal = 0;
+      let selfBlocks = 0;
+      let allyBlocks = 0;
+      const buffs = [];
+      const unknownHitAssets = [];
+      const notes = new Set((clone.summary && clone.summary.notes) || []);
+      const triggers = new Set();
+      const categories = new Set();
+
+      skills.forEach(s => {
+        if (s.trigger) triggers.add(s.trigger);
+        if (s.category) categories.add(s.category);
+        const dmg = s.damage || {};
+        knownTotal += Number(dmg.knownTotalMultiplier || 0);
+        (dmg.unknownHitAssets || []).forEach(x => unknownHitAssets.push(x));
+        (s.buffs || []).forEach(b => buffs.push(b));
+        const blocks = s.blocks || {};
+        selfBlocks += Number(blocks.self || 0);
+        allyBlocks += Number(blocks.others || 0);
+      });
+
+      clone.summary = clone.summary || {};
+      clone.summary.triggers = Array.from(triggers);
+      clone.summary.categories = Array.from(categories);
+      clone.summary.knownTotalMultiplier = Number(knownTotal.toFixed(6));
+      clone.summary.selfBlocks = selfBlocks;
+      clone.summary.allyBlocks = allyBlocks;
+      clone.summary.buffs = buffs;
+      clone.summary.unknownHitAssets = Array.from(new Set(unknownHitAssets.filter(Boolean)));
+      clone.summary.notes = Array.from(notes);
+      return clone;
+    });
+  }
+
+  function classify(entry){
+    const s = entry.summary || {};
+    const mult = Number(s.knownTotalMultiplier || 0);
+    const buffCount = (s.buffs || []).length;
+    const blockCount = Number(s.selfBlocks || 0) + Number(s.allyBlocks || 0);
+    const unknown = (s.unknownHitAssets || []).length;
+
+    if (mult === 0 && unknown > 0) return {status:"主傷未解析", color:"#facc15"};
+    if (mult === 0 && (buffCount > 0 || blockCount > 0)) return {status:"純支援", color:"#38bdf8"};
+    if (mult > 0) return {status:"傷害型", color:"#22c55e"};
+    return {status:"未解析", color:"#f87171"};
+  }
+
+  function renderDebugPanel(data){
+    let btn = document.getElementById('forceDebugBtn');
+    if (!btn){
+      btn = document.createElement('button');
+      btn.id = 'forceDebugBtn';
+      btn.textContent = 'DEBUG';
+      btn.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:100001;background:#111827;color:#fff;border:1px solid #64748b;border-radius:999px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.35);';
+      document.body.appendChild(btn);
+    }
+
+    let panel = document.getElementById('forceDebugPanel');
+    if (!panel){
+      panel = document.createElement('div');
+      panel.id = 'forceDebugPanel';
+      panel.style.cssText = 'position:fixed;right:12px;top:12px;width:430px;max-height:calc(100vh - 80px);overflow:auto;background:#0b1220;color:#e5e7eb;border:1px solid #334155;border-radius:14px;padding:12px;z-index:100000;box-shadow:0 20px 40px rgba(0,0,0,.45);display:block;';
+      document.body.appendChild(panel);
+    }
+
+    const rows = data.map(entry => {
+      const c = classify(entry);
+      const s = entry.summary || {};
+      const mult = Number(s.knownTotalMultiplier || 0).toFixed(2);
+      const buffCount = (s.buffs || []).length;
+      const blockCount = Number(s.selfBlocks || 0) + Number(s.allyBlocks || 0);
+      const unknown = (s.unknownHitAssets || []).length;
+      return `
+        <div style="padding:8px 0;border-bottom:1px solid #1e293b;">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+            <strong style="color:#fff;">${entry.character || entry.displayName || 'UNKNOWN'}</strong>
+            <span style="color:${c.color};font-weight:700;">${c.status}</span>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;line-height:1.6;">
+            觸發：${(s.triggers || []).join(' / ') || '無'}｜
+            倍率：${mult}｜
+            Buff：${buffCount}｜
+            Block：${blockCount}｜
+            UnknownHit：${unknown}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    panel.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;">
+        <h3 style="margin:0;color:#fff;font-size:16px;">DEBUG 面板</h3>
+        <button id="closeForceDebug" style="background:#1e293b;color:#fff;border:1px solid #475569;border-radius:8px;padding:6px 10px;cursor:pointer;">關閉</button>
+      </div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">
+        綠=傷害型｜藍=純支援｜黃=主傷未解析｜紅=未解析
+      </div>
+      ${rows || '<div style="color:#f87171;">沒有可用六星資料</div>'}
+    `;
+
+    btn.onclick = () => panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    const closeBtn = document.getElementById('closeForceDebug');
+    if (closeBtn) closeBtn.onclick = () => panel.style.display = 'none';
+  }
+
+  function init(){
+    const raw = getRawData();
+    if (!raw) {
+      console.warn('DEBUG 面板：找不到 GRADE6_DATABASE_RAW / GRADE6_DATABASE');
+      return;
+    }
+    const fixed = recalcSummary(raw);
+    window.__GRADE6_DEBUG_FIXED__ = fixed;
+    renderDebugPanel(fixed);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 </body>
 </html>
