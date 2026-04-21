@@ -667,6 +667,74 @@
       white-space: pre-line;
     }
 
+
+    .page-with-debug { display:block; }
+    .page-with-debug.debug-layout-on {
+      display:grid;
+      grid-template-columns:minmax(0,1.7fr) 430px;
+      gap:20px;
+      align-items:start;
+    }
+    .debug-side-panel { display:none; }
+    .page-with-debug.debug-layout-on .debug-side-panel {
+      display:block;
+      position:sticky;
+      top:16px;
+      align-self:start;
+    }
+    .debug-side-panel .debug-panel {
+      display:block;
+      position:static;
+      max-height:calc(100vh - 32px);
+      overflow:auto;
+      margin-top:0;
+      box-shadow:0 18px 50px rgba(0,0,0,0.35);
+    }
+    .debug-mode-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      background:rgba(167,139,250,0.14);
+      color:#ddd6fe;
+      border:1px solid rgba(167,139,250,0.24);
+      margin-bottom:10px;
+    }
+    .char-meta-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:6px;
+    }
+    .char-meta-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:12px;
+      background:rgba(148,163,184,0.12);
+      color:#cbd5e1;
+      border:1px solid rgba(148,163,184,0.18);
+    }
+    .char-meta-pill.passive-on {
+      background:rgba(34,197,94,0.14);
+      color:#bbf7d0;
+      border-color:rgba(34,197,94,0.24);
+    }
+    .char-meta-pill.passive-off {
+      background:rgba(248,113,113,0.12);
+      color:#fecaca;
+      border-color:rgba(248,113,113,0.22);
+    }
+    @media (max-width:1200px){
+      .page-with-debug.debug-layout-on { grid-template-columns:1fr; }
+      .page-with-debug.debug-layout-on .debug-side-panel { position:static; }
+      .debug-side-panel .debug-panel { max-height:none; }
+    }
+
 </style>
 </head>
 <body>
@@ -682,6 +750,7 @@
 <div class="note" id="effectiveBuffInfo">目前 Buff：-</div>
 <div class="note" id="effectiveStatInfo">實際暴擊率：-</div>
 </section>
+<div class="page-with-debug" id="pageWithDebug"><div class="main-content">
 <section class="card">
 <div class="section-head">
 <h2>戰鬥設定</h2>
@@ -700,7 +769,7 @@
 <label> </label>
 <div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button>
 <button class="btn danger" onclick="clearTestChars()">一鍵清除測試角色</button>
-<button class="btn" onclick="toggleDebug()">Debug模式</button></button></div>
+<button class="btn" onclick="toggleDebug()">Debug模式</button></div>
 </div>
 </div>
 <div class="roster-wrap" id="roster"></div>
@@ -727,7 +796,7 @@
 <strong id="fightDamage">-</strong>
 </div>
 
-<div class="debug-panel" id="calcDebugPanel">
+<div id="debugPanelInlineMount"><div class="debug-panel" id="calcDebugPanel">
   <div class="section-head">
     <h3>Debug 計算過程</h3>
     <p class="muted">直接看目前所選角色每一段怎麼算</p>
@@ -750,11 +819,11 @@
   <div class="debug-list" id="dbgBuffSummary">Buff：-</div>
   <div class="debug-list" id="dbgSkillSummary">技能：-</div>
   <div class="debug-list" id="dbgPassiveSummary">職業被動：-</div>
-</div>
+</div></div>
 
 </div>
 </section>
-</div>
+</div><aside class="debug-side-panel" id="debugSidePanel"><div class="debug-mode-pill" id="debugModePill">Debug：關閉</div><div id="debugPanelSideMount"></div></aside></div>
 <section class="card" id="debugCard">
 <div class="section-head">
 <h2>儲存 Debug</h2>
@@ -1293,7 +1362,9 @@ const CHARACTER_TEMPLATES = {
         };
       }
 
-      const baseValue = profile.sourceStat === 'hp' ? derived.roleHp : derived.finalAtk;
+      const baseValue = profile.sourceStat === 'hp'
+        ? (num(character?.finalHpInput) || num(character?.hp) || derived.roleHp || 0)
+        : (num(character?.finalAtkInput) || num(character?.atk) || derived.finalAtk || 0);
       const nonCrit = baseValue * profile.multiplier;
       const crit = profile.canCrit ? nonCrit * (profile.useCritDamage ? critMultiplier : 1) : nonCrit;
       const avg = profile.canCrit ? (nonCrit * (1 - critRate) + crit * critRate) : nonCrit;
@@ -1352,6 +1423,10 @@ const CHARACTER_TEMPLATES = {
       dbgFinalDps: document.getElementById('dbgFinalDps'),
       dbgPassiveDps: document.getElementById('dbgPassiveDps'),
       dbgPassiveSummary: document.getElementById('dbgPassiveSummary'),
+      pageWithDebug: document.getElementById('pageWithDebug'),
+      debugModePill: document.getElementById('debugModePill'),
+      debugPanelInlineMount: document.getElementById('debugPanelInlineMount'),
+      debugPanelSideMount: document.getElementById('debugPanelSideMount'),
       dbgBuffSummary: document.getElementById('dbgBuffSummary'),
       dbgSkillSummary: document.getElementById('dbgSkillSummary'),
       effectiveBuffInfo: document.getElementById('effectiveBuffInfo'),
@@ -1920,7 +1995,7 @@ const CHARACTER_TEMPLATES = {
           effectiveCycle,
           defenseMultiplier: defense.damageMultiplier,
           passiveDps: passive.dps || 0,
-          passiveText: passive.enabled ? `${JOB_PASSIVE_PROFILES[passive.key]?.label || passive.key}｜${passive.summary}${passive.kind === 'damage' ? `｜基底 ${formatValue(passive.baseValue)}｜非暴 ${formatValue(passive.nonCrit)}｜平均 ${formatValue(passive.avg)}｜DPS ${formatValue(passive.dps)}` : ''}` : '未啟用',
+          passiveText: passive.enabled ? `${JOB_PASSIVE_PROFILES[passive.key]?.label || passive.key}｜${passive.summary}${passive.kind === 'damage' ? `｜來源 ${passive.sourceStat === 'hp' ? '生命值' : '攻擊力'}｜基底 ${formatValue(passive.baseValue)}｜非暴 ${formatValue(passive.nonCrit)}｜平均 ${formatValue(passive.avg)}｜DPS ${formatValue(passive.dps)}` : ''}` : '未啟用',
           buffText: [
             ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
             ...effectInfo.ownLabels,
@@ -2001,6 +2076,7 @@ const CHARACTER_TEMPLATES = {
         }
       });
       normalizeLeaders();
+      syncDebugLayout();
       renderAll();
     }
 
@@ -2021,6 +2097,26 @@ const CHARACTER_TEMPLATES = {
 
       normalizeLeaders();
       renderAll();
+    }
+
+
+
+    function getPassiveDisplayLabel(character = {}) {
+      const key = character.jobPassiveKey || inferPassiveKeyFromCharacter(character);
+      const profile = JOB_PASSIVE_PROFILES[key];
+      if (!profile) return '無';
+      return profile.label.replace('｜', ' ');
+    }
+
+    function getPrimarySkillMeta(character = {}) {
+      const skill = (character.skills || [])[0];
+      if (!skill) {
+        return { cycle: num(character['攻擊週期']) || 0, multiplier: 0 };
+      }
+      return {
+        cycle: num(skill.cycle) || num(character['攻擊週期']) || 0,
+        multiplier: num(skill.skillMultiplier) || 0
+      };
     }
 
 
@@ -2054,10 +2150,28 @@ const CHARACTER_TEMPLATES = {
           row.setAttribute('draggable', 'true');
           row.setAttribute('data-char-id', character.id);
           row.setAttribute('data-team', String(team));
+          const skillMeta = getPrimarySkillMeta(character);
+          const selfBuffCount = ((character.selfBuffs || character.buffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length;
+          const teamBuffCount = ((character.teamBuffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length;
+          const passiveKey = character.jobPassiveKey || inferPassiveKeyFromCharacter(character);
+          const passiveClass = passiveKey ? (character.jobPassiveEnabled === false ? 'passive-off' : 'passive-on') : '';
+          const passiveSuffix = passiveKey ? (character.jobPassiveEnabled === false ? '（停用）' : '（啟用）') : '';
+
           row.innerHTML = `
             <div>
               <div class="char-name">${character.isLeader ? '👑 ' : ''}${escapeHtml(getCharacterDisplayName(character))}</div>
-              <div class="char-sub">技能：${(character.skills || []).length}｜自身Buff：${((character.selfBuffs || character.buffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜團隊Buff：${((character.teamBuffs || []).filter((b) => b && b.type && b.type !== 'none' && num(b.value) !== 0)).length}｜職業被動：${(character.jobPassiveKey || inferPassiveKeyFromCharacter(character)) ? (character.jobPassiveEnabled === false ? '停用' : '啟用') : '無'}${character.grade6Key ? '｜六星資料' : ''}${character.isLeader ? '｜隊長' : ''}</div>
+              <div class="char-sub">${character.grade6Key ? '六星資料角色' : '自訂角色'}</div>
+              <div class="char-meta-list">
+                <span class="char-meta-pill">技能 ${(character.skills || []).length}</span>
+                <span class="char-meta-pill">週期 ${formatValue(skillMeta.cycle || num(character['攻擊週期']) || 0)} 秒</span>
+                <span class="char-meta-pill">倍率 ${formatValue(skillMeta.multiplier || 0)}</span>
+                <span class="char-meta-pill">暴擊 ${formatValue(num(character.crit))}%</span>
+                <span class="char-meta-pill">自身 Buff ${selfBuffCount}</span>
+                <span class="char-meta-pill">團隊 Buff ${teamBuffCount}</span>
+                <span class="char-meta-pill ${passiveClass}">被動 ${getPassiveDisplayLabel(character)}${passiveSuffix}</span>
+                ${character.grade6Key ? '<span class="char-meta-pill">六星資料</span>' : ''}
+                ${character.isLeader ? '<span class="char-meta-pill passive-on">隊長</span>' : ''}
+              </div>
             </div>
             <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
             <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
@@ -2089,7 +2203,7 @@ const CHARACTER_TEMPLATES = {
         if (el.effectiveBuffInfo) el.effectiveBuffInfo.textContent = '目前 Buff：-';
         if (el.effectiveStatInfo) el.effectiveStatInfo.textContent = '最終暴擊率：-';
         if (advisorBox) advisorBox.innerHTML = '尚未建立角色';
-        if (el.calcDebugPanel) el.calcDebugPanel.classList.toggle('open', debugMode);
+        syncDebugLayout();
         ['dbgBaseAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgPassiveDps','dbgBuffSummary','dbgSkillSummary','dbgPassiveSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
         return;
       }
@@ -2118,9 +2232,7 @@ const CHARACTER_TEMPLATES = {
         advisorBox.innerHTML = buildAdvisorHtml(character);
       }
 
-      if (el.calcDebugPanel) {
-        el.calcDebugPanel.classList.toggle('open', debugMode);
-      }
+      syncDebugLayout();
       if (debugMode) {
         const stats = result.effectiveStats || {};
         const dbg = result.debug || {};
@@ -2358,8 +2470,8 @@ function buildCharacterFromForm() {
         isLeader: false,
         templateKey: '',
         grade6Key: '',
-        jobPassiveKey: '',
-        jobPassiveEnabled: true,
+        jobPassiveKey,
+        jobPassiveEnabled,
         calcMode: 'simple',
         level: 60,
         finalAtkInput: atk,
@@ -2382,8 +2494,6 @@ function buildCharacterFromForm() {
         buffs: [...selfBuffs],
         selfBuffs: [...selfBuffs],
         teamBuffs: [...teamBuffs],
-        jobPassiveKey,
-        jobPassiveEnabled,
         skills: includeDefaultSkill ? [createSkill('3C', hitMultiplier, cycle, damageType, 1)] : []
       };
     }
@@ -2407,22 +2517,27 @@ function buildCharacterFromForm() {
     }
 
     function addPresetCharacters(presets, label) {
-      const existingNames = new Set(state.characters.map((item) => item.name));
-      const availableSlots = Math.max(0, MAX_CHARACTERS - state.characters.length);
-      const toAdd = presets.filter((item) => !existingNames.has(item.name)).slice(0, availableSlots);
+      const presetNames = new Set(presets.map((item) => item.name));
+      const existingNonPreset = state.characters.filter((item) => !presetNames.has(item.name));
+      const existingPresetCount = state.characters.length - existingNonPreset.length;
+      const availableSlots = Math.max(0, MAX_CHARACTERS - existingNonPreset.length);
+      const finalPresets = presets.slice(0, availableSlots);
 
-      if (!toAdd.length) {
-        alert(`${label}已經存在，或目前已達角色上限。`);
+      if (!finalPresets.length) {
+        alert(`${label}無法加入，因為目前非測試角色已達上限。`);
         return;
       }
 
-      state.characters = [...state.characters, ...toAdd];
-      if (!state.selectedId && state.characters.length) {
-        state.selectedId = state.characters[0].id;
+      state.characters = [...existingNonPreset, ...finalPresets];
+
+      if (!state.characters.some((item) => item.id === state.selectedId)) {
+        state.selectedId = state.characters[0]?.id || null;
       }
       normalizeLeaders();
       renderAll();
-      alert(`已新增 ${toAdd.length} 隻${label}：${toAdd.map((item) => item.name).join('、')}`);
+
+      const modeText = existingPresetCount ? '已刷新' : '已新增';
+      alert(`${modeText} ${finalPresets.length} 隻${label}：${finalPresets.map((item) => item.name).join('、')}`);
     }
 
     function generateTestCharacters() {
@@ -3089,13 +3204,33 @@ function clearTestChars(){
 
 
 
+
 <script>
 let debugMode = false;
 
+function syncDebugLayout(){
+  const page = document.getElementById('pageWithDebug');
+  const pill = document.getElementById('debugModePill');
+  const panel = document.getElementById('calcDebugPanel');
+  const inlineMount = document.getElementById('debugPanelInlineMount');
+  const sideMount = document.getElementById('debugPanelSideMount');
+
+  if (page) page.classList.toggle('debug-layout-on', debugMode);
+  if (pill) pill.textContent = `Debug：${debugMode ? '開啟' : '關閉'}`;
+
+  if (panel) {
+    panel.classList.toggle('open', debugMode);
+    if (debugMode && sideMount && panel.parentElement !== sideMount) {
+      sideMount.appendChild(panel);
+    } else if (!debugMode && inlineMount && panel.parentElement !== inlineMount) {
+      inlineMount.appendChild(panel);
+    }
+  }
+}
+
 function toggleDebug(){
   debugMode = !debugMode;
-  const panel = document.getElementById('calcDebugPanel');
-  if (panel) panel.classList.toggle('open', debugMode);
+  syncDebugLayout();
   renderResults();
 }
 
@@ -3104,6 +3239,7 @@ function setDebugText(id, value){
   if (node) node.textContent = value;
 }
 </script>
+
 
 </body>
 </html>
