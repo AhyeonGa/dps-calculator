@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>DPS 模擬器</title>
+<title>DPS 模擬器 v50.1 安全優化版</title>
 <style>
     :root {
       color-scheme: dark;
@@ -577,6 +577,54 @@
 .stat strong,.live-preview-stat strong{min-height:38px;display:block;}
 @media (max-width: 900px){.results,.live-preview-grid{grid-template-columns:1fr !important;}}
 
+    .team-head-right {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .captain-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      background:rgba(250, 204, 21, 0.14);
+      color:#fde68a;
+      border:1px solid rgba(250, 204, 21, 0.24);
+    }
+    .character-row[draggable="true"] {
+      cursor: grab;
+    }
+    .character-row.dragging {
+      opacity: 0.55;
+      border-color: rgba(167, 139, 250, 0.45);
+    }
+    .character-row.drag-over {
+      border-color: rgba(34, 197, 94, 0.45);
+      box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.18);
+    }
+    .team-block.drag-over-team {
+      border-color: rgba(167, 139, 250, 0.45);
+      box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.18);
+    }
+
+
+
+    .mode-note-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      background:rgba(148, 163, 184, 0.12);
+      color:#cbd5e1;
+      border:1px solid rgba(148, 163, 184, 0.18);
+    }
+
 </style>
 </head>
 <body>
@@ -585,7 +633,11 @@
 <h1>DPS 模擬器</h1>
 <p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
 <div class="tag">最多 12 角色，4 隊</div>
+<div class="tag">支援模板也會顯示自身 DPS</div>
+<div class="tag">一般模式直接填遊戲內目前面板</div>
 <div class="fox-advisor-wrap"><div class="fox-advisor-content"><div class="fox-advisor-title">阿狐建議</div><div class="fox-advisor-text" id="advisorBox">尚未建立角色</div></div><img alt="阿狐" class="fox-advisor-image" src="data:image/png;base64,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"/></div>
+<div class="note" id="effectiveBuffInfo">目前 Buff：-</div>
+<div class="note" id="effectiveStatInfo">最終暴擊率：-</div>
 </section>
 <section class="card">
 <div class="section-head">
@@ -619,7 +671,7 @@
 <strong id="dps">-</strong>
 </div>
 <div class="stat">
-<span>有效攻速 (APS)</span>
+<span>生成效率</span>
 <strong id="effectiveAps">-</strong>
 </div>
 <div class="stat">
@@ -677,7 +729,11 @@
 <div>
 <label for="charTemplate">角色模板</label>
 <select id="charTemplate">
+<option value="">未選擇</option>
 <option value="蘭德克莉特">蘭德克莉特</option>
+<option value="九尾狐">九尾狐</option>
+<option value="Nurspy">Nurspy</option>
+<option value="Randgrid">Randgrid</option>
 </select>
 </div>
 <div>
@@ -691,17 +747,40 @@
 </div>
 <div class="sub-card section-stack">
 <h3>屬性</h3>
-<div class="grid">
-<div><label for="atk">攻擊力</label><input id="atk" step="0.01" type="number" value="0"/></div>
-<div><label for="hp">生命值</label><input id="hp" step="0.01" type="number" value="0"/></div>
+<div class="compact-grid">
+<div>
+<label for="calcMode">輸入模式</label>
+<select id="calcMode">
+<option value="simple">一般模式｜直接填目前面板</option>
+<option value="advanced">進階模式｜等級 / 成長公式</option>
+</select>
+</div>
+</div>
+
+<div class="grid" id="simpleStatsGrid">
+<div><label for="finalAtkInput">目前面板攻擊</label><input id="finalAtkInput" step="0.01" type="number" value="0"/></div>
+<div><label for="finalHpInput">目前面板生命</label><input id="finalHpInput" step="0.01" type="number" value="0"/></div>
+<div><label for="攻擊週期">攻擊週期（秒）</label><input id="攻擊週期" step="0.01" type="number" value="2"/></div>
 <div><label for="pdef">物理防禦</label><input id="pdef" step="0.01" type="number" value="0"/></div>
 <div><label for="mdef">魔法防禦</label><input id="mdef" step="0.01" type="number" value="0"/></div>
-<div><label for="aspd">攻擊間隔（秒）</label><input id="aspd" step="0.01" type="number" value="1"/></div>
 <div><label for="pPen">物理穿透</label><input id="pPen" step="0.01" type="number" value="0"/></div>
 <div><label for="mPen">魔法穿透</label><input id="mPen" step="0.01" type="number" value="0"/></div>
 <div><label for="crit">暴擊率 (%)</label><input id="crit" step="0.01" type="number" value="0"/></div>
 <div><label for="critDmg">暴擊傷害 (%)</label><input id="critDmg" step="0.01" type="number" value="100"/></div>
 </div>
+
+<div class="grid" id="advancedStatsGrid" style="display:none;">
+<div><label for="level">等級</label><input id="level" step="1" type="number" value="60"/></div>
+<div><label for="initialAttDmg">初始攻擊</label><input id="initialAttDmg" step="0.01" type="number" value="0"/></div>
+<div><label for="growthAttDmg">每級攻擊成長</label><input id="growthAttDmg" step="0.01" type="number" value="0"/></div>
+<div><label for="initialHp">初始生命</label><input id="initialHp" step="0.01" type="number" value="0"/></div>
+<div><label for="growthHp">每級生命成長</label><input id="growthHp" step="0.01" type="number" value="0"/></div>
+<div><label for="weaponAtk">武器ATK</label><input id="weaponAtk" step="0.01" type="number" value="0"/></div>
+<div><label for="flatAttack">固定攻擊加成</label><input id="flatAttack" step="0.01" type="number" value="0"/></div>
+<div><label for="atk">角色ATK（自動）</label><input id="atk" step="0.01" type="number" value="0" readonly/></div>
+<div><label for="hp">角色HP（自動）</label><input id="hp" step="0.01" type="number" value="0" readonly/></div>
+</div>
+<p class="note">一般模式：直接填最終ATK / 最終HP。進階模式：角色ATK = 初始攻擊 + (等級 - 1) × 每級攻擊成長；最終ATK = 角色ATK + 武器ATK + 固定攻擊加成；DPS = 平均單次傷害 / 攻擊週期。</p>
 </div>
 <div class="sub-card section-stack">
 <h3>Buff（3，常駐）</h3>
@@ -713,7 +792,7 @@
 <button class="btn secondary" id="addSkill" type="button">新增技能</button>
 </div>
 <div id="skillList"></div>
-<p class="note">技能週期可直接填秒數。</p>
+<p class="note">週期公式固定：1C = 2 秒、2C = 4 秒、3C = 6 秒；隊長額外 +10% 生成機率。</p>
 </div>
 <div class="modal-actions">
 <button class="btn secondary" id="cancelModal" type="button">取消</button>
@@ -726,7 +805,7 @@
 </div>
 <div class="live-preview-grid">
 <div class="live-preview-stat"><span>每秒輸出 (DPS)</span><strong id="previewDps">-</strong></div>
-<div class="live-preview-stat"><span>有效攻速 (APS)</span><strong id="previewAps">-</strong></div>
+<div class="live-preview-stat"><span>生成效率</span><strong id="previewAps">-</strong></div>
 <div class="live-preview-stat"><span>總傷害 (DMG)</span><strong id="previewFightDamage">-</strong></div>
 </div>
 </div>
@@ -750,16 +829,56 @@
         hp: 5453,
         pdef: 312,
         mdef: 409,
-        aspd: 2,
         pPen: 409,
         mPen: 373,
         crit: 34,
         critDmg: 104,
+        buffs: [],
+        aura: null,
         skills: [
           { name: '1C', damageType: 'physical', hits: 1, hitMultiplier: 2.5, cycle: 2 },
           { name: '2C', damageType: 'physical', hits: 1, hitMultiplier: 3.75, cycle: 4 },
           { name: '3C', damageType: 'physical', hits: 1, hitMultiplier: 14.09, cycle: 6 }
         ]
+      },
+      '九尾狐': {
+        atk: 1200,
+        hp: 5200,
+        pdef: 0,
+        mdef: 0,
+        pPen: 0,
+        mPen: 0,
+        crit: 0,
+        critDmg: 100,
+        buffs: [{ type: 'critPct', value: 56 }],
+        aura: { key: 'fox-crit-56', label: '九尾狐 暴擊率+56%', effects: [{ type: 'critPct', value: 56 }] },
+        skills: []
+      },
+      'Nurspy': {
+        atk: 1200,
+        hp: 5200,
+        pdef: 0,
+        mdef: 0,
+        pPen: 0,
+        mPen: 0,
+        crit: 0,
+        critDmg: 100,
+        buffs: [{ type: 'atkPct', value: 12 }],
+        aura: { key: 'nurspy-atk-12', label: 'Nurspy ATK+12%', effects: [{ type: 'atkPct', value: 12 }] },
+        skills: []
+      },
+      'Randgrid': {
+        atk: 1400,
+        hp: 5600,
+        pdef: 0,
+        mdef: 0,
+        pPen: 0,
+        mPen: 0,
+        crit: 0,
+        critDmg: 100,
+        buffs: [],
+        aura: null,
+        skills: []
       }
     };
 
@@ -799,17 +918,31 @@
       effectiveAps: document.getElementById('effectiveAps'),
       dps: document.getElementById('dps'),
       fightDamage: document.getElementById('fightDamage'),
+      effectiveBuffInfo: document.getElementById('effectiveBuffInfo'),
+      effectiveStatInfo: document.getElementById('effectiveStatInfo'),
       modal: document.getElementById('characterModal'),
       modalTitle: document.getElementById('modalTitle'),
       charName: document.getElementById('charName'),
       charTeam: document.getElementById('charTeam'),
       charTemplate: document.getElementById('charTemplate'),
       charLeader: document.getElementById('charLeader'),
+      calcMode: document.getElementById('calcMode'),
+      simpleStatsGrid: document.getElementById('simpleStatsGrid'),
+      advancedStatsGrid: document.getElementById('advancedStatsGrid'),
+      finalAtkInput: document.getElementById('finalAtkInput'),
+      finalHpInput: document.getElementById('finalHpInput'),
+      level: document.getElementById('level'),
+      initialAttDmg: document.getElementById('initialAttDmg'),
+      growthAttDmg: document.getElementById('growthAttDmg'),
+      initialHp: document.getElementById('initialHp'),
+      growthHp: document.getElementById('growthHp'),
+      weaponAtk: document.getElementById('weaponAtk'),
+      flatAttack: document.getElementById('flatAttack'),
+      攻擊週期: document.getElementById('攻擊週期'),
       atk: document.getElementById('atk'),
       hp: document.getElementById('hp'),
       pdef: document.getElementById('pdef'),
       mdef: document.getElementById('mdef'),
-      aspd: document.getElementById('aspd'),
       pPen: document.getElementById('pPen'),
       mPen: document.getElementById('mPen'),
       crit: document.getElementById('crit'),
@@ -822,6 +955,45 @@
 
     function uid(prefix = 'id') {
       return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+    }
+
+    function cloneRows(rows = []) {
+      return rows.map((entry) => ({ type: entry?.type || 'none', value: num(entry?.value) }));
+    }
+
+    function getTemplateAura(character) {
+      const key = character?.templateKey;
+      if (!key || !CHARACTER_TEMPLATES[key]) return null;
+      return CHARACTER_TEMPLATES[key].aura || null;
+    }
+
+    function collectTeamAuraEffects(character, allCharacters = []) {
+      const totals = {
+        atkPct: 0,
+        critPct: 0,
+        penPct: 0,
+        finalDamagePct: 0,
+        skillDamagePct: 0,
+        pPenFlat: 0,
+        mPenFlat: 0
+      };
+      const labels = [];
+      const seen = new Set();
+
+      allCharacters.forEach((mate) => {
+        if (!mate || mate.id === character.id) return;
+        if (Number(mate.team) !== Number(character.team)) return;
+        const aura = getTemplateAura(mate);
+        if (!aura || seen.has(aura.key)) return;
+        seen.add(aura.key);
+        labels.push(aura.label || aura.key);
+        (aura.effects || []).forEach((entry) => {
+          if (!entry || !Object.prototype.hasOwnProperty.call(totals, entry.type)) return;
+          totals[entry.type] += num(entry.value);
+        });
+      });
+
+      return { totals, labels };
     }
 
     function num(value) {
@@ -838,17 +1010,27 @@
       if (!template) return;
 
       if (!el.charName.value.trim()) el.charName.value = templateName;
-      el.atk.value = template.atk ?? 0;
-      el.hp.value = template.hp ?? 0;
+      el.level.value = template.level ?? 60;
+      el.initialAttDmg.value = template.initialAttDmg ?? template.atk ?? 0;
+      el.growthAttDmg.value = template.growthAttDmg ?? 0;
+      el.initialHp.value = template.initialHp ?? template.hp ?? 0;
+      el.growthHp.value = template.growthHp ?? 0;
+      el.weaponAtk.value = template.weaponAtk ?? 0;
+      el.flatAttack.value = template.flatAttack ?? 0;
+      el.finalAtkInput.value = template.finalAtkInput ?? template.atk ?? template.initialAttDmg ?? 0;
+      el.finalHpInput.value = template.finalHpInput ?? template.hp ?? template.initialHp ?? 0;
+      el.攻擊週期.value = template.攻擊週期 ?? template.attackSpeed ?? (template.skills?.[0]?.cycle ?? 2);
+      syncDerivedFormStats();
       el.pdef.value = template.pdef ?? 0;
       el.mdef.value = template.mdef ?? 0;
-      el.aspd.value = template.aspd ?? 1;
       el.pPen.value = template.pPen ?? 0;
       el.mPen.value = template.mPen ?? 0;
       el.crit.value = template.crit ?? 0;
       el.critDmg.value = template.critDmg ?? 100;
+      fillEffectRows(el.buffRows, cloneRows(template.buffs || []));
       state.skillDrafts = (template.skills || []).map((skill) => createSkillDraft(skill));
       renderSkills();
+      updateLivePreview();
     }
 
     function clearCharacterTemplateSelection() {
@@ -874,6 +1056,14 @@
       }
     }
 
+    function getSkillCycleByName(name, manualCycle = 2) {
+      const normalized = String(name || '').trim().toUpperCase();
+      if (normalized === '1C') return 2;
+      if (normalized === '2C') return 4;
+      if (normalized === '3C') return 6;
+      return Math.max(num(manualCycle), 0);
+    }
+
     function createSkillDraft(skill = {}) {
       return {
         id: skill.id || uid('skill'),
@@ -881,7 +1071,7 @@
         damageType: skill.damageType || 'physical',
         hits: skill.hits ?? 1,
         hitMultiplier: skill.hitMultiplier ?? 1,
-        cycle: skill.cycle ?? 10
+        cycle: getSkillCycleByName(skill.name, skill.cycle ?? 2)
       };
     }
 
@@ -926,7 +1116,7 @@
             </div>
             <div>
               <label>週期（秒）</label>
-              <input data-skill="cycle" data-id="${skill.id}" type="number" step="1" value="${skill.cycle}" />
+              <input data-skill="cycle" data-id="${skill.id}" type="number" step="1" value="${skill.cycle}" ${['1C','2C','3C'].includes(String(skill.name || '').trim().toUpperCase()) ? 'readonly' : ''} />
             </div>
           </div>
         `;
@@ -972,7 +1162,43 @@
       });
     }
 
-    function aggregateEffects(character) {
+    function getDerivedStats(character) {
+      const calcMode = character?.calcMode || 'simple';
+      const level = Math.max(1, num(character.level) || 1);
+      let roleAtk = 0;
+      let roleHp = 0;
+      let finalAtk = 0;
+
+      if (calcMode === 'advanced') {
+        roleAtk = num(character.initialAttDmg) + (level - 1) * num(character.growthAttDmg);
+        roleHp = num(character.initialHp) + (level - 1) * num(character.growthHp);
+        finalAtk = roleAtk + num(character.weaponAtk) + num(character.flatAttack);
+      } else {
+        finalAtk = num(character.finalAtkInput) || num(character.atk) || 0;
+        roleAtk = finalAtk;
+        roleHp = num(character.finalHpInput) || num(character.hp) || 0;
+      }
+
+      const 攻擊週期 = Math.max(0.01, num(character.攻擊週期) || num(character.attackSpeed) || 2);
+      return { level, roleAtk, roleHp, finalAtk, 攻擊週期 };
+    }
+
+    function updateCalcModeUI() {
+      const isAdvanced = (el.calcMode?.value || 'simple') === 'advanced';
+      if (el.simpleStatsGrid) el.simpleStatsGrid.style.display = isAdvanced ? 'none' : '';
+      if (el.advancedStatsGrid) el.advancedStatsGrid.style.display = isAdvanced ? '' : 'none';
+    }
+
+    function syncDerivedFormStats() {
+      updateCalcModeUI();
+      const level = Math.max(1, num(el.level?.value) || 1);
+      const roleAtk = num(el.initialAttDmg?.value) + (level - 1) * num(el.growthAttDmg?.value);
+      const roleHp = num(el.initialHp?.value) + (level - 1) * num(el.growthHp?.value);
+      if (el.atk) el.atk.value = String(Number.isFinite(roleAtk) ? roleAtk : 0);
+      if (el.hp) el.hp.value = String(Number.isFinite(roleHp) ? roleHp : 0);
+    }
+
+    function aggregateEffects(character, allCharacters = state.characters) {
       const totals = {
         atkPct: 0,
         critPct: 0,
@@ -982,13 +1208,23 @@
         pPenFlat: 0,
         mPenFlat: 0
       };
+      const ownLabels = [];
 
       (character.buffs || []).forEach((entry) => {
-        if (!entry || !totals.hasOwnProperty(entry.type)) return;
+        if (!entry || !Object.prototype.hasOwnProperty.call(totals, entry.type)) return;
         totals[entry.type] += num(entry.value);
+        if (entry.type !== 'none' && num(entry.value) !== 0) {
+          const opt = EFFECT_OPTIONS.find((item) => item.value === entry.type);
+          ownLabels.push(`${opt ? opt.label : entry.type} ${num(entry.value) > 0 ? '+' : ''}${num(entry.value)}`);
+        }
       });
 
-      return totals;
+      const auraInfo = collectTeamAuraEffects(character, allCharacters);
+      Object.keys(totals).forEach((key) => {
+        totals[key] += auraInfo.totals[key] || 0;
+      });
+
+      return { totals, ownLabels, auraLabels: auraInfo.labels };
     }
 
     function getDefenseContext(monster, damageType, totalPen) {
@@ -1001,59 +1237,63 @@
     }
 
     function computeCharacter(character, monster, fightSeconds) {
-      const totals = aggregateEffects(character);
-      const actionInterval = Math.max(num(character.aspd), 0.01);
-      const attackFrequency = 1 / actionInterval;
-      let leaderBonus = character.isLeader ? 1.1 : 1;
-const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
+      const effectInfo = aggregateEffects(character, state.characters);
+      const totals = effectInfo.totals;
+      const derived = getDerivedStats(character);
 
-      const critRate = Math.max(0, num(character.crit) / 100 + totals.critPct / 100);
-      const critMultiplier = 1 + num(character.critDmg) / 100;
-      const critFactor = (1 - Math.min(critRate, 1)) + Math.min(critRate, 1) * critMultiplier + Math.max(critRate - 1, 0) * 0.5;
+      const critRate = Math.min(Math.max(0, num(character.crit) / 100 + totals.critPct / 100), 1);
+      const critPower = Math.max(0, num(character.critDmg) / 100);
+      const critMultiplier = 1 + critPower;
 
       const atkFactor = 1 + totals.atkPct / 100;
       const finalDamageFactor = 1 + totals.finalDamagePct / 100;
       const skillDamageFactor = 1 + totals.skillDamagePct / 100;
       const penFactor = 1 + totals.penPct / 100;
 
-      const skills = character.skills.map((skill) => {
-        const cycle = num(skill.cycle);
-        if (cycle <= 0) {
-          return { ...skill, skillMultiplier: 0, nonCritCast: 0, avgCast: 0, dps: 0 };
-        }
-
+      const skillList = Array.isArray(character.skills) ? character.skills : [];
+      const skills = skillList.map((skill) => {
         const basePen = skill.damageType === 'magic' ? num(character.mPen) + totals.mPenFlat : num(character.pPen) + totals.pPenFlat;
         const totalPen = basePen * penFactor;
         const defense = getDefenseContext(monster, skill.damageType, totalPen);
-        const skillMultiplier = num(skill.hits) * num(skill.hitMultiplier);
-        const nonCritCast = skillMultiplier * num(character.atk) * atkFactor * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
-        const avgCast = nonCritCast * critFactor;
+        const skillMultiplier = Math.max(0, num(skill.hits) * num(skill.hitMultiplier));
+        const nonCritCast = derived.finalAtk * atkFactor * skillMultiplier * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
         const critCast = nonCritCast * critMultiplier;
-        const dps = avgCast / cycle;
-
-        return {
-          ...skill,
-          skillMultiplier,
-          nonCritCast,
-          avgCast,
-          critCast,
-          dps
-        };
+        const avgCast = nonCritCast * (1 - critRate) + critCast * critRate;
+        const dps = avgCast / derived.攻擊週期;
+        return { ...skill, cycle: derived.攻擊週期, skillMultiplier, nonCritCast, avgCast, critCast, dps };
       });
 
-      const skillDps = skills.reduce((sum, skill) => sum + skill.dps, 0);
-      const totalDps = (autoDps + skillDps) * (character.isLeader ? 1.05 : 1);
-      const firstSkill = skills[0];
-      const fallbackNonCrit = num(character.atk) * 2;
-      const fallbackCrit = fallbackNonCrit * critMultiplier;
+      const totalSkillMultiplier = skills.length
+        ? skills.reduce((sum, skill) => sum + skill.skillMultiplier, 0)
+        : 1;
+
+      const primaryDamageType = skills[0]?.damageType || 'physical';
+      const basePen = primaryDamageType === 'magic' ? num(character.mPen) + totals.mPenFlat : num(character.pPen) + totals.pPenFlat;
+      const totalPen = basePen * penFactor;
+      const defense = getDefenseContext(monster, primaryDamageType, totalPen);
+
+      const nonCritHit = derived.finalAtk * atkFactor * totalSkillMultiplier * defense.damageMultiplier * finalDamageFactor * skillDamageFactor;
+      const critHit = nonCritHit * critMultiplier;
+      const avgHit = nonCritHit * (1 - critRate) + critHit * critRate;
+      const totalDps = avgHit / derived.攻擊週期;
 
       return {
-        autoDps,
+        autoDps: skills.length ? 0 : totalDps,
         totalDps,
         fightDamage: totalDps * fightSeconds,
-        attackFrequency,
-        nonCritHit: firstSkill ? firstSkill.nonCritCast : fallbackNonCrit,
-        critHit: firstSkill ? firstSkill.critCast : fallbackCrit,
+        attackFrequency: 1 / derived.攻擊週期,
+        nonCritHit,
+        critHit,
+        avgHit,
+        effectiveCritRate: critRate,
+        activeBuffText: [...effectInfo.ownLabels, ...effectInfo.auraLabels],
+        effectiveStats: {
+          roleAtk: derived.roleAtk,
+          roleHp: derived.roleHp,
+          finalAtk: derived.finalAtk,
+          攻擊週期: derived.攻擊週期,
+          totalSkillMultiplier
+        },
         skills
       };
     }
@@ -1070,8 +1310,58 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
       if (!Number.isFinite(value)) {
         return value > 0 ? `∞${suffix}` : `-${suffix}`;
       }
-      return `${nf.format(value)}${suffix}`;
+      return `${nf.format(Math.round(value))}${suffix}`;
     }
+
+
+    function getTeamLeaderName(team) {
+      const leader = state.characters.find((item) => Number(item.team) === Number(team) && item.isLeader);
+      return leader ? (leader.name || '未命名角色') : '未設定';
+    }
+
+    function normalizeLeaders() {
+      for (let team = 1; team <= TEAM_COUNT; team += 1) {
+        let found = false;
+        state.characters.forEach((item) => {
+          if (Number(item.team) !== team) return;
+          if (item.isLeader && !found) {
+            found = true;
+          } else if (item.isLeader && found) {
+            item.isLeader = false;
+          }
+        });
+      }
+    }
+
+    function setLeaderForTeam(team, id) {
+      state.characters.forEach((item) => {
+        if (Number(item.team) === Number(team)) {
+          item.isLeader = item.id === id;
+        }
+      });
+      normalizeLeaders();
+      renderAll();
+    }
+
+    function moveCharacterToTeam(id, targetTeam) {
+      const character = state.characters.find((item) => item.id === id);
+      if (!character) return;
+      const oldTeam = Number(character.team);
+      const wasLeader = !!character.isLeader;
+      character.team = Number(targetTeam);
+
+      if (wasLeader) {
+        state.characters.forEach((item) => {
+          if (item.id !== id && Number(item.team) === Number(targetTeam) && item.isLeader) {
+            item.isLeader = false;
+          }
+        });
+      }
+
+      normalizeLeaders();
+      renderAll();
+    }
+
 
     function renderRoster() {
       const computations = partyComputations();
@@ -1087,7 +1377,7 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
 
         const title = document.createElement('div');
         title.className = 'team-title';
-        title.innerHTML = `<h3>第 ${team} 隊</h3><div class="team-dps">隊伍 DPS：<strong>${formatValue(teamDps)}</strong></div>`;
+        title.innerHTML = `<h3>第 ${team} 隊</h3><div class="team-head-right"><div class="captain-chip">隊長：${escapeHtml(getTeamLeaderName(team))}</div><div class="team-dps">隊伍 DPS：<strong>${formatValue(teamDps)}</strong></div></div>`;
         block.appendChild(title);
 
         if (!teamEntries.length) {
@@ -1100,14 +1390,17 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
         teamEntries.forEach(({ character, result }) => {
           const row = document.createElement('div');
           row.className = `character-row${character.id === state.selectedId ? ' active' : ''}`;
+          row.setAttribute('draggable', 'true');
+          row.setAttribute('data-char-id', character.id);
+          row.setAttribute('data-team', String(team));
           row.innerHTML = `
             <div>
-              <div class="char-name">${escapeHtml(character.name || '未命名角色')}${character.isLeader ? ' 👑' : ''}</div>
-              <div class="char-sub">技能數：${character.skills.length}${character.isLeader ? '｜隊長' : ''}</div>
+              <div class="char-name">${character.isLeader ? '👑 ' : ''}${escapeHtml(character.name || '未命名角色')}</div>
+              <div class="char-sub">技能：${character.skills.length}${character.isLeader ? '｜隊長' : ''}</div>
             </div>
             <div class="char-dps">DPS：<strong>${formatValue(result.totalDps)}</strong></div>
-            <button class="icon-btn" type="button" data-select-id="${character.id}">選取</button>
             <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
+              <button class="icon-btn" type="button" data-select-id="${character.id}">選取</button>
               <button class="icon-btn" type="button" data-edit-id="${character.id}">編輯</button>
               <button class="icon-btn danger" type="button" data-delete-id="${character.id}">刪除</button>
             </div>
@@ -1132,6 +1425,8 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
         if (el.dps) el.dps.textContent = '-';
         if (el.effectiveAps) el.effectiveAps.textContent = '-';
         if (el.fightDamage) el.fightDamage.textContent = '-';
+        if (el.effectiveBuffInfo) el.effectiveBuffInfo.textContent = '目前 Buff：-';
+        if (el.effectiveStatInfo) el.effectiveStatInfo.textContent = '最終暴擊率：-';
         if (advisorBox) advisorBox.innerHTML = '尚未建立角色';
         return;
       }
@@ -1145,9 +1440,16 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
 
       const result = computeCharacter(character, MONSTERS[state.monsterKey], state.fightSeconds);
       el.selectedCharacterName.textContent = character.name || '未命名角色';
-      if (el.effectiveAps) el.effectiveAps.textContent = formatValue(result.attackFrequency, ' 次/秒');
+      if (el.effectiveAps) el.effectiveAps.textContent = formatValue(result.attackFrequency);
       if (el.dps) el.dps.textContent = formatValue(result.totalDps);
       if (el.fightDamage) el.fightDamage.textContent = Math.floor(result.fightDamage).toLocaleString();
+      if (el.effectiveBuffInfo) {
+        el.effectiveBuffInfo.textContent = `目前 Buff：${result.activeBuffText.length ? result.activeBuffText.join('｜') : '無'}`;
+      }
+      if (el.effectiveStatInfo) {
+        const stats = result.effectiveStats || {};
+        el.effectiveStatInfo.textContent = `最終暴擊率：${(result.effectiveCritRate * 100).toFixed(1)}%｜面板攻擊：${formatValue(stats.finalAtk || 0)}｜總倍率：${formatValue(stats.totalSkillMultiplier || 0)}｜攻擊週期：${formatValue(stats.攻擊週期 || 0)}`;
+      }
 
       if (advisorBox) {
         advisorBox.innerHTML = buildAdvisorHtml(character);
@@ -1161,22 +1463,33 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
       saveStateToLocal();
     }
 
-    function buildCharacterFromForm() {
+    
+    function collectCharacterFormData(idValue) {
       return {
-        id: state.editingId || uid('char-preview'),
+        id: idValue,
         name: el.charName.value.trim(),
         team: num(el.charTeam.value) || 1,
         isLeader: el.charLeader.value === '1',
+        templateKey: el.charTemplate.value || '',
+        calcMode: el.calcMode.value || 'simple',
+        level: num(el.level.value) || 1,
+        finalAtkInput: num(el.finalAtkInput.value),
+        finalHpInput: num(el.finalHpInput.value),
+        initialAttDmg: num(el.initialAttDmg.value),
+        growthAttDmg: num(el.growthAttDmg.value),
+        initialHp: num(el.initialHp.value),
+        growthHp: num(el.growthHp.value),
+        weaponAtk: num(el.weaponAtk.value),
+        flatAttack: num(el.flatAttack.value),
+        攻擊週期: num(el.攻擊週期.value) || 2,
         atk: num(el.atk.value),
         hp: num(el.hp.value),
         pdef: num(el.pdef.value),
         mdef: num(el.mdef.value),
-        aspd: num(el.aspd.value),
         pPen: num(el.pPen.value),
         mPen: num(el.mPen.value),
         crit: num(el.crit.value),
         critDmg: num(el.critDmg.value),
-        weapons: [],
         buffs: readEffectRows(el.buffRows),
         skills: state.skillDrafts.map((skill) => ({
           id: skill.id,
@@ -1184,9 +1497,13 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
           damageType: skill.damageType,
           hits: num(skill.hits),
           hitMultiplier: num(skill.hitMultiplier),
-          cycle: num(skill.cycle)
+          cycle: getSkillCycleByName(skill.name, skill.cycle)
         }))
       };
+    }
+
+function buildCharacterFromForm() {
+      return collectCharacterFormData(state.editingId || uid('char-preview'));
     }
 
     function updateLivePreview() {
@@ -1200,7 +1517,7 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
         const node = document.getElementById(id);
         if (node) node.textContent = value;
       };
-      setText('previewAps', formatValue(result.attackFrequency, ' 次/秒'));
+      setText('previewAps', formatValue(result.attackFrequency));
       setText('previewDps', formatValue(result.totalDps));
       setText('previewFightDamage', Math.floor(result.fightDamage).toLocaleString());
     }
@@ -1218,13 +1535,23 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
 
       el.charName.value = character?.name || '';
       el.charTeam.value = String(character?.team || 1);
-      clearCharacterTemplateSelection();
+      el.charTemplate.value = character?.templateKey || '';
       el.charLeader.value = character?.isLeader ? '1' : '0';
+      el.calcMode.value = character?.calcMode || 'simple';
+      el.level.value = character?.level ?? 60;
+      el.finalAtkInput.value = character?.finalAtkInput ?? character?.atk ?? 0;
+      el.finalHpInput.value = character?.finalHpInput ?? character?.hp ?? 0;
+      el.initialAttDmg.value = character?.initialAttDmg ?? character?.atk ?? 0;
+      el.growthAttDmg.value = character?.growthAttDmg ?? 0;
+      el.initialHp.value = character?.initialHp ?? character?.hp ?? 0;
+      el.growthHp.value = character?.growthHp ?? 0;
+      el.weaponAtk.value = character?.weaponAtk ?? 0;
+      el.flatAttack.value = character?.flatAttack ?? 0;
+      el.攻擊週期.value = character?.攻擊週期 ?? (character?.skills?.[0]?.cycle ?? 2);
       el.atk.value = character?.atk ?? 0;
       el.hp.value = character?.hp ?? 0;
       el.pdef.value = character?.pdef ?? 0;
       el.mdef.value = character?.mdef ?? 0;
-      el.aspd.value = character?.aspd ?? 1;
       el.pPen.value = character?.pPen ?? 0;
       el.mPen.value = character?.mPen ?? 0;
       el.crit.value = character?.crit ?? 0;
@@ -1232,6 +1559,8 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
       fillEffectRows(el.buffRows, character?.buffs || []);
       state.skillDrafts = (character?.skills || []).map((skill) => createSkillDraft(skill));
       renderSkills();
+      syncDerivedFormStats();
+      updateCalcModeUI();
       const previewPanel = document.getElementById('livePreviewPanel');
       if (previewPanel) previewPanel.classList.remove('open');
       setPreviewButtonText();
@@ -1250,31 +1579,7 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
     }
 
     function saveCharacter() {
-      const character = {
-        id: state.editingId || uid('char'),
-        name: el.charName.value.trim(),
-        team: num(el.charTeam.value) || 1,
-        isLeader: el.charLeader.value === '1',
-        atk: num(el.atk.value),
-        hp: num(el.hp.value),
-        pdef: num(el.pdef.value),
-        mdef: num(el.mdef.value),
-        aspd: num(el.aspd.value),
-        pPen: num(el.pPen.value),
-        mPen: num(el.mPen.value),
-        crit: num(el.crit.value),
-        critDmg: num(el.critDmg.value),
-        weapons: [],
-        buffs: readEffectRows(el.buffRows),
-        skills: state.skillDrafts.map((skill) => ({
-          id: skill.id,
-          name: skill.name,
-          damageType: skill.damageType,
-          hits: num(skill.hits),
-          hitMultiplier: num(skill.hitMultiplier),
-          cycle: num(skill.cycle)
-        }))
-      };
+      const character = collectCharacterFormData(state.editingId || uid('char'));
 
       if (!state.editingId && state.characters.length >= MAX_CHARACTERS) {
         return;
@@ -1330,6 +1635,21 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
         applyCharacterTemplate(event.target.value);
       });
 
+      if (el.calcMode) {
+        el.calcMode.addEventListener('change', () => {
+          syncDerivedFormStats();
+          updateLivePreview();
+        });
+      }
+
+      ['level','initialAttDmg','growthAttDmg','initialHp','growthHp','weaponAtk','flatAttack','攻擊週期','finalAtkInput','finalHpInput'].forEach((key) => {
+        if (!el[key]) return;
+        el[key].addEventListener('input', () => {
+          syncDerivedFormStats();
+          updateLivePreview();
+        });
+      });
+
       el.monsterSelect.addEventListener('change', (event) => {
         state.monsterKey = event.target.value;
         renderAll();
@@ -1340,6 +1660,8 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
         renderAll();
       });
 
+
+      let draggingCharId = null;
 
       el.roster.addEventListener('click', (event) => {
         const target = event.target;
@@ -1361,9 +1683,68 @@ const autoDps = num(character.atk) * leaderBonus * 2 * attackFrequency;
 
         if (deleteId) {
           if (confirm("確定要刪除這個角色？")) {
-    removeCharacter(deleteId);
-}
+            removeCharacter(deleteId);
+          }
+          return;
         }
+
+        const row = target.closest('.character-row');
+        if (!row) return;
+
+        const clickedControl = target.closest('button, a, input, select, textarea, label');
+        if (clickedControl) return;
+
+        const charId = row.getAttribute('data-char-id');
+        const team = row.getAttribute('data-team');
+        if (charId && team) {
+          setLeaderForTeam(Number(team), charId);
+        }
+      });
+
+      el.roster.addEventListener('dragstart', (event) => {
+        const row = event.target.closest('.character-row');
+        if (!row) return;
+        draggingCharId = row.getAttribute('data-char-id');
+        row.classList.add('dragging');
+        try {
+          event.dataTransfer.effectAllowed = 'move';
+          event.dataTransfer.setData('text/plain', draggingCharId || '');
+        } catch (e) {}
+      });
+
+      el.roster.addEventListener('dragend', (event) => {
+        const row = event.target.closest('.character-row');
+        if (row) row.classList.remove('dragging');
+        draggingCharId = null;
+        el.roster.querySelectorAll('.drag-over, .drag-over-team').forEach((node) => {
+          node.classList.remove('drag-over', 'drag-over-team');
+        });
+      });
+
+      el.roster.addEventListener('dragover', (event) => {
+        const row = event.target.closest('.character-row');
+        const teamBlock = event.target.closest('.team-block');
+        if (!row && !teamBlock) return;
+        event.preventDefault();
+        el.roster.querySelectorAll('.drag-over, .drag-over-team').forEach((node) => {
+          node.classList.remove('drag-over', 'drag-over-team');
+        });
+        if (row) {
+          row.classList.add('drag-over');
+        } else if (teamBlock) {
+          teamBlock.classList.add('drag-over-team');
+        }
+      });
+
+      el.roster.addEventListener('drop', (event) => {
+        const teamBlock = event.target.closest('.team-block');
+        if (!teamBlock || !draggingCharId) return;
+        event.preventDefault();
+        const teamTitle = teamBlock.querySelector('.team-title h3');
+        const match = teamTitle ? teamTitle.textContent.match(/第\s*(\d+)\s*隊/) : null;
+        const targetTeam = match ? Number(match[1]) : null;
+        if (!targetTeam) return;
+        moveCharacterToTeam(draggingCharId, targetTeam);
       });
 
       document.getElementById('addSkill').addEventListener('click', () => {
