@@ -1,25 +1,28 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+    if (req.method !== "POST") {
+        return res.status(405).json({ message: "Method Not Allowed" });
+    }
 
-  const { type, name, contact, message } = req.body;
+    const webhook = process.env.DISCORD_WEBHOOK_URL;
 
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!webhook) {
+        return res.status(500).json({ error: "Webhook æœªè¨­å®š" });
+    }
 
-  const payload = {
-    username: "DPS¼ÒÀÀ¾¹",
-    content:
-      `·s¯d¨¥\n` +
-      `Ãş«¬¡G${type}\n` +
-      `¼ÊºÙ¡G${name}\n` +
-      `Ápµ¸¡G${contact || "¥¼¶ñ"}\n` +
-      `¤º®e¡G${message}`
-  };
+    try {
+        const { name, message } = req.body;
 
-  await fetch(webhookUrl, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(payload)
-  });
+        const content = `ğŸ“© æ–°ç•™è¨€\nğŸ‘¤ ${name}\nğŸ’¬ ${message}`;
 
-  res.status(200).json({ ok: true });
+        await fetch(webhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content })
+        });
+
+        res.status(200).json({ success: true });
+
+    } catch (err) {
+        res.status(500).json({ error: "ç™¼é€å¤±æ•—" });
+    }
 }
