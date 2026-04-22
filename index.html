@@ -613,6 +613,38 @@
 
 
 
+
+    .title-pill {
+      border-width: 1px;
+      border-style: solid;
+      font-weight: 700;
+    }
+    .title-rarity-legendary {
+      background: rgba(250, 204, 21, 0.10);
+      color: #fde68a;
+      border-color: rgba(250, 204, 21, 0.24);
+    }
+    .title-rarity-epic {
+      background: rgba(168, 85, 247, 0.10);
+      color: #e9d5ff;
+      border-color: rgba(168, 85, 247, 0.24);
+    }
+    .title-rarity-rare {
+      background: rgba(59, 130, 246, 0.10);
+      color: #bfdbfe;
+      border-color: rgba(59, 130, 246, 0.24);
+    }
+    .title-rarity-uncommon {
+      background: rgba(34, 197, 94, 0.10);
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+    .title-rarity-common {
+      background: rgba(255, 255, 255, 0.06);
+      color: #f8fafc;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
     .mode-note-badge {
       display:inline-flex;
       align-items:center;
@@ -833,15 +865,17 @@
 <body>
 <div class="wrap">
 <section class="card hero">
-<h1>DPS 模擬器 v60</h1>
-<p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定。</p>
+<h1>DPS 模擬器 v82.1</h1>
+<p>依照你給的公式重做，主畫面只保留核心結果，角色改成用彈窗設定，並整理成只留六星的 bytes 模板，名稱先翻成中文顯示。</p>
 <div class="tag">最多 12 角色，4 隊</div>
 <div class="tag">支援模板也會顯示自身 DPS</div>
 <div class="tag">一般模式直接填遊戲內目前面板</div>
+<div class="tag">已匯入 bytes 六星角色模板 42 筆</div>
 <button class="btn secondary" onclick="window.open('收益模擬器.html','_blank')">收益模擬器</button>
 <div class="fox-advisor-wrap"><div class="fox-advisor-content"><div class="fox-advisor-title">阿狐建議</div><div class="fox-advisor-text" id="advisorBox">尚未建立角色</div></div><img alt="阿狐" class="fox-advisor-image" src="data:image/png;base64,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"/></div>
 <div class="note" id="effectiveBuffInfo">目前 Buff：-</div>
 <div class="note" id="effectiveStatInfo">實際暴擊率：-</div>
+<div class="note" id="healSynergyInfo">治療聯動：-</div>
 </section>
 <div class="page-with-debug" id="pageWithDebug"><div class="main-content">
 <section class="card">
@@ -860,9 +894,9 @@
 </div>
 <div>
 <label> </label>
-<div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal" type="button">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button>
+<div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn" id="openCharacterModal" type="button">新增角色</button><button class="btn secondary" id="generateTestCharactersBtn" type="button">一鍵生成攻速/生命測試角色</button><button class="btn secondary" id="generateCritTestCharactersBtn" type="button">一鍵生成暴擊測試角色</button><button class="btn secondary" id="generateHealPassiveTestBtn" type="button">快速新增：南丁＋女槍測試組</button><button class="btn secondary" id="saveTeamPresetBtn" type="button">儲存當下隊伍素質</button><button class="btn secondary" id="loadTeamPresetBtn" type="button">快速新增已存隊伍</button>
 <button class="btn danger" onclick="clearTestChars()">一鍵清除測試角色</button>
-<button class="btn" onclick="toggleDebug()">Debug模式</button>
+<button class="btn" onclick="toggleDebug()">傷害組成</button>
 </div>
 </div>
 </div>
@@ -870,52 +904,39 @@
 </section>
 <section class="card">
 <div class="section-head">
-<h2>核心結果</h2>
+<h2>傷害組成</h2>
 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
 <p class="muted" id="selectedCharacterName">尚未選取角色</p>
 </div>
 </div>
 <div class="results">
-<div class="stat highlight">
-<span>每秒輸出 (DPS)</span>
-<strong id="dps">-</strong>
-</div>
-<div class="stat">
-<span>有效攻速</span>
-<strong id="effectiveAps">-</strong>
-</div>
-<div class="stat">
-<span>總傷害 (DMG)</span>
-<strong id="fightDamage">-</strong>
-</div>
 <div id="debugPanelInlineMount"><div class="debug-panel" id="calcDebugPanel">
-<div class="section-head">
-<h3>Debug 計算過程</h3>
-<p class="muted">直接看目前所選角色每一段怎麼算</p>
-</div>
 <div class="debug-grid">
-<div class="debug-box"><span>基礎攻擊</span><strong id="dbgBaseAtk">-</strong></div>
-<div class="debug-box"><span>攻擊加成後</span><strong id="dbgAtkAfterBuff">-</strong></div>
-<div class="debug-box"><span>技能總倍率</span><strong id="dbgSkillMultiplier">-</strong></div>
-<div class="debug-box"><span>非暴擊單次</span><strong id="dbgNonCrit">-</strong></div>
-<div class="debug-box"><span>暴擊單次</span><strong id="dbgCrit">-</strong></div>
-<div class="debug-box"><span>平均單次</span><strong id="dbgAvg">-</strong></div>
-<div class="debug-box"><span>實際暴擊率</span><strong id="dbgCritRate">-</strong></div>
-<div class="debug-box"><span>暴擊倍率</span><strong id="dbgCritMultiplier">-</strong></div>
-<div class="debug-box"><span>原始週期</span><strong id="dbgRawCycle">-</strong></div>
-<div class="debug-box"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
-<div class="debug-box"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
-<div class="debug-box"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
-<div class="debug-box"><span>職業被動 DPS</span><strong id="dbgPassiveDps">-</strong></div>
+<div class="debug-box" id="dbgBaseAtkBox"><span>角色本體攻擊（推定）</span><strong id="dbgBaseAtk">-</strong></div>
+<div class="debug-box" id="dbgResearchAtkBox"><span>研究院攻擊</span><strong id="dbgResearchAtk">-</strong></div>
+<div class="debug-box" id="dbgPanelAtkBox"><span>目前面板攻擊</span><strong id="dbgPanelAtk">-</strong></div>
+<div class="debug-box" id="dbgAtkAfterBuffBox"><span>吃完 Buff 後攻擊</span><strong id="dbgAtkAfterBuff">-</strong></div>
+<div class="debug-box" id="dbgSkillMultiplierBox"><span>技能總倍率</span><strong id="dbgSkillMultiplier">-</strong></div>
+<div class="debug-box" id="dbgNonCritBox"><span>一次施放傷害（非暴）</span><strong id="dbgNonCrit">-</strong></div>
+<div class="debug-box" id="dbgCritBox"><span>一次施放傷害（暴擊）</span><strong id="dbgCrit">-</strong></div>
+<div class="debug-box" id="dbgAvgBox"><span>平均一次施放傷害</span><strong id="dbgAvg">-</strong></div>
+<div class="debug-box" id="dbgCritRateBox"><span>實際暴擊率</span><strong id="dbgCritRate">-</strong></div>
+<div class="debug-box" id="dbgCritMultiplierBox"><span>暴擊倍率</span><strong id="dbgCritMultiplier">-</strong></div>
+<div class="debug-box" id="dbgRawCycleBox"><span>原始週期</span><strong id="dbgRawCycle">-</strong></div>
+<div class="debug-box" id="dbgEffectiveCycleBox"><span>套用後週期</span><strong id="dbgEffectiveCycle">-</strong></div>
+<div class="debug-box" id="dbgDefenseMultiplierBox"><span>防禦減傷倍率</span><strong id="dbgDefenseMultiplier">-</strong></div>
+<div class="debug-box" id="dbgFinalDpsBox"><span>最終 DPS</span><strong id="dbgFinalDps">-</strong></div>
+<div class="debug-box" id="dbgPassiveDpsBox"><span>職業被動 DPS</span><strong id="dbgPassiveDps">-</strong></div>
 </div>
 <div class="debug-list" id="dbgBuffSummary">Buff：-</div>
 <div class="debug-list" id="dbgSkillSummary">技能：-</div>
 <div class="debug-list" id="dbgPassiveSummary">職業被動：-</div>
+<div class="debug-list" id="dbgTitleSummary">稱號：-</div>
 </div></div>
 </div>
 </section>
-</div><aside class="debug-side-panel" id="debugSidePanel"><div class="debug-mode-pill" id="debugModePill">Debug：關閉</div><div id="debugPanelSideMount"></div></aside></div>
-<section class="card" id="debugCard">
+</div><aside class="debug-side-panel" id="debugSidePanel"><div class="debug-mode-pill" id="debugModePill">傷害組成：關閉</div><div id="debugPanelSideMount"></div></aside></div>
+<section class="card" id="debugCard" style="display:none;">
 <div class="section-head">
 <h2>儲存 Debug</h2>
 <p class="muted">確認自動儲存與讀取是否正常</p>
@@ -964,10 +985,6 @@
 <label for="charTemplate">角色模板</label>
 <select id="charTemplate">
 <option value="">未選擇</option>
-<option value="蘭德克莉特">蘭德克莉特</option>
-<option value="九尾狐">九尾狐</option>
-<option value="Nurspy">Nurspy</option>
-<option value="Randgrid">Randgrid</option>
 </select>
 </div>
 <div>
@@ -980,9 +997,34 @@
 <label> </label>
 <button class="btn secondary" id="applyGrade6Btn" type="button">套用六星資料</button>
 </div>
+<div>
+<label for="legendTitleKey">稱號 A</label>
+<select id="legendTitleKey">
+<option value="">未裝備</option>
+</select>
+</div>
+<div>
+<label for="legendTitleKey2">稱號 B</label>
+<select id="legendTitleKey2">
+<option value="">未裝備</option>
+</select>
+</div>
+<div>
+<label for="legendTitleKey3">稱號 C</label>
+<select id="legendTitleKey3">
+<option value="">未裝備</option>
+</select>
+</div>
+<div>
+<label for="healTriggerEnabled">治療觸發</label>
+<select id="healTriggerEnabled">
+<option value="0">未觸發</option>
+<option value="1">手動指定觸發</option>
+</select>
+</div>
 <input id="charLeader" type="hidden" value="0"/>
 </div>
-<div class="mode-note-badge" id="grade6Info">六星資料庫：未套用</div>
+<div class="mode-note-badge" id="grade6Info">六星資料庫：未套用｜角色模板只保留六星 bytes 面板</div>
 </div>
 <div class="sub-card section-stack">
 <h3>屬性</h3>
@@ -1293,6 +1335,12 @@ const CHARACTER_TEMPLATES = {
       }
     };
 
+
+
+    const IMPORTED_CHARACTER_TEMPLATES = {"CHA_WA_6_1":{"displayName":"戰士 六星 #1｜CHA_WA_6_1","sourceType":"bytes","characterId":"CHA_WA_6_1","statId":"STAT_CHA_WA_6_1","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":1,"level":60,"initialAttDmg":70.0,"growthAttDmg":5.0,"initialHp":490.0,"growthHp":35.0,"atk":365.0,"hp":2555.0,"finalAtkInput":365.0,"finalHpInput":2555.0,"pdef":172.5,"mdef":172.5,"pPen":172.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_2":{"displayName":"戰士 六星 #2｜CHA_WA_6_2","sourceType":"bytes","characterId":"CHA_WA_6_2","statId":"STAT_CHA_WA_6_2","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":2,"level":60,"initialAttDmg":70.0,"growthAttDmg":4.0,"initialHp":490.0,"growthHp":42.0,"atk":306.0,"hp":2968.0,"finalAtkInput":306.0,"finalHpInput":2968.0,"pdef":177.5,"mdef":172.5,"pPen":167.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_3":{"displayName":"戰士 六星 #3｜CHA_WA_6_3","sourceType":"bytes","characterId":"CHA_WA_6_3","statId":"STAT_CHA_WA_6_3","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":3,"level":60,"initialAttDmg":70.0,"growthAttDmg":6.0,"initialHp":490.0,"growthHp":35.0,"atk":424.0,"hp":2555.0,"finalAtkInput":424.0,"finalHpInput":2555.0,"pdef":167.5,"mdef":172.5,"pPen":172.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_4":{"displayName":"戰士 六星 #4｜CHA_WA_6_4","sourceType":"bytes","characterId":"CHA_WA_6_4","statId":"STAT_CHA_WA_6_4","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":4,"level":60,"initialAttDmg":70.0,"growthAttDmg":4.0,"initialHp":490.0,"growthHp":28.0,"atk":306.0,"hp":2142.0,"finalAtkInput":306.0,"finalHpInput":2142.0,"pdef":177.5,"mdef":172.5,"pPen":177.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_5":{"displayName":"戰士 六星 #5｜CHA_WA_6_5","sourceType":"bytes","characterId":"CHA_WA_6_5","statId":"STAT_CHA_WA_6_5","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":5,"level":60,"initialAttDmg":70.0,"growthAttDmg":5.0,"initialHp":490.0,"growthHp":28.0,"atk":365.0,"hp":2142.0,"finalAtkInput":365.0,"finalHpInput":2142.0,"pdef":172.5,"mdef":172.5,"pPen":177.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_6":{"displayName":"戰士 六星 #6｜CHA_WA_6_6","sourceType":"bytes","characterId":"CHA_WA_6_6","statId":"STAT_CHA_WA_6_6","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":6,"level":60,"initialAttDmg":70.0,"growthAttDmg":5.0,"initialHp":490.0,"growthHp":35.0,"atk":365.0,"hp":2555.0,"finalAtkInput":365.0,"finalHpInput":2555.0,"pdef":172.5,"mdef":172.5,"pPen":172.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WA_6_7":{"displayName":"戰士 六星 #7｜CHA_WA_6_7","sourceType":"bytes","characterId":"CHA_WA_6_7","statId":"STAT_CHA_WA_6_7","jobCode":"WA","jobLabel":"戰士","grade":6,"variant":7,"level":60,"initialAttDmg":70.0,"growthAttDmg":5.0,"initialHp":490.0,"growthHp":35.0,"atk":365.0,"hp":2555.0,"finalAtkInput":365.0,"finalHpInput":2555.0,"pdef":172.5,"mdef":172.5,"pPen":172.5,"mPen":172.5,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_1":{"displayName":"聖騎士 六星 #1｜CHA_PA_6_1","sourceType":"bytes","characterId":"CHA_PA_6_1","statId":"STAT_CHA_PA_6_1","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":1,"level":60,"initialAttDmg":63.0,"growthAttDmg":4.5,"initialHp":539.0,"growthHp":38.5,"atk":328.5,"hp":2810.5,"finalAtkInput":328.5,"finalHpInput":2810.5,"pdef":189.75,"mdef":189.75,"pPen":155.25,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_2":{"displayName":"聖騎士 六星 #2｜CHA_PA_6_2","sourceType":"bytes","characterId":"CHA_PA_6_2","statId":"STAT_CHA_PA_6_2","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":2,"level":60,"initialAttDmg":63.0,"growthAttDmg":3.6,"initialHp":539.0,"growthHp":30.8,"atk":275.4,"hp":2356.2,"finalAtkInput":275.4,"finalHpInput":2356.2,"pdef":195.25,"mdef":189.75,"pPen":159.75,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_3":{"displayName":"聖騎士 六星 #3｜CHA_PA_6_3","sourceType":"bytes","characterId":"CHA_PA_6_3","statId":"STAT_CHA_PA_6_3","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":3,"level":60,"initialAttDmg":63.0,"growthAttDmg":5.4,"initialHp":539.0,"growthHp":30.8,"atk":381.6,"hp":2356.2,"finalAtkInput":381.6,"finalHpInput":2356.2,"pdef":184.25,"mdef":189.75,"pPen":159.75,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_4":{"displayName":"聖騎士 六星 #4｜CHA_PA_6_4","sourceType":"bytes","characterId":"CHA_PA_6_4","statId":"STAT_CHA_PA_6_4","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":4,"level":60,"initialAttDmg":63.0,"growthAttDmg":3.6,"initialHp":539.0,"growthHp":46.2,"atk":275.4,"hp":3264.8,"finalAtkInput":275.4,"finalHpInput":3264.8,"pdef":195.25,"mdef":189.75,"pPen":150.75,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_5":{"displayName":"聖騎士 六星 #5｜CHA_PA_6_5","sourceType":"bytes","characterId":"CHA_PA_6_5","statId":"STAT_CHA_PA_6_5","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":5,"level":60,"initialAttDmg":63.0,"growthAttDmg":4.5,"initialHp":539.0,"growthHp":38.5,"atk":328.5,"hp":2810.5,"finalAtkInput":328.5,"finalHpInput":2810.5,"pdef":189.75,"mdef":189.75,"pPen":155.25,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_6":{"displayName":"聖騎士 六星 #6｜CHA_PA_6_6","sourceType":"bytes","characterId":"CHA_PA_6_6","statId":"STAT_CHA_PA_6_6","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":6,"level":60,"initialAttDmg":63.0,"growthAttDmg":4.5,"initialHp":539.0,"growthHp":38.5,"atk":328.5,"hp":2810.5,"finalAtkInput":328.5,"finalHpInput":2810.5,"pdef":189.75,"mdef":189.75,"pPen":155.25,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PA_6_7":{"displayName":"聖騎士 六星 #7｜CHA_PA_6_7","sourceType":"bytes","characterId":"CHA_PA_6_7","statId":"STAT_CHA_PA_6_7","jobCode":"PA","jobLabel":"聖騎士","grade":6,"variant":7,"level":60,"initialAttDmg":63.0,"growthAttDmg":4.5,"initialHp":539.0,"growthHp":38.5,"atk":328.5,"hp":2810.5,"finalAtkInput":328.5,"finalHpInput":2810.5,"pdef":189.75,"mdef":189.75,"pPen":155.25,"mPen":155.25,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_1":{"displayName":"弓箭手 六星 #1｜CHA_AR_6_1","sourceType":"bytes","characterId":"CHA_AR_6_1","statId":"STAT_CHA_AR_6_1","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":1,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_2":{"displayName":"弓箭手 六星 #2｜CHA_AR_6_2","sourceType":"bytes","characterId":"CHA_AR_6_2","statId":"STAT_CHA_AR_6_2","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":2,"level":60,"initialAttDmg":73.5,"growthAttDmg":6.3,"initialHp":465.5,"growthHp":33.25,"atk":445.2,"hp":2427.25,"finalAtkInput":445.2,"finalHpInput":2427.25,"pdef":159.12,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_3":{"displayName":"弓箭手 六星 #3｜CHA_AR_6_3","sourceType":"bytes","characterId":"CHA_AR_6_3","statId":"STAT_CHA_AR_6_3","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":3,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":26.6,"atk":383.25,"hp":2034.9,"finalAtkInput":383.25,"finalHpInput":2034.9,"pdef":163.88,"mdef":163.88,"pPen":186.38,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_4":{"displayName":"弓箭手 六星 #4｜CHA_AR_6_4","sourceType":"bytes","characterId":"CHA_AR_6_4","statId":"STAT_CHA_AR_6_4","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":4,"level":60,"initialAttDmg":73.5,"growthAttDmg":6.3,"initialHp":465.5,"growthHp":26.6,"atk":445.2,"hp":2034.9,"finalAtkInput":445.2,"finalHpInput":2034.9,"pdef":159.12,"mdef":163.88,"pPen":186.38,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_5":{"displayName":"弓箭手 六星 #5｜CHA_AR_6_5","sourceType":"bytes","characterId":"CHA_AR_6_5","statId":"STAT_CHA_AR_6_5","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":5,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_6":{"displayName":"弓箭手 六星 #6｜CHA_AR_6_6","sourceType":"bytes","characterId":"CHA_AR_6_6","statId":"STAT_CHA_AR_6_6","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":6,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_AR_6_7":{"displayName":"弓箭手 六星 #7｜CHA_AR_6_7","sourceType":"bytes","characterId":"CHA_AR_6_7","statId":"STAT_CHA_AR_6_7","jobCode":"AR","jobLabel":"弓箭手","grade":6,"variant":7,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_1":{"displayName":"獵人 六星 #1｜CHA_HU_6_1","sourceType":"bytes","characterId":"CHA_HU_6_1","statId":"STAT_CHA_HU_6_1","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":1,"level":60,"initialAttDmg":77.0,"growthAttDmg":5.5,"initialHp":441.0,"growthHp":31.5,"atk":401.5,"hp":2299.5,"finalAtkInput":401.5,"finalHpInput":2299.5,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_2":{"displayName":"獵人 六星 #2｜CHA_HU_6_2","sourceType":"bytes","characterId":"CHA_HU_6_2","statId":"STAT_CHA_HU_6_2","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":2,"level":60,"initialAttDmg":77.0,"growthAttDmg":6.6,"initialHp":441.0,"growthHp":25.2,"atk":466.4,"hp":1927.8,"finalAtkInput":466.4,"finalHpInput":1927.8,"pdef":168.62,"mdef":163.88,"pPen":175.88,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_3":{"displayName":"獵人 六星 #3｜CHA_HU_6_3","sourceType":"bytes","characterId":"CHA_HU_6_3","statId":"STAT_CHA_HU_6_3","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":3,"level":60,"initialAttDmg":77.0,"growthAttDmg":5.5,"initialHp":441.0,"growthHp":31.5,"atk":401.5,"hp":2299.5,"finalAtkInput":401.5,"finalHpInput":2299.5,"pdef":159.12,"mdef":163.88,"pPen":186.38,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_4":{"displayName":"獵人 六星 #4｜CHA_HU_6_4","sourceType":"bytes","characterId":"CHA_HU_6_4","statId":"STAT_CHA_HU_6_4","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":4,"level":60,"initialAttDmg":77.0,"growthAttDmg":6.6,"initialHp":441.0,"growthHp":31.5,"atk":466.4,"hp":2299.5,"finalAtkInput":466.4,"finalHpInput":2299.5,"pdef":163.88,"mdef":163.88,"pPen":175.88,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_5":{"displayName":"獵人 六星 #5｜CHA_HU_6_5","sourceType":"bytes","characterId":"CHA_HU_6_5","statId":"STAT_CHA_HU_6_5","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":5,"level":60,"initialAttDmg":77.0,"growthAttDmg":4.4,"initialHp":441.0,"growthHp":37.8,"atk":336.6,"hp":2671.2,"finalAtkInput":336.6,"finalHpInput":2671.2,"pdef":168.62,"mdef":163.88,"pPen":175.88,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_6":{"displayName":"獵人 六星 #6｜CHA_HU_6_6","sourceType":"bytes","characterId":"CHA_HU_6_6","statId":"STAT_CHA_HU_6_6","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":6,"level":60,"initialAttDmg":77.0,"growthAttDmg":5.5,"initialHp":441.0,"growthHp":31.5,"atk":401.5,"hp":2299.5,"finalAtkInput":401.5,"finalHpInput":2299.5,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_HU_6_7":{"displayName":"獵人 六星 #7｜CHA_HU_6_7","sourceType":"bytes","characterId":"CHA_HU_6_7","statId":"STAT_CHA_HU_6_7","jobCode":"HU","jobLabel":"獵人","grade":6,"variant":7,"level":60,"initialAttDmg":77.0,"growthAttDmg":5.5,"initialHp":441.0,"growthHp":31.5,"atk":401.5,"hp":2299.5,"finalAtkInput":401.5,"finalHpInput":2299.5,"pdef":163.88,"mdef":163.88,"pPen":181.12,"mPen":181.12,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_1":{"displayName":"法師 六星 #1｜CHA_WI_6_1","sourceType":"bytes","characterId":"CHA_WI_6_1","statId":"STAT_CHA_WI_6_1","jobCode":"WI","jobLabel":"法師","grade":6,"variant":1,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":155.25,"mdef":155.25,"pPen":189.75,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_2":{"displayName":"法師 六星 #2｜CHA_WI_6_2","sourceType":"bytes","characterId":"CHA_WI_6_2","statId":"STAT_CHA_WI_6_2","jobCode":"WI","jobLabel":"法師","grade":6,"variant":2,"level":60,"initialAttDmg":73.5,"growthAttDmg":4.2,"initialHp":465.5,"growthHp":39.9,"atk":321.3,"hp":2819.6,"finalAtkInput":321.3,"finalHpInput":2819.6,"pdef":155.25,"mdef":155.25,"pPen":189.75,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_3":{"displayName":"法師 六星 #3｜CHA_WI_6_3","sourceType":"bytes","characterId":"CHA_WI_6_3","statId":"STAT_CHA_WI_6_3","jobCode":"WI","jobLabel":"法師","grade":6,"variant":3,"level":60,"initialAttDmg":73.5,"growthAttDmg":6.3,"initialHp":465.5,"growthHp":26.6,"atk":445.2,"hp":2034.9,"finalAtkInput":445.2,"finalHpInput":2034.9,"pdef":150.75,"mdef":155.25,"pPen":195.25,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_4":{"displayName":"法師 六星 #4｜CHA_WI_6_4","sourceType":"bytes","characterId":"CHA_WI_6_4","statId":"STAT_CHA_WI_6_4","jobCode":"WI","jobLabel":"法師","grade":6,"variant":4,"level":60,"initialAttDmg":73.5,"growthAttDmg":6.3,"initialHp":465.5,"growthHp":33.25,"atk":445.2,"hp":2427.25,"finalAtkInput":445.2,"finalHpInput":2427.25,"pdef":155.25,"mdef":155.25,"pPen":184.25,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_5":{"displayName":"法師 六星 #5｜CHA_WI_6_5","sourceType":"bytes","characterId":"CHA_WI_6_5","statId":"STAT_CHA_WI_6_5","jobCode":"WI","jobLabel":"法師","grade":6,"variant":5,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":39.9,"atk":383.25,"hp":2819.6,"finalAtkInput":383.25,"finalHpInput":2819.6,"pdef":150.75,"mdef":155.25,"pPen":189.75,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_6":{"displayName":"法師 六星 #6｜CHA_WI_6_6","sourceType":"bytes","characterId":"CHA_WI_6_6","statId":"STAT_CHA_WI_6_6","jobCode":"WI","jobLabel":"法師","grade":6,"variant":6,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":155.25,"mdef":155.25,"pPen":189.75,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_WI_6_7":{"displayName":"法師 六星 #7｜CHA_WI_6_7","sourceType":"bytes","characterId":"CHA_WI_6_7","statId":"STAT_CHA_WI_6_7","jobCode":"WI","jobLabel":"法師","grade":6,"variant":7,"level":60,"initialAttDmg":73.5,"growthAttDmg":5.25,"initialHp":465.5,"growthHp":33.25,"atk":383.25,"hp":2427.25,"finalAtkInput":383.25,"finalHpInput":2427.25,"pdef":155.25,"mdef":155.25,"pPen":189.75,"mPen":189.75,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_1":{"displayName":"祭師 六星 #1｜CHA_PR_6_1","sourceType":"bytes","characterId":"CHA_PR_6_1","statId":"STAT_CHA_PR_6_1","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":1,"level":60,"initialAttDmg":66.5,"growthAttDmg":4.75,"initialHp":514.5,"growthHp":36.75,"atk":346.75,"hp":2682.75,"finalAtkInput":346.75,"finalHpInput":2682.75,"pdef":181.12,"mdef":181.12,"pPen":163.88,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_2":{"displayName":"祭師 六星 #2｜CHA_PR_6_2","sourceType":"bytes","characterId":"CHA_PR_6_2","statId":"STAT_CHA_PR_6_2","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":2,"level":60,"initialAttDmg":66.5,"growthAttDmg":3.8,"initialHp":514.5,"growthHp":44.1,"atk":290.7,"hp":3116.4,"finalAtkInput":290.7,"finalHpInput":3116.4,"pdef":186.38,"mdef":181.12,"pPen":159.12,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_3":{"displayName":"祭師 六星 #3｜CHA_PR_6_3","sourceType":"bytes","characterId":"CHA_PR_6_3","statId":"STAT_CHA_PR_6_3","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":3,"level":60,"initialAttDmg":66.5,"growthAttDmg":4.75,"initialHp":514.5,"growthHp":44.1,"atk":346.75,"hp":3116.4,"finalAtkInput":346.75,"finalHpInput":3116.4,"pdef":181.12,"mdef":181.12,"pPen":159.12,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_4":{"displayName":"祭師 六星 #4｜CHA_PR_6_4","sourceType":"bytes","characterId":"CHA_PR_6_4","statId":"STAT_CHA_PR_6_4","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":4,"level":60,"initialAttDmg":66.5,"growthAttDmg":5.7,"initialHp":514.5,"growthHp":29.4,"atk":402.8,"hp":2249.1,"finalAtkInput":402.8,"finalHpInput":2249.1,"pdef":175.88,"mdef":181.12,"pPen":168.62,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_5":{"displayName":"祭師 六星 #5｜CHA_PR_6_5","sourceType":"bytes","characterId":"CHA_PR_6_5","statId":"STAT_CHA_PR_6_5","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":5,"level":60,"initialAttDmg":66.5,"growthAttDmg":5.7,"initialHp":514.5,"growthHp":29.4,"atk":402.8,"hp":2249.1,"finalAtkInput":402.8,"finalHpInput":2249.1,"pdef":186.38,"mdef":181.12,"pPen":159.12,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_6":{"displayName":"祭師 六星 #6｜CHA_PR_6_6","sourceType":"bytes","characterId":"CHA_PR_6_6","statId":"STAT_CHA_PR_6_6","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":6,"level":60,"initialAttDmg":66.5,"growthAttDmg":4.75,"initialHp":514.5,"growthHp":36.75,"atk":346.75,"hp":2682.75,"finalAtkInput":346.75,"finalHpInput":2682.75,"pdef":181.12,"mdef":181.12,"pPen":163.88,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]},"CHA_PR_6_7":{"displayName":"祭師 六星 #7｜CHA_PR_6_7","sourceType":"bytes","characterId":"CHA_PR_6_7","statId":"STAT_CHA_PR_6_7","jobCode":"PR","jobLabel":"祭師","grade":6,"variant":7,"level":60,"initialAttDmg":66.5,"growthAttDmg":4.75,"initialHp":514.5,"growthHp":36.75,"atk":346.75,"hp":2682.75,"finalAtkInput":346.75,"finalHpInput":2682.75,"pdef":181.12,"mdef":181.12,"pPen":163.88,"mPen":163.88,"crit":20.0,"critDmg":50.0,"attackSpeed":2.5,"buffs":[],"selfBuffs":[],"teamBuffs":[],"aura":null,"skills":[]}};
+    const IMPORTED_TEMPLATE_GROUPS = {"WA":[{"key":"CHA_WA_1_1","label":"戰士 1★ #1｜CHA_WA_1_1","grade":1,"variant":1},{"key":"CHA_WA_1_2","label":"戰士 1★ #2｜CHA_WA_1_2","grade":1,"variant":2},{"key":"CHA_WA_1_3","label":"戰士 1★ #3｜CHA_WA_1_3","grade":1,"variant":3},{"key":"CHA_WA_1_4","label":"戰士 1★ #4｜CHA_WA_1_4","grade":1,"variant":4},{"key":"CHA_WA_1_5","label":"戰士 1★ #5｜CHA_WA_1_5","grade":1,"variant":5},{"key":"CHA_WA_1_6","label":"戰士 1★ #6｜CHA_WA_1_6","grade":1,"variant":6},{"key":"CHA_WA_1_7","label":"戰士 1★ #7｜CHA_WA_1_7","grade":1,"variant":7},{"key":"CHA_WA_2_1","label":"戰士 2★ #1｜CHA_WA_2_1","grade":2,"variant":1},{"key":"CHA_WA_2_2","label":"戰士 2★ #2｜CHA_WA_2_2","grade":2,"variant":2},{"key":"CHA_WA_2_3","label":"戰士 2★ #3｜CHA_WA_2_3","grade":2,"variant":3},{"key":"CHA_WA_2_4","label":"戰士 2★ #4｜CHA_WA_2_4","grade":2,"variant":4},{"key":"CHA_WA_2_5","label":"戰士 2★ #5｜CHA_WA_2_5","grade":2,"variant":5},{"key":"CHA_WA_2_6","label":"戰士 2★ #6｜CHA_WA_2_6","grade":2,"variant":6},{"key":"CHA_WA_2_7","label":"戰士 2★ #7｜CHA_WA_2_7","grade":2,"variant":7},{"key":"CHA_WA_2_8","label":"戰士 2★ #8｜CHA_WA_2_8","grade":2,"variant":8},{"key":"CHA_WA_2_9","label":"戰士 2★ #9｜CHA_WA_2_9","grade":2,"variant":9},{"key":"CHA_WA_3_1","label":"戰士 3★ #1｜CHA_WA_3_1","grade":3,"variant":1},{"key":"CHA_WA_3_2","label":"戰士 3★ #2｜CHA_WA_3_2","grade":3,"variant":2},{"key":"CHA_WA_3_3","label":"戰士 3★ #3｜CHA_WA_3_3","grade":3,"variant":3},{"key":"CHA_WA_3_4","label":"戰士 3★ #4｜CHA_WA_3_4","grade":3,"variant":4},{"key":"CHA_WA_3_5","label":"戰士 3★ #5｜CHA_WA_3_5","grade":3,"variant":5},{"key":"CHA_WA_3_6","label":"戰士 3★ #6｜CHA_WA_3_6","grade":3,"variant":6},{"key":"CHA_WA_3_7","label":"戰士 3★ #7｜CHA_WA_3_7","grade":3,"variant":7},{"key":"CHA_WA_3_8","label":"戰士 3★ #8｜CHA_WA_3_8","grade":3,"variant":8},{"key":"CHA_WA_3_9","label":"戰士 3★ #9｜CHA_WA_3_9","grade":3,"variant":9},{"key":"CHA_WA_3_10","label":"戰士 3★ #10｜CHA_WA_3_10","grade":3,"variant":10},{"key":"CHA_WA_3_11","label":"戰士 3★ #11｜CHA_WA_3_11","grade":3,"variant":11},{"key":"CHA_WA_3_12","label":"戰士 3★ #12｜CHA_WA_3_12","grade":3,"variant":12},{"key":"CHA_WA_4_1","label":"戰士 4★ #1｜CHA_WA_4_1","grade":4,"variant":1},{"key":"CHA_WA_4_2","label":"戰士 4★ #2｜CHA_WA_4_2","grade":4,"variant":2},{"key":"CHA_WA_4_3","label":"戰士 4★ #3｜CHA_WA_4_3","grade":4,"variant":3},{"key":"CHA_WA_4_4","label":"戰士 4★ #4｜CHA_WA_4_4","grade":4,"variant":4},{"key":"CHA_WA_4_5","label":"戰士 4★ #5｜CHA_WA_4_5","grade":4,"variant":5},{"key":"CHA_WA_4_6","label":"戰士 4★ #6｜CHA_WA_4_6","grade":4,"variant":6},{"key":"CHA_WA_4_7","label":"戰士 4★ #7｜CHA_WA_4_7","grade":4,"variant":7},{"key":"CHA_WA_5_1","label":"戰士 5★ #1｜CHA_WA_5_1","grade":5,"variant":1},{"key":"CHA_WA_5_2","label":"戰士 5★ #2｜CHA_WA_5_2","grade":5,"variant":2},{"key":"CHA_WA_5_3","label":"戰士 5★ #3｜CHA_WA_5_3","grade":5,"variant":3},{"key":"CHA_WA_5_4","label":"戰士 5★ #4｜CHA_WA_5_4","grade":5,"variant":4},{"key":"CHA_WA_5_5","label":"戰士 5★ #5｜CHA_WA_5_5","grade":5,"variant":5},{"key":"CHA_WA_5_6","label":"戰士 5★ #6｜CHA_WA_5_6","grade":5,"variant":6},{"key":"CHA_WA_5_7","label":"戰士 5★ #7｜CHA_WA_5_7","grade":5,"variant":7},{"key":"CHA_WA_6_1","label":"戰士 6★ #1｜CHA_WA_6_1","grade":6,"variant":1},{"key":"CHA_WA_6_2","label":"戰士 6★ #2｜CHA_WA_6_2","grade":6,"variant":2},{"key":"CHA_WA_6_3","label":"戰士 6★ #3｜CHA_WA_6_3","grade":6,"variant":3},{"key":"CHA_WA_6_4","label":"戰士 6★ #4｜CHA_WA_6_4","grade":6,"variant":4},{"key":"CHA_WA_6_5","label":"戰士 6★ #5｜CHA_WA_6_5","grade":6,"variant":5},{"key":"CHA_WA_6_6","label":"戰士 6★ #6｜CHA_WA_6_6","grade":6,"variant":6},{"key":"CHA_WA_6_7","label":"戰士 6★ #7｜CHA_WA_6_7","grade":6,"variant":7}],"PA":[{"key":"CHA_PA_1_1","label":"聖騎士 1★ #1｜CHA_PA_1_1","grade":1,"variant":1},{"key":"CHA_PA_1_2","label":"聖騎士 1★ #2｜CHA_PA_1_2","grade":1,"variant":2},{"key":"CHA_PA_1_3","label":"聖騎士 1★ #3｜CHA_PA_1_3","grade":1,"variant":3},{"key":"CHA_PA_1_4","label":"聖騎士 1★ #4｜CHA_PA_1_4","grade":1,"variant":4},{"key":"CHA_PA_1_5","label":"聖騎士 1★ #5｜CHA_PA_1_5","grade":1,"variant":5},{"key":"CHA_PA_1_6","label":"聖騎士 1★ #6｜CHA_PA_1_6","grade":1,"variant":6},{"key":"CHA_PA_1_7","label":"聖騎士 1★ #7｜CHA_PA_1_7","grade":1,"variant":7},{"key":"CHA_PA_2_1","label":"聖騎士 2★ #1｜CHA_PA_2_1","grade":2,"variant":1},{"key":"CHA_PA_2_2","label":"聖騎士 2★ #2｜CHA_PA_2_2","grade":2,"variant":2},{"key":"CHA_PA_2_3","label":"聖騎士 2★ #3｜CHA_PA_2_3","grade":2,"variant":3},{"key":"CHA_PA_2_4","label":"聖騎士 2★ #4｜CHA_PA_2_4","grade":2,"variant":4},{"key":"CHA_PA_2_5","label":"聖騎士 2★ #5｜CHA_PA_2_5","grade":2,"variant":5},{"key":"CHA_PA_2_6","label":"聖騎士 2★ #6｜CHA_PA_2_6","grade":2,"variant":6},{"key":"CHA_PA_2_7","label":"聖騎士 2★ #7｜CHA_PA_2_7","grade":2,"variant":7},{"key":"CHA_PA_2_8","label":"聖騎士 2★ #8｜CHA_PA_2_8","grade":2,"variant":8},{"key":"CHA_PA_2_9","label":"聖騎士 2★ #9｜CHA_PA_2_9","grade":2,"variant":9},{"key":"CHA_PA_3_1","label":"聖騎士 3★ #1｜CHA_PA_3_1","grade":3,"variant":1},{"key":"CHA_PA_3_2","label":"聖騎士 3★ #2｜CHA_PA_3_2","grade":3,"variant":2},{"key":"CHA_PA_3_3","label":"聖騎士 3★ #3｜CHA_PA_3_3","grade":3,"variant":3},{"key":"CHA_PA_3_4","label":"聖騎士 3★ #4｜CHA_PA_3_4","grade":3,"variant":4},{"key":"CHA_PA_3_5","label":"聖騎士 3★ #5｜CHA_PA_3_5","grade":3,"variant":5},{"key":"CHA_PA_3_6","label":"聖騎士 3★ #6｜CHA_PA_3_6","grade":3,"variant":6},{"key":"CHA_PA_3_7","label":"聖騎士 3★ #7｜CHA_PA_3_7","grade":3,"variant":7},{"key":"CHA_PA_3_8","label":"聖騎士 3★ #8｜CHA_PA_3_8","grade":3,"variant":8},{"key":"CHA_PA_3_9","label":"聖騎士 3★ #9｜CHA_PA_3_9","grade":3,"variant":9},{"key":"CHA_PA_3_10","label":"聖騎士 3★ #10｜CHA_PA_3_10","grade":3,"variant":10},{"key":"CHA_PA_3_11","label":"聖騎士 3★ #11｜CHA_PA_3_11","grade":3,"variant":11},{"key":"CHA_PA_3_12","label":"聖騎士 3★ #12｜CHA_PA_3_12","grade":3,"variant":12},{"key":"CHA_PA_4_1","label":"聖騎士 4★ #1｜CHA_PA_4_1","grade":4,"variant":1},{"key":"CHA_PA_4_2","label":"聖騎士 4★ #2｜CHA_PA_4_2","grade":4,"variant":2},{"key":"CHA_PA_4_3","label":"聖騎士 4★ #3｜CHA_PA_4_3","grade":4,"variant":3},{"key":"CHA_PA_4_4","label":"聖騎士 4★ #4｜CHA_PA_4_4","grade":4,"variant":4},{"key":"CHA_PA_4_5","label":"聖騎士 4★ #5｜CHA_PA_4_5","grade":4,"variant":5},{"key":"CHA_PA_4_6","label":"聖騎士 4★ #6｜CHA_PA_4_6","grade":4,"variant":6},{"key":"CHA_PA_4_7","label":"聖騎士 4★ #7｜CHA_PA_4_7","grade":4,"variant":7},{"key":"CHA_PA_5_1","label":"聖騎士 5★ #1｜CHA_PA_5_1","grade":5,"variant":1},{"key":"CHA_PA_5_2","label":"聖騎士 5★ #2｜CHA_PA_5_2","grade":5,"variant":2},{"key":"CHA_PA_5_3","label":"聖騎士 5★ #3｜CHA_PA_5_3","grade":5,"variant":3},{"key":"CHA_PA_5_4","label":"聖騎士 5★ #4｜CHA_PA_5_4","grade":5,"variant":4},{"key":"CHA_PA_5_5","label":"聖騎士 5★ #5｜CHA_PA_5_5","grade":5,"variant":5},{"key":"CHA_PA_5_6","label":"聖騎士 5★ #6｜CHA_PA_5_6","grade":5,"variant":6},{"key":"CHA_PA_5_7","label":"聖騎士 5★ #7｜CHA_PA_5_7","grade":5,"variant":7},{"key":"CHA_PA_6_1","label":"聖騎士 6★ #1｜CHA_PA_6_1","grade":6,"variant":1},{"key":"CHA_PA_6_2","label":"聖騎士 6★ #2｜CHA_PA_6_2","grade":6,"variant":2},{"key":"CHA_PA_6_3","label":"聖騎士 6★ #3｜CHA_PA_6_3","grade":6,"variant":3},{"key":"CHA_PA_6_4","label":"聖騎士 6★ #4｜CHA_PA_6_4","grade":6,"variant":4},{"key":"CHA_PA_6_5","label":"聖騎士 6★ #5｜CHA_PA_6_5","grade":6,"variant":5},{"key":"CHA_PA_6_6","label":"聖騎士 6★ #6｜CHA_PA_6_6","grade":6,"variant":6},{"key":"CHA_PA_6_7","label":"聖騎士 6★ #7｜CHA_PA_6_7","grade":6,"variant":7}],"AR":[{"key":"CHA_AR_1_1","label":"弓箭手 1★ #1｜CHA_AR_1_1","grade":1,"variant":1},{"key":"CHA_AR_1_2","label":"弓箭手 1★ #2｜CHA_AR_1_2","grade":1,"variant":2},{"key":"CHA_AR_1_3","label":"弓箭手 1★ #3｜CHA_AR_1_3","grade":1,"variant":3},{"key":"CHA_AR_1_4","label":"弓箭手 1★ #4｜CHA_AR_1_4","grade":1,"variant":4},{"key":"CHA_AR_1_5","label":"弓箭手 1★ #5｜CHA_AR_1_5","grade":1,"variant":5},{"key":"CHA_AR_1_6","label":"弓箭手 1★ #6｜CHA_AR_1_6","grade":1,"variant":6},{"key":"CHA_AR_1_7","label":"弓箭手 1★ #7｜CHA_AR_1_7","grade":1,"variant":7},{"key":"CHA_AR_2_1","label":"弓箭手 2★ #1｜CHA_AR_2_1","grade":2,"variant":1},{"key":"CHA_AR_2_2","label":"弓箭手 2★ #2｜CHA_AR_2_2","grade":2,"variant":2},{"key":"CHA_AR_2_3","label":"弓箭手 2★ #3｜CHA_AR_2_3","grade":2,"variant":3},{"key":"CHA_AR_2_4","label":"弓箭手 2★ #4｜CHA_AR_2_4","grade":2,"variant":4},{"key":"CHA_AR_2_5","label":"弓箭手 2★ #5｜CHA_AR_2_5","grade":2,"variant":5},{"key":"CHA_AR_2_6","label":"弓箭手 2★ #6｜CHA_AR_2_6","grade":2,"variant":6},{"key":"CHA_AR_2_7","label":"弓箭手 2★ #7｜CHA_AR_2_7","grade":2,"variant":7},{"key":"CHA_AR_2_8","label":"弓箭手 2★ #8｜CHA_AR_2_8","grade":2,"variant":8},{"key":"CHA_AR_2_9","label":"弓箭手 2★ #9｜CHA_AR_2_9","grade":2,"variant":9},{"key":"CHA_AR_3_1","label":"弓箭手 3★ #1｜CHA_AR_3_1","grade":3,"variant":1},{"key":"CHA_AR_3_2","label":"弓箭手 3★ #2｜CHA_AR_3_2","grade":3,"variant":2},{"key":"CHA_AR_3_3","label":"弓箭手 3★ #3｜CHA_AR_3_3","grade":3,"variant":3},{"key":"CHA_AR_3_4","label":"弓箭手 3★ #4｜CHA_AR_3_4","grade":3,"variant":4},{"key":"CHA_AR_3_5","label":"弓箭手 3★ #5｜CHA_AR_3_5","grade":3,"variant":5},{"key":"CHA_AR_3_6","label":"弓箭手 3★ #6｜CHA_AR_3_6","grade":3,"variant":6},{"key":"CHA_AR_3_7","label":"弓箭手 3★ #7｜CHA_AR_3_7","grade":3,"variant":7},{"key":"CHA_AR_3_8","label":"弓箭手 3★ #8｜CHA_AR_3_8","grade":3,"variant":8},{"key":"CHA_AR_3_9","label":"弓箭手 3★ #9｜CHA_AR_3_9","grade":3,"variant":9},{"key":"CHA_AR_3_10","label":"弓箭手 3★ #10｜CHA_AR_3_10","grade":3,"variant":10},{"key":"CHA_AR_3_11","label":"弓箭手 3★ #11｜CHA_AR_3_11","grade":3,"variant":11},{"key":"CHA_AR_3_12","label":"弓箭手 3★ #12｜CHA_AR_3_12","grade":3,"variant":12},{"key":"CHA_AR_4_1","label":"弓箭手 4★ #1｜CHA_AR_4_1","grade":4,"variant":1},{"key":"CHA_AR_4_2","label":"弓箭手 4★ #2｜CHA_AR_4_2","grade":4,"variant":2},{"key":"CHA_AR_4_3","label":"弓箭手 4★ #3｜CHA_AR_4_3","grade":4,"variant":3},{"key":"CHA_AR_4_4","label":"弓箭手 4★ #4｜CHA_AR_4_4","grade":4,"variant":4},{"key":"CHA_AR_4_5","label":"弓箭手 4★ #5｜CHA_AR_4_5","grade":4,"variant":5},{"key":"CHA_AR_4_6","label":"弓箭手 4★ #6｜CHA_AR_4_6","grade":4,"variant":6},{"key":"CHA_AR_4_7","label":"弓箭手 4★ #7｜CHA_AR_4_7","grade":4,"variant":7},{"key":"CHA_AR_5_1","label":"弓箭手 5★ #1｜CHA_AR_5_1","grade":5,"variant":1},{"key":"CHA_AR_5_2","label":"弓箭手 5★ #2｜CHA_AR_5_2","grade":5,"variant":2},{"key":"CHA_AR_5_3","label":"弓箭手 5★ #3｜CHA_AR_5_3","grade":5,"variant":3},{"key":"CHA_AR_5_4","label":"弓箭手 5★ #4｜CHA_AR_5_4","grade":5,"variant":4},{"key":"CHA_AR_5_5","label":"弓箭手 5★ #5｜CHA_AR_5_5","grade":5,"variant":5},{"key":"CHA_AR_5_6","label":"弓箭手 5★ #6｜CHA_AR_5_6","grade":5,"variant":6},{"key":"CHA_AR_5_7","label":"弓箭手 5★ #7｜CHA_AR_5_7","grade":5,"variant":7},{"key":"CHA_AR_6_1","label":"弓箭手 6★ #1｜CHA_AR_6_1","grade":6,"variant":1},{"key":"CHA_AR_6_2","label":"弓箭手 6★ #2｜CHA_AR_6_2","grade":6,"variant":2},{"key":"CHA_AR_6_3","label":"弓箭手 6★ #3｜CHA_AR_6_3","grade":6,"variant":3},{"key":"CHA_AR_6_4","label":"弓箭手 6★ #4｜CHA_AR_6_4","grade":6,"variant":4},{"key":"CHA_AR_6_5","label":"弓箭手 6★ #5｜CHA_AR_6_5","grade":6,"variant":5},{"key":"CHA_AR_6_6","label":"弓箭手 6★ #6｜CHA_AR_6_6","grade":6,"variant":6},{"key":"CHA_AR_6_7","label":"弓箭手 6★ #7｜CHA_AR_6_7","grade":6,"variant":7}],"HU":[{"key":"CHA_HU_1_1","label":"獵人 1★ #1｜CHA_HU_1_1","grade":1,"variant":1},{"key":"CHA_HU_1_2","label":"獵人 1★ #2｜CHA_HU_1_2","grade":1,"variant":2},{"key":"CHA_HU_1_3","label":"獵人 1★ #3｜CHA_HU_1_3","grade":1,"variant":3},{"key":"CHA_HU_1_4","label":"獵人 1★ #4｜CHA_HU_1_4","grade":1,"variant":4},{"key":"CHA_HU_1_5","label":"獵人 1★ #5｜CHA_HU_1_5","grade":1,"variant":5},{"key":"CHA_HU_1_6","label":"獵人 1★ #6｜CHA_HU_1_6","grade":1,"variant":6},{"key":"CHA_HU_1_7","label":"獵人 1★ #7｜CHA_HU_1_7","grade":1,"variant":7},{"key":"CHA_HU_2_1","label":"獵人 2★ #1｜CHA_HU_2_1","grade":2,"variant":1},{"key":"CHA_HU_2_2","label":"獵人 2★ #2｜CHA_HU_2_2","grade":2,"variant":2},{"key":"CHA_HU_2_3","label":"獵人 2★ #3｜CHA_HU_2_3","grade":2,"variant":3},{"key":"CHA_HU_2_4","label":"獵人 2★ #4｜CHA_HU_2_4","grade":2,"variant":4},{"key":"CHA_HU_2_5","label":"獵人 2★ #5｜CHA_HU_2_5","grade":2,"variant":5},{"key":"CHA_HU_2_6","label":"獵人 2★ #6｜CHA_HU_2_6","grade":2,"variant":6},{"key":"CHA_HU_2_7","label":"獵人 2★ #7｜CHA_HU_2_7","grade":2,"variant":7},{"key":"CHA_HU_2_8","label":"獵人 2★ #8｜CHA_HU_2_8","grade":2,"variant":8},{"key":"CHA_HU_2_9","label":"獵人 2★ #9｜CHA_HU_2_9","grade":2,"variant":9},{"key":"CHA_HU_3_1","label":"獵人 3★ #1｜CHA_HU_3_1","grade":3,"variant":1},{"key":"CHA_HU_3_2","label":"獵人 3★ #2｜CHA_HU_3_2","grade":3,"variant":2},{"key":"CHA_HU_3_3","label":"獵人 3★ #3｜CHA_HU_3_3","grade":3,"variant":3},{"key":"CHA_HU_3_4","label":"獵人 3★ #4｜CHA_HU_3_4","grade":3,"variant":4},{"key":"CHA_HU_3_5","label":"獵人 3★ #5｜CHA_HU_3_5","grade":3,"variant":5},{"key":"CHA_HU_3_6","label":"獵人 3★ #6｜CHA_HU_3_6","grade":3,"variant":6},{"key":"CHA_HU_3_7","label":"獵人 3★ #7｜CHA_HU_3_7","grade":3,"variant":7},{"key":"CHA_HU_3_8","label":"獵人 3★ #8｜CHA_HU_3_8","grade":3,"variant":8},{"key":"CHA_HU_3_9","label":"獵人 3★ #9｜CHA_HU_3_9","grade":3,"variant":9},{"key":"CHA_HU_3_10","label":"獵人 3★ #10｜CHA_HU_3_10","grade":3,"variant":10},{"key":"CHA_HU_3_11","label":"獵人 3★ #11｜CHA_HU_3_11","grade":3,"variant":11},{"key":"CHA_HU_3_12","label":"獵人 3★ #12｜CHA_HU_3_12","grade":3,"variant":12},{"key":"CHA_HU_4_1","label":"獵人 4★ #1｜CHA_HU_4_1","grade":4,"variant":1},{"key":"CHA_HU_4_2","label":"獵人 4★ #2｜CHA_HU_4_2","grade":4,"variant":2},{"key":"CHA_HU_4_3","label":"獵人 4★ #3｜CHA_HU_4_3","grade":4,"variant":3},{"key":"CHA_HU_4_4","label":"獵人 4★ #4｜CHA_HU_4_4","grade":4,"variant":4},{"key":"CHA_HU_4_5","label":"獵人 4★ #5｜CHA_HU_4_5","grade":4,"variant":5},{"key":"CHA_HU_4_6","label":"獵人 4★ #6｜CHA_HU_4_6","grade":4,"variant":6},{"key":"CHA_HU_4_7","label":"獵人 4★ #7｜CHA_HU_4_7","grade":4,"variant":7},{"key":"CHA_HU_5_1","label":"獵人 5★ #1｜CHA_HU_5_1","grade":5,"variant":1},{"key":"CHA_HU_5_2","label":"獵人 5★ #2｜CHA_HU_5_2","grade":5,"variant":2},{"key":"CHA_HU_5_3","label":"獵人 5★ #3｜CHA_HU_5_3","grade":5,"variant":3},{"key":"CHA_HU_5_4","label":"獵人 5★ #4｜CHA_HU_5_4","grade":5,"variant":4},{"key":"CHA_HU_5_5","label":"獵人 5★ #5｜CHA_HU_5_5","grade":5,"variant":5},{"key":"CHA_HU_5_6","label":"獵人 5★ #6｜CHA_HU_5_6","grade":5,"variant":6},{"key":"CHA_HU_5_7","label":"獵人 5★ #7｜CHA_HU_5_7","grade":5,"variant":7},{"key":"CHA_HU_6_1","label":"獵人 6★ #1｜CHA_HU_6_1","grade":6,"variant":1},{"key":"CHA_HU_6_2","label":"獵人 6★ #2｜CHA_HU_6_2","grade":6,"variant":2},{"key":"CHA_HU_6_3","label":"獵人 6★ #3｜CHA_HU_6_3","grade":6,"variant":3},{"key":"CHA_HU_6_4","label":"獵人 6★ #4｜CHA_HU_6_4","grade":6,"variant":4},{"key":"CHA_HU_6_5","label":"獵人 6★ #5｜CHA_HU_6_5","grade":6,"variant":5},{"key":"CHA_HU_6_6","label":"獵人 6★ #6｜CHA_HU_6_6","grade":6,"variant":6},{"key":"CHA_HU_6_7","label":"獵人 6★ #7｜CHA_HU_6_7","grade":6,"variant":7}],"WI":[{"key":"CHA_WI_1_1","label":"法師 1★ #1｜CHA_WI_1_1","grade":1,"variant":1},{"key":"CHA_WI_1_2","label":"法師 1★ #2｜CHA_WI_1_2","grade":1,"variant":2},{"key":"CHA_WI_1_3","label":"法師 1★ #3｜CHA_WI_1_3","grade":1,"variant":3},{"key":"CHA_WI_1_4","label":"法師 1★ #4｜CHA_WI_1_4","grade":1,"variant":4},{"key":"CHA_WI_1_5","label":"法師 1★ #5｜CHA_WI_1_5","grade":1,"variant":5},{"key":"CHA_WI_1_6","label":"法師 1★ #6｜CHA_WI_1_6","grade":1,"variant":6},{"key":"CHA_WI_1_7","label":"法師 1★ #7｜CHA_WI_1_7","grade":1,"variant":7},{"key":"CHA_WI_2_1","label":"法師 2★ #1｜CHA_WI_2_1","grade":2,"variant":1},{"key":"CHA_WI_2_2","label":"法師 2★ #2｜CHA_WI_2_2","grade":2,"variant":2},{"key":"CHA_WI_2_3","label":"法師 2★ #3｜CHA_WI_2_3","grade":2,"variant":3},{"key":"CHA_WI_2_4","label":"法師 2★ #4｜CHA_WI_2_4","grade":2,"variant":4},{"key":"CHA_WI_2_5","label":"法師 2★ #5｜CHA_WI_2_5","grade":2,"variant":5},{"key":"CHA_WI_2_6","label":"法師 2★ #6｜CHA_WI_2_6","grade":2,"variant":6},{"key":"CHA_WI_2_7","label":"法師 2★ #7｜CHA_WI_2_7","grade":2,"variant":7},{"key":"CHA_WI_2_8","label":"法師 2★ #8｜CHA_WI_2_8","grade":2,"variant":8},{"key":"CHA_WI_2_9","label":"法師 2★ #9｜CHA_WI_2_9","grade":2,"variant":9},{"key":"CHA_WI_3_1","label":"法師 3★ #1｜CHA_WI_3_1","grade":3,"variant":1},{"key":"CHA_WI_3_2","label":"法師 3★ #2｜CHA_WI_3_2","grade":3,"variant":2},{"key":"CHA_WI_3_3","label":"法師 3★ #3｜CHA_WI_3_3","grade":3,"variant":3},{"key":"CHA_WI_3_4","label":"法師 3★ #4｜CHA_WI_3_4","grade":3,"variant":4},{"key":"CHA_WI_3_5","label":"法師 3★ #5｜CHA_WI_3_5","grade":3,"variant":5},{"key":"CHA_WI_3_6","label":"法師 3★ #6｜CHA_WI_3_6","grade":3,"variant":6},{"key":"CHA_WI_3_7","label":"法師 3★ #7｜CHA_WI_3_7","grade":3,"variant":7},{"key":"CHA_WI_3_8","label":"法師 3★ #8｜CHA_WI_3_8","grade":3,"variant":8},{"key":"CHA_WI_3_9","label":"法師 3★ #9｜CHA_WI_3_9","grade":3,"variant":9},{"key":"CHA_WI_3_10","label":"法師 3★ #10｜CHA_WI_3_10","grade":3,"variant":10},{"key":"CHA_WI_3_11","label":"法師 3★ #11｜CHA_WI_3_11","grade":3,"variant":11},{"key":"CHA_WI_3_12","label":"法師 3★ #12｜CHA_WI_3_12","grade":3,"variant":12},{"key":"CHA_WI_4_1","label":"法師 4★ #1｜CHA_WI_4_1","grade":4,"variant":1},{"key":"CHA_WI_4_2","label":"法師 4★ #2｜CHA_WI_4_2","grade":4,"variant":2},{"key":"CHA_WI_4_3","label":"法師 4★ #3｜CHA_WI_4_3","grade":4,"variant":3},{"key":"CHA_WI_4_4","label":"法師 4★ #4｜CHA_WI_4_4","grade":4,"variant":4},{"key":"CHA_WI_4_5","label":"法師 4★ #5｜CHA_WI_4_5","grade":4,"variant":5},{"key":"CHA_WI_4_6","label":"法師 4★ #6｜CHA_WI_4_6","grade":4,"variant":6},{"key":"CHA_WI_4_7","label":"法師 4★ #7｜CHA_WI_4_7","grade":4,"variant":7},{"key":"CHA_WI_5_1","label":"法師 5★ #1｜CHA_WI_5_1","grade":5,"variant":1},{"key":"CHA_WI_5_2","label":"法師 5★ #2｜CHA_WI_5_2","grade":5,"variant":2},{"key":"CHA_WI_5_3","label":"法師 5★ #3｜CHA_WI_5_3","grade":5,"variant":3},{"key":"CHA_WI_5_4","label":"法師 5★ #4｜CHA_WI_5_4","grade":5,"variant":4},{"key":"CHA_WI_5_5","label":"法師 5★ #5｜CHA_WI_5_5","grade":5,"variant":5},{"key":"CHA_WI_5_6","label":"法師 5★ #6｜CHA_WI_5_6","grade":5,"variant":6},{"key":"CHA_WI_5_7","label":"法師 5★ #7｜CHA_WI_5_7","grade":5,"variant":7},{"key":"CHA_WI_6_1","label":"法師 6★ #1｜CHA_WI_6_1","grade":6,"variant":1},{"key":"CHA_WI_6_2","label":"法師 6★ #2｜CHA_WI_6_2","grade":6,"variant":2},{"key":"CHA_WI_6_3","label":"法師 6★ #3｜CHA_WI_6_3","grade":6,"variant":3},{"key":"CHA_WI_6_4","label":"法師 6★ #4｜CHA_WI_6_4","grade":6,"variant":4},{"key":"CHA_WI_6_5","label":"法師 6★ #5｜CHA_WI_6_5","grade":6,"variant":5},{"key":"CHA_WI_6_6","label":"法師 6★ #6｜CHA_WI_6_6","grade":6,"variant":6},{"key":"CHA_WI_6_7","label":"法師 6★ #7｜CHA_WI_6_7","grade":6,"variant":7}],"PR":[{"key":"CHA_PR_1_1","label":"祭師 1★ #1｜CHA_PR_1_1","grade":1,"variant":1},{"key":"CHA_PR_1_2","label":"祭師 1★ #2｜CHA_PR_1_2","grade":1,"variant":2},{"key":"CHA_PR_1_3","label":"祭師 1★ #3｜CHA_PR_1_3","grade":1,"variant":3},{"key":"CHA_PR_1_4","label":"祭師 1★ #4｜CHA_PR_1_4","grade":1,"variant":4},{"key":"CHA_PR_1_5","label":"祭師 1★ #5｜CHA_PR_1_5","grade":1,"variant":5},{"key":"CHA_PR_1_6","label":"祭師 1★ #6｜CHA_PR_1_6","grade":1,"variant":6},{"key":"CHA_PR_1_7","label":"祭師 1★ #7｜CHA_PR_1_7","grade":1,"variant":7},{"key":"CHA_PR_2_1","label":"祭師 2★ #1｜CHA_PR_2_1","grade":2,"variant":1},{"key":"CHA_PR_2_2","label":"祭師 2★ #2｜CHA_PR_2_2","grade":2,"variant":2},{"key":"CHA_PR_2_3","label":"祭師 2★ #3｜CHA_PR_2_3","grade":2,"variant":3},{"key":"CHA_PR_2_4","label":"祭師 2★ #4｜CHA_PR_2_4","grade":2,"variant":4},{"key":"CHA_PR_2_5","label":"祭師 2★ #5｜CHA_PR_2_5","grade":2,"variant":5},{"key":"CHA_PR_2_6","label":"祭師 2★ #6｜CHA_PR_2_6","grade":2,"variant":6},{"key":"CHA_PR_2_7","label":"祭師 2★ #7｜CHA_PR_2_7","grade":2,"variant":7},{"key":"CHA_PR_2_8","label":"祭師 2★ #8｜CHA_PR_2_8","grade":2,"variant":8},{"key":"CHA_PR_2_9","label":"祭師 2★ #9｜CHA_PR_2_9","grade":2,"variant":9},{"key":"CHA_PR_3_1","label":"祭師 3★ #1｜CHA_PR_3_1","grade":3,"variant":1},{"key":"CHA_PR_3_2","label":"祭師 3★ #2｜CHA_PR_3_2","grade":3,"variant":2},{"key":"CHA_PR_3_3","label":"祭師 3★ #3｜CHA_PR_3_3","grade":3,"variant":3},{"key":"CHA_PR_3_4","label":"祭師 3★ #4｜CHA_PR_3_4","grade":3,"variant":4},{"key":"CHA_PR_3_5","label":"祭師 3★ #5｜CHA_PR_3_5","grade":3,"variant":5},{"key":"CHA_PR_3_6","label":"祭師 3★ #6｜CHA_PR_3_6","grade":3,"variant":6},{"key":"CHA_PR_3_7","label":"祭師 3★ #7｜CHA_PR_3_7","grade":3,"variant":7},{"key":"CHA_PR_3_8","label":"祭師 3★ #8｜CHA_PR_3_8","grade":3,"variant":8},{"key":"CHA_PR_3_9","label":"祭師 3★ #9｜CHA_PR_3_9","grade":3,"variant":9},{"key":"CHA_PR_3_10","label":"祭師 3★ #10｜CHA_PR_3_10","grade":3,"variant":10},{"key":"CHA_PR_3_11","label":"祭師 3★ #11｜CHA_PR_3_11","grade":3,"variant":11},{"key":"CHA_PR_3_12","label":"祭師 3★ #12｜CHA_PR_3_12","grade":3,"variant":12},{"key":"CHA_PR_4_1","label":"祭師 4★ #1｜CHA_PR_4_1","grade":4,"variant":1},{"key":"CHA_PR_4_2","label":"祭師 4★ #2｜CHA_PR_4_2","grade":4,"variant":2},{"key":"CHA_PR_4_3","label":"祭師 4★ #3｜CHA_PR_4_3","grade":4,"variant":3},{"key":"CHA_PR_4_4","label":"祭師 4★ #4｜CHA_PR_4_4","grade":4,"variant":4},{"key":"CHA_PR_4_5","label":"祭師 4★ #5｜CHA_PR_4_5","grade":4,"variant":5},{"key":"CHA_PR_4_6","label":"祭師 4★ #6｜CHA_PR_4_6","grade":4,"variant":6},{"key":"CHA_PR_4_7","label":"祭師 4★ #7｜CHA_PR_4_7","grade":4,"variant":7},{"key":"CHA_PR_5_1","label":"祭師 5★ #1｜CHA_PR_5_1","grade":5,"variant":1},{"key":"CHA_PR_5_2","label":"祭師 5★ #2｜CHA_PR_5_2","grade":5,"variant":2},{"key":"CHA_PR_5_3","label":"祭師 5★ #3｜CHA_PR_5_3","grade":5,"variant":3},{"key":"CHA_PR_5_4","label":"祭師 5★ #4｜CHA_PR_5_4","grade":5,"variant":4},{"key":"CHA_PR_5_5","label":"祭師 5★ #5｜CHA_PR_5_5","grade":5,"variant":5},{"key":"CHA_PR_5_6","label":"祭師 5★ #6｜CHA_PR_5_6","grade":5,"variant":6},{"key":"CHA_PR_5_7","label":"祭師 5★ #7｜CHA_PR_5_7","grade":5,"variant":7},{"key":"CHA_PR_6_1","label":"祭師 6★ #1｜CHA_PR_6_1","grade":6,"variant":1},{"key":"CHA_PR_6_2","label":"祭師 6★ #2｜CHA_PR_6_2","grade":6,"variant":2},{"key":"CHA_PR_6_3","label":"祭師 6★ #3｜CHA_PR_6_3","grade":6,"variant":3},{"key":"CHA_PR_6_4","label":"祭師 6★ #4｜CHA_PR_6_4","grade":6,"variant":4},{"key":"CHA_PR_6_5","label":"祭師 6★ #5｜CHA_PR_6_5","grade":6,"variant":5},{"key":"CHA_PR_6_6","label":"祭師 6★ #6｜CHA_PR_6_6","grade":6,"variant":6},{"key":"CHA_PR_6_7","label":"祭師 6★ #7｜CHA_PR_6_7","grade":6,"variant":7}]};
+    Object.assign(CHARACTER_TEMPLATES, IMPORTED_CHARACTER_TEMPLATES);
+
     const MONSTERS = {
       '普草人': { hp: 105, atk: 15, def: -3, pRes: -3, mRes: -3 },
       '黑暗巨龍': { hp: 4801265, atk: 1119, def: 323, pRes: 323, mRes: 323 }
@@ -1385,6 +1433,189 @@ const CHARACTER_TEMPLATES = {
       WI: 'wizard',
       PR: 'priest'
     };
+
+    const RESEARCH_BONUS = {
+      atk: 746,
+      hp: 2898,
+      pPen: 144,
+      mPen: 144,
+      pdef: 144,
+      mdef: 144,
+      crit: 10,
+      critDmg: 50,
+      attackCycleReduction: 0.5
+    };
+
+    const LEGEND_TITLE_PROFILES = {
+      legendary_taichuzhiyan: { rarity: 'legendary', name: '太初之焰', bonuses: { atkPct: 5, critPct: 5, critDmgPct: 5 } },
+      legendary_dongbugongxian: { rarity: 'legendary', name: '東部弓弦', bonuses: { atkPct: 5, penPct: 5, critPct: 5 } },
+      legendary_hunshitou: { rarity: 'legendary', name: '魂石頭波動', bonuses: { atkPct: 5, penPct: 5, critDmgPct: 5 } },
+      legendary_xianfengqishi: { rarity: 'legendary', name: '先鋒氣勢', bonuses: { atkPct: 5, penPct: 5, hpPct: 5 } },
+      legendary_zhengguijun: { rarity: 'legendary', name: '格蘭西亞正規軍', bonuses: { atkPct: 5, penPct: 5, defPct: 5 } },
+      legendary_naisifenxi: { rarity: 'legendary', name: '奈斯分析力', bonuses: { penPct: 5, critPct: 5, critDmgPct: 5 } },
+      legendary_honglianhuozhong: { rarity: 'legendary', name: '紅蓮火種', bonuses: { hpPct: 5, critPct: 5, critDmgPct: 5 } },
+      legendary_mengyuezhidun: { rarity: 'legendary', name: '盟約之盾', bonuses: { hpPct: 5, defPct: 5, damageReductionPct: 5 } },
+      legendary_nanguaxifa: { rarity: 'legendary', name: '南瓜戲法', bonuses: { hpPct: 5, defPct: 5, evadePct: 5 } },
+      legendary_xinanshengcun: { rarity: 'legendary', name: '西南生存術', bonuses: { hpPct: 5, damageReductionPct: 5, evadePct: 5 } },
+      legendary_jingjichengqiang: { rarity: 'legendary', name: '荊棘城牆', bonuses: { defPct: 5, critPct: 5, critDmgPct: 5 } },
+      legendary_monvyanmu: { rarity: 'legendary', name: '魔女煙幕', bonuses: { defPct: 5, damageReductionPct: 5, evadePct: 5 } },
+      legendary_nanguadajiang: { rarity: 'legendary', name: '南瓜大獎', bonuses: { evadePct: 5, goldPct: 5, expPct: 5 } },
+
+      epic_taichuzhiyan: { rarity: 'epic', name: '太初之焰', bonuses: { atkPct: 4, critPct: 4, critDmgPct: 4 } },
+      epic_dongbugongxian: { rarity: 'epic', name: '東部弓弦', bonuses: { atkPct: 4, penPct: 4, critPct: 4 } },
+      epic_hunshitou: { rarity: 'epic', name: '魂石頭波動', bonuses: { atkPct: 4, penPct: 4, critDmgPct: 4 } },
+      epic_xianfengqishi: { rarity: 'epic', name: '先鋒氣勢', bonuses: { atkPct: 4, penPct: 4, hpPct: 4 } },
+      epic_zhengguijun: { rarity: 'epic', name: '格蘭西亞正規軍', bonuses: { atkPct: 4, penPct: 4, defPct: 4 } },
+      epic_naisifenxi: { rarity: 'epic', name: '奈斯分析力', bonuses: { penPct: 4, critPct: 4, critDmgPct: 4 } },
+      epic_honglianhuozhong: { rarity: 'epic', name: '紅蓮火種', bonuses: { hpPct: 4, critPct: 4, critDmgPct: 4 } },
+      epic_mengyuezhidun: { rarity: 'epic', name: '盟約之盾', bonuses: { hpPct: 4, defPct: 4, damageReductionPct: 4 } },
+      epic_nanguaxifa: { rarity: 'epic', name: '南瓜戲法', bonuses: { hpPct: 4, defPct: 4, evadePct: 4 } },
+      epic_xinanshengcun: { rarity: 'epic', name: '西南生存術', bonuses: { hpPct: 4, damageReductionPct: 4, evadePct: 4 } },
+      epic_jingjichengqiang: { rarity: 'epic', name: '荊棘城牆', bonuses: { defPct: 4, critPct: 4, critDmgPct: 4 } },
+      epic_monvyanmu: { rarity: 'epic', name: '魔女煙幕', bonuses: { defPct: 4, damageReductionPct: 4, evadePct: 4 } },
+      epic_nanguadajiang: { rarity: 'epic', name: '南瓜大獎', bonuses: { evadePct: 4, goldPct: 4, expPct: 4 } },
+
+      epic_minruichujue: { rarity: 'epic', name: '敏銳觸覺', bonuses: { atkPct: 6, critPct: 6 } },
+      epic_chenzhongyiji: { rarity: 'epic', name: '沉重一擊', bonuses: { atkPct: 6, critDmgPct: 6 } },
+      epic_ruilizhili: { rarity: 'epic', name: '銳利之力', bonuses: { atkPct: 6, penPct: 6 } },
+      epic_chenwenjunheng: { rarity: 'epic', name: '沉穩均衡', bonuses: { atkPct: 6, defPct: 6 } },
+      epic_chongfengzhiqi: { rarity: 'epic', name: '衝鋒之氣', bonuses: { atkPct: 6, hpPct: 6 } },
+      epic_jingzhunmiaozhun: { rarity: 'epic', name: '精準瞄準', bonuses: { penPct: 6, critPct: 6 } },
+      epic_shensuiyiji: { rarity: 'epic', name: '深邃一擊', bonuses: { penPct: 6, critDmgPct: 6 } },
+      epic_jianguzhiren: { rarity: 'epic', name: '堅固之刃', bonuses: { penPct: 6, defPct: 6 } },
+      epic_wanqiangtupo: { rarity: 'epic', name: '頑強突破', bonuses: { hpPct: 6, penPct: 6 } },
+      epic_houshizhicheng: { rarity: 'epic', name: '厚實支撐', bonuses: { hpPct: 6, defPct: 6 } },
+      epic_jianshishengming: { rarity: 'epic', name: '堅實生命', bonuses: { hpPct: 6, damageReductionPct: 6 } },
+      epic_qingyingzhishen: { rarity: 'epic', name: '輕盈之身', bonuses: { hpPct: 6, evadePct: 6 } },
+      epic_shuangchongfangyu: { rarity: 'epic', name: '雙重防禦', bonuses: { defPct: 6, damageReductionPct: 6 } },
+      epic_qingkuaibufa: { rarity: 'epic', name: '輕快步伐', bonuses: { defPct: 6, evadePct: 6 } },
+      epic_kongxiangjia: { rarity: 'epic', name: '空想家', bonuses: { moveSpeedPct: 6, expPct: 6 } },
+      epic_shichangdiaocha: { rarity: 'epic', name: '市場調查', bonuses: { moveSpeedPct: 6, goldPct: 6 } },
+
+      rare_doushi: { rarity: 'rare', name: '鬥士', bonuses: { atkPct: 8 } },
+      rare_jujishou: { rarity: 'rare', name: '狙擊手', bonuses: { critPct: 8 } },
+      rare_dajiwang: { rarity: 'rare', name: '打擊王', bonuses: { critDmgPct: 8 } },
+      rare_xianfeng: { rarity: 'rare', name: '先鋒', bonuses: { penPct: 8 } },
+      rare_shoumenren: { rarity: 'rare', name: '守門人', bonuses: { defPct: 8 } },
+      rare_tieren: { rarity: 'rare', name: '鐵人', bonuses: { hpPct: 8 } },
+      rare_tiebi: { rarity: 'rare', name: '鐵壁', bonuses: { damageReductionPct: 8 } },
+      rare_yili: { rarity: 'rare', name: '毅力', bonuses: { knockbackResistPct: 8 } },
+      rare_feimaotui: { rarity: 'rare', name: '飛毛腿', bonuses: { moveSpeedPct: 8 } },
+      rare_zajishi: { rarity: 'rare', name: '雜技師', bonuses: { evadePct: 8 } },
+      rare_fuweng: { rarity: 'rare', name: '富翁', bonuses: { goldPct: 8 } },
+      rare_mofansheng: { rarity: 'rare', name: '模範生', bonuses: { expPct: 8 } }
+    };
+
+    const TITLE_RARITY_META = {
+      legendary: { label: '傳說', className: 'title-rarity-legendary' },
+      epic: { label: '史詩', className: 'title-rarity-epic' },
+      rare: { label: '稀有', className: 'title-rarity-rare' },
+      uncommon: { label: '高級', className: 'title-rarity-uncommon' },
+      common: { label: '一般', className: 'title-rarity-common' }
+    };
+
+    function getLegendTitleProfile(key = '') {
+      return key ? LEGEND_TITLE_PROFILES[key] || null : null;
+    }
+
+    function getCharacterTitleKeys(character = {}) {
+      if (Array.isArray(character.legendTitleKeys) && character.legendTitleKeys.length) return character.legendTitleKeys.filter(Boolean).slice(0,3);
+      return [character.legendTitleKey || ''].filter(Boolean);
+    }
+
+    function getLegendTitleEffectText(profile) {
+      if (!profile) return '未裝備';
+      const bonuses = profile.bonuses || {};
+      const parts = [];
+      if (bonuses.atkPct) parts.push(`攻擊 ${bonuses.atkPct}%`);
+      if (bonuses.critPct) parts.push(`暴擊率 ${bonuses.critPct}%`);
+      if (bonuses.critDmgPct) parts.push(`暴擊傷害 ${bonuses.critDmgPct}%`);
+      if (bonuses.penPct) parts.push(`貫通 ${bonuses.penPct}%`);
+      if (bonuses.hpPct) parts.push(`生命 ${bonuses.hpPct}%`);
+      if (bonuses.defPct) parts.push(`防禦 ${bonuses.defPct}%`);
+      if (bonuses.damageReductionPct) parts.push(`減傷 ${bonuses.damageReductionPct}%`);
+      if (bonuses.evadePct) parts.push(`閃避 ${bonuses.evadePct}%`);
+      if (bonuses.goldPct) parts.push(`金幣獲取 ${bonuses.goldPct}%`);
+      if (bonuses.expPct) parts.push(`經驗獲取 ${bonuses.expPct}%`);
+      if (bonuses.moveSpeedPct) parts.push(`移速 ${bonuses.moveSpeedPct}%`);
+      if (bonuses.knockbackResistPct) parts.push(`抗退 ${bonuses.knockbackResistPct}%`);
+      return `${profile.name}｜${parts.join('、') || '非戰鬥屬性'}`;
+    }
+
+    function getLegendTitleBadgeHtml(key = '') {
+      const profile = getLegendTitleProfile(key);
+      if (!profile) return '';
+      return getLegendTitleBadgesHtml({ legendTitleKeys: [key] });
+    }
+
+    function getLegendTitleBadgesHtml(character = {}) {
+      const keys = getCharacterTitleKeys(character);
+      if (!keys.length) return '';
+      const cards = keys.map((key) => {
+        const profile = getLegendTitleProfile(key);
+        if (!profile) return '';
+        const rarity = TITLE_RARITY_META[profile.rarity] || TITLE_RARITY_META.common;
+        return `<div class="title-card ${rarity.className}" title="${escapeHtml(getLegendTitleEffectText(profile))}"><div class="title-card-rarity">${rarity.label}</div><div class="title-card-name">${escapeHtml(profile.name)}</div></div>`;
+      }).filter(Boolean).join('');
+      return cards ? `<div class="title-stack">${cards}</div>` : '';
+    }
+
+    function getLegendTitleSummary(character = {}) {
+      const keys = getCharacterTitleKeys(character);
+      if (!keys.length) return '未裝備';
+      return keys.map((key) => {
+        const profile = getLegendTitleProfile(key);
+        if (!profile) return '';
+        const rarity = TITLE_RARITY_META[profile.rarity] || TITLE_RARITY_META.common;
+        return `${rarity.label}｜${getLegendTitleEffectText(profile)}`;
+      }).filter(Boolean).join('｜');
+    }
+
+    function populateLegendTitleSelect() {
+      ['legendTitleKey','legendTitleKey2','legendTitleKey3'].forEach((id) => {
+        const node = el[id];
+        if (!node) return;
+        const html = ['<option value="">未裝備</option>'];
+        ['legendary','epic','rare'].forEach((rarityKey) => {
+          const rarity = TITLE_RARITY_META[rarityKey];
+          const options = Object.entries(LEGEND_TITLE_PROFILES)
+            .filter(([, profile]) => profile.rarity === rarityKey)
+            .sort((a, b) => a[1].name.localeCompare(b[1].name, 'zh-Hant'))
+            .map(([key, profile]) => `<option value="${key}">${rarity.label}｜${profile.name}</option>`);
+          if (options.length) html.push(`<optgroup label="${rarity.label}稱號">${options.join('')}</optgroup>`);
+        });
+        node.innerHTML = html.join('');
+      });
+    }
+
+    function applyLegendTitleBonuses(character, stats = {}) {
+      const keys = getCharacterTitleKeys(character);
+      const profiles = keys.map(getLegendTitleProfile).filter(Boolean);
+      const total = profiles.reduce((acc, profile) => {
+        const bonuses = profile.bonuses || {};
+        Object.keys(bonuses).forEach((key) => acc[key] = (acc[key] || 0) + num(bonuses[key]));
+        return acc;
+      }, {});
+      const attackBase = num(stats.finalAtk);
+      const hpBase = num(stats.roleHp);
+      const pdefBase = num(stats.pdef);
+      const mdefBase = num(stats.mdef);
+      const pPenBase = num(stats.pPen);
+      const mPenBase = num(stats.mPen);
+      return {
+        profiles,
+        summary: getLegendTitleSummary(character),
+        finalAtk: attackBase * (1 + num(total.atkPct) / 100),
+        roleHp: hpBase * (1 + num(total.hpPct) / 100),
+        pdef: pdefBase * (1 + num(total.defPct) / 100),
+        mdef: mdefBase * (1 + num(total.defPct) / 100),
+        pPen: pPenBase * (1 + num(total.penPct) / 100),
+        mPen: mPenBase * (1 + num(total.penPct) / 100),
+        critBonusPct: num(total.critPct),
+        critDmgBonusPct: num(total.critDmgPct),
+        bonuses: total
+      };
+    }
 
     function inferPassiveKeyFromCharacter(character = {}) {
       if (character.jobPassiveKey) return character.jobPassiveKey;
@@ -1501,6 +1732,8 @@ const CHARACTER_TEMPLATES = {
       fightDamage: document.getElementById('fightDamage'),
       calcDebugPanel: document.getElementById('calcDebugPanel'),
       dbgBaseAtk: document.getElementById('dbgBaseAtk'),
+      dbgResearchAtk: document.getElementById('dbgResearchAtk'),
+      dbgPanelAtk: document.getElementById('dbgPanelAtk'),
       dbgAtkAfterBuff: document.getElementById('dbgAtkAfterBuff'),
       dbgSkillMultiplier: document.getElementById('dbgSkillMultiplier'),
       dbgNonCrit: document.getElementById('dbgNonCrit'),
@@ -1514,6 +1747,7 @@ const CHARACTER_TEMPLATES = {
       dbgFinalDps: document.getElementById('dbgFinalDps'),
       dbgPassiveDps: document.getElementById('dbgPassiveDps'),
       dbgPassiveSummary: document.getElementById('dbgPassiveSummary'),
+      dbgTitleSummary: document.getElementById('dbgTitleSummary'),
       pageWithDebug: document.getElementById('pageWithDebug'),
       debugModePill: document.getElementById('debugModePill'),
       debugPanelInlineMount: document.getElementById('debugPanelInlineMount'),
@@ -1522,12 +1756,17 @@ const CHARACTER_TEMPLATES = {
       dbgSkillSummary: document.getElementById('dbgSkillSummary'),
       effectiveBuffInfo: document.getElementById('effectiveBuffInfo'),
       effectiveStatInfo: document.getElementById('effectiveStatInfo'),
+      healSynergyInfo: document.getElementById('healSynergyInfo'),
       modal: document.getElementById('characterModal'),
       modalTitle: document.getElementById('modalTitle'),
       charName: document.getElementById('charName'),
       charTeam: document.getElementById('charTeam'),
       charTemplate: document.getElementById('charTemplate'),
       grade6Key: document.getElementById('grade6Key'),
+      legendTitleKey: document.getElementById('legendTitleKey'),
+      legendTitleKey2: document.getElementById('legendTitleKey2'),
+      legendTitleKey3: document.getElementById('legendTitleKey3'),
+      healTriggerEnabled: document.getElementById('healTriggerEnabled'),
       grade6Info: document.getElementById('grade6Info'),
       jobPassiveKey: document.getElementById('jobPassiveKey'),
       jobPassiveEnabled: document.getElementById('jobPassiveEnabled'),
@@ -1569,6 +1808,37 @@ const CHARACTER_TEMPLATES = {
       return rows.map((entry) => ({ type: entry?.type || 'none', value: num(entry?.value) }));
     }
 
+
+
+    function populateCharacterTemplateSelect() {
+      if (!el.charTemplate) return;
+      const isGrade6Template = (template, key) => {
+        if (!template) return false;
+        if (num(template.grade) === 6) return true;
+        if (template.grade6Key) return true;
+        if (GRADE6_DATABASE[key]) return true;
+        return false;
+      };
+      const curatedKeys = Object.keys(CHARACTER_TEMPLATES)
+        .filter((key) => !IMPORTED_CHARACTER_TEMPLATES[key])
+        .filter((key) => isGrade6Template(CHARACTER_TEMPLATES[key], key));
+      const html = ['<option value="">未選擇</option>'];
+      if (curatedKeys.length) {
+        const curatedOptions = curatedKeys
+          .sort((a, b) => String(a).localeCompare(String(b), 'zh-Hant'))
+          .map((key) => `<option value="${key}">${CHARACTER_TEMPLATES[key]?.displayName || key}</option>`);
+        html.push(`<optgroup label="手動模板 / 既有模板（只留六星）">${curatedOptions.join('')}</optgroup>`);
+      }
+      const groupOrder = ['WA', 'PA', 'AR', 'HU', 'WI', 'PR'];
+      const groupLabelMap = { WA: 'bytes｜戰士', PA: 'bytes｜聖騎士', AR: 'bytes｜弓箭手', HU: 'bytes｜獵人', WI: 'bytes｜法師', PR: 'bytes｜祭師' };
+      groupOrder.forEach((code) => {
+        const entries = (IMPORTED_TEMPLATE_GROUPS[code] || []).filter((entry) => num(entry?.grade) === 6);
+        if (!entries.length) return;
+        const options = entries.map((entry) => `<option value="${entry.key}">${entry.label}</option>`);
+        html.push(`<optgroup label="${groupLabelMap[code] || code}">${options.join('')}</optgroup>`);
+      });
+      el.charTemplate.innerHTML = html.join('');
+    }
 
     function populateGrade6Select() {
       if (!el.grade6Key) return;
@@ -1717,7 +1987,7 @@ const CHARACTER_TEMPLATES = {
       const template = CHARACTER_TEMPLATES[templateName];
       if (!template) return;
 
-      if (!el.charName.value.trim()) el.charName.value = templateName;
+      if (!el.charName.value.trim()) el.charName.value = template.displayName || templateName;
       el.level.value = template.level ?? 60;
       el.initialAttDmg.value = template.initialAttDmg ?? template.atk ?? 0;
       el.growthAttDmg.value = template.growthAttDmg ?? 0;
@@ -1936,12 +2206,36 @@ const CHARACTER_TEMPLATES = {
         finalAtk = roleAtk + num(character.weaponAtk) + num(character.flatAttack);
       } else {
         finalAtk = num(character.finalAtkInput) || num(character.atk) || 0;
-        roleAtk = finalAtk;
-        roleHp = num(character.finalHpInput) || num(character.hp) || 0;
+        roleAtk = Math.max(0, finalAtk - RESEARCH_BONUS.atk);
+        roleHp = Math.max(0, (num(character.finalHpInput) || num(character.hp) || 0) - RESEARCH_BONUS.hp);
       }
 
+      const titleApplied = applyLegendTitleBonuses(character, {
+        finalAtk,
+        roleHp,
+        pdef: num(character.pdef),
+        mdef: num(character.mdef),
+        pPen: num(character.pPen),
+        mPen: num(character.mPen)
+      });
       const 攻擊週期 = Math.max(0.01, num(character.攻擊週期) || num(character.attackSpeed) || 2);
-      return { level, roleAtk, roleHp, finalAtk, 攻擊週期 };
+      return {
+        level,
+        roleAtk,
+        roleHp: titleApplied.roleHp,
+        finalAtk: titleApplied.finalAtk,
+        panelAtk: finalAtk,
+        baseFinalAtk: finalAtk,
+        baseRoleHp: roleHp,
+        researchAtk: RESEARCH_BONUS.atk,
+        estimatedBaseAtk: Math.max(0, finalAtk - RESEARCH_BONUS.atk),
+        pdef: titleApplied.pdef,
+        mdef: titleApplied.mdef,
+        pPen: titleApplied.pPen,
+        mPen: titleApplied.mPen,
+        titleApplied,
+        攻擊週期
+      };
     }
 
     function updateCalcModeUI() {
@@ -2027,8 +2321,9 @@ const CHARACTER_TEMPLATES = {
       const leaderChanceFactor = character?.isLeader ? 1.1 : 1;
       const effectiveCycle = Math.max(0.01, derived.攻擊週期 / leaderChanceFactor);
 
-      const critRate = Math.min(Math.max(0, num(character.crit) / 100 + totals.critPct / 100), 1);
-      const critPower = Math.max(0, num(character.critDmg) / 100);
+      const titleApplied = derived.titleApplied || applyLegendTitleBonuses(character, derived);
+      const critRate = Math.min(Math.max(0, (num(character.crit) + num(titleApplied.critBonusPct)) / 100 + totals.critPct / 100), 1);
+      const critPower = Math.max(0, (num(character.critDmg) + num(titleApplied.critDmgBonusPct)) / 100);
       const critMultiplier = 1 + critPower;
 
       const atkFactor = 1 + totals.atkPct / 100;
@@ -2038,7 +2333,7 @@ const CHARACTER_TEMPLATES = {
 
       const skillList = Array.isArray(character.skills) ? character.skills : [];
       const skills = skillList.map((skill) => {
-        const basePen = skill.damageType === 'magic' ? num(character.mPen) + totals.mPenFlat : num(character.pPen) + totals.pPenFlat;
+        const basePen = skill.damageType === 'magic' ? num(derived.mPen) + totals.mPenFlat : num(derived.pPen) + totals.pPenFlat;
         const totalPen = basePen * penFactor;
         const defense = getDefenseContext(monster, skill.damageType, totalPen);
         const skillMultiplier = Math.max(0, num(skill.hits) * num(skill.hitMultiplier));
@@ -2056,7 +2351,7 @@ const CHARACTER_TEMPLATES = {
         : 1;
 
       const primaryDamageType = skills[0]?.damageType || 'physical';
-      const basePen = primaryDamageType === 'magic' ? num(character.mPen) + totals.mPenFlat : num(character.pPen) + totals.pPenFlat;
+      const basePen = primaryDamageType === 'magic' ? num(derived.mPen) + totals.mPenFlat : num(derived.pPen) + totals.pPenFlat;
       const totalPen = basePen * penFactor;
       const defense = getDefenseContext(monster, primaryDamageType, totalPen);
 
@@ -2077,8 +2372,12 @@ const CHARACTER_TEMPLATES = {
 
       return {
         debug: {
-          baseAtk: derived.finalAtk,
+          baseAtk: derived.estimatedBaseAtk,
+          researchAtk: derived.researchAtk,
+          panelAtk: derived.panelAtk,
+          estimatedBaseAtk: derived.estimatedBaseAtk,
           atkAfterBuff: derived.finalAtk * atkFactor,
+          titleText: titleApplied.summary || '未裝備',
           skillMultiplierTotal: totalSkillMultiplier,
           critRate,
           critMultiplier,
@@ -2089,13 +2388,20 @@ const CHARACTER_TEMPLATES = {
           passiveText: passive.enabled ? `${JOB_PASSIVE_PROFILES[passive.key]?.label || passive.key}｜${passive.summary}${passive.kind === 'damage' ? `｜來源 ${passive.sourceStat === 'hp' ? '生命值' : '攻擊力'}｜基底 ${formatValue(passive.baseValue)}｜非暴 ${formatValue(passive.nonCrit)}｜平均 ${formatValue(passive.avg)}｜DPS ${formatValue(passive.dps)}` : ''}` : '未啟用',
           buffText: [
             ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
+            ...(titleApplied.profiles?.length ? [`稱號：${titleApplied.summary}`] : []),
             ...effectInfo.ownLabels,
             ...effectInfo.teamLabels,
             ...effectInfo.auraLabels
           ],
           skillText: skills.length
-            ? skills.map((skill) => `${skill.name || '技能'}｜倍率 ${formatValue(skill.skillMultiplier)}｜週期 ${formatValue(skill.cycle)} 秒｜DPS ${formatValue(skill.dps)}`).join('\n')
-            : '未設定主技能，若有職業被動會只顯示被動 DPS'
+            ? skills.map((skill) => `${skill.name || '技能'}｜${formatValue(num(skill.hits) || 1)} × ${formatValue(num(skill.hitMultiplier) || 0)} = ${formatValue(skill.skillMultiplier)}｜週期 ${formatValue(skill.cycle)} 秒｜DPS ${formatValue(skill.dps)}`).join('\n')
+            : '未設定主技能，若有職業被動會只顯示被動 DPS',
+          skillDetailText: skills.length
+            ? skills.map((skill) => `${skill.name || '技能'}：${formatValue(num(skill.hits) || 1)} × ${formatValue(num(skill.hitMultiplier) || 0)} = ${formatValue(skill.skillMultiplier)}`).join('｜')
+            : '未設定主技能',
+          nonCritFormula: `公式：攻擊 ${formatValue(derived.finalAtk)} × 攻擊Buff ${formatValue(atkFactor)} × 技能總倍率 ${formatValue(totalSkillMultiplier)} × 防禦倍率 ${formatValue(defense.damageMultiplier)} × 最終傷 ${formatValue(finalDamageFactor)} × 技能傷 ${formatValue(skillDamageFactor)}` ,
+          critFormula: `公式：非暴 ${formatValue(nonCritHit)} × 暴擊倍率 ${formatValue(critMultiplier)}` ,
+          avgFormula: `公式：非暴 ${formatValue(nonCritHit)} × ${(1-critRate).toFixed(2)} + 暴擊 ${formatValue(critHit)} × ${critRate.toFixed(2)}`
         },
         autoDps: skills.length ? 0 : baseSkillDps,
         totalDps,
@@ -2108,6 +2414,7 @@ const CHARACTER_TEMPLATES = {
         leaderChanceFactor,
         activeBuffText: [
           ...(character?.isLeader ? ['隊長：生成機率 +10%（已套用）'] : []),
+          ...(titleApplied.profiles?.length ? [`稱號：${titleApplied.summary}`] : []),
           ...effectInfo.ownLabels,
           ...effectInfo.teamLabels,
           ...effectInfo.auraLabels
@@ -2116,6 +2423,7 @@ const CHARACTER_TEMPLATES = {
           roleAtk: derived.roleAtk,
           roleHp: derived.roleHp,
           finalAtk: derived.finalAtk,
+          titleSummary: titleApplied.summary,
           攻擊週期: effectiveCycle,
           原始攻擊週期: derived.攻擊週期,
           totalSkillMultiplier
@@ -2253,13 +2561,11 @@ const CHARACTER_TEMPLATES = {
               <div class="char-name">${character.isLeader ? '👑 ' : ''}${escapeHtml(getCharacterDisplayName(character))}</div>
               <div class="char-sub">${character.grade6Key ? '六星資料角色' : '自訂角色'}</div>
               <div class="char-meta-list">
-                <span class="char-meta-pill">技能 ${(character.skills || []).length}</span>
-                <span class="char-meta-pill">週期 ${formatValue(skillMeta.cycle || num(character['攻擊週期']) || 0)} 秒</span>
-                <span class="char-meta-pill">倍率 ${formatValue(skillMeta.multiplier || 0)}</span>
-                <span class="char-meta-pill">暴擊 ${formatValue(num(character.crit))}%</span>
+                ${getLegendTitleBadgesHtml(character)}
                 <span class="char-meta-pill">自身 Buff ${selfBuffCount}</span>
                 <span class="char-meta-pill">團隊 Buff ${teamBuffCount}</span>
                 <span class="char-meta-pill ${passiveClass}">被動 ${getPassiveDisplayLabel(character)}${passiveSuffix}</span>
+                ${result.healSynergy?.applied ? '<span class="char-meta-pill passive-on">治療觸發</span>' : ''}
                 ${character.grade6Key ? '<span class="char-meta-pill">六星資料</span>' : ''}
                 ${character.isLeader ? '<span class="char-meta-pill passive-on">隊長</span>' : ''}
               </div>
@@ -2295,7 +2601,7 @@ const CHARACTER_TEMPLATES = {
         if (el.effectiveStatInfo) el.effectiveStatInfo.textContent = '最終暴擊率：-';
         if (advisorBox) advisorBox.innerHTML = '尚未建立角色';
         syncDebugLayout();
-        ['dbgBaseAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgPassiveDps','dbgBuffSummary','dbgSkillSummary','dbgPassiveSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
+        ['dbgBaseAtk','dbgResearchAtk','dbgPanelAtk','dbgAtkAfterBuff','dbgSkillMultiplier','dbgNonCrit','dbgCrit','dbgAvg','dbgCritRate','dbgCritMultiplier','dbgRawCycle','dbgEffectiveCycle','dbgDefenseMultiplier','dbgFinalDps','dbgPassiveDps','dbgBuffSummary','dbgSkillSummary','dbgPassiveSummary','dbgTitleSummary'].forEach((id) => setDebugText(id, id.includes('Summary') ? '-' : '-'));
         return;
       }
 
@@ -2316,7 +2622,7 @@ const CHARACTER_TEMPLATES = {
       }
       if (el.effectiveStatInfo) {
         const stats = result.effectiveStats || {};
-        el.effectiveStatInfo.textContent = `實際暴擊率：${(result.effectiveCritRate * 100).toFixed(1)}%｜攻擊力：${formatValue(stats.finalAtk || 0)}｜技能總倍率：${formatValue(stats.totalSkillMultiplier || 0)}｜攻速(秒)：${formatValue(stats.攻擊週期 || 0)}${character?.isLeader ? '｜隊長加速：+10% 已套用' : ''}`;
+        el.effectiveStatInfo.textContent = `研究院：攻擊 +${RESEARCH_BONUS.atk}｜HP +${RESEARCH_BONUS.hp}｜物穿 +${RESEARCH_BONUS.pPen}｜魔穿 +${RESEARCH_BONUS.mPen}｜物防 +${RESEARCH_BONUS.pdef}｜魔防 +${RESEARCH_BONUS.mdef}｜暴率 +${RESEARCH_BONUS.crit}%｜暴傷 +${RESEARCH_BONUS.critDmg}%｜攻速 -${RESEARCH_BONUS.attackCycleReduction} 秒`;
       }
 
       if (advisorBox) {
@@ -2327,7 +2633,9 @@ const CHARACTER_TEMPLATES = {
       if (debugMode) {
         const stats = result.effectiveStats || {};
         const dbg = result.debug || {};
-        setDebugText('dbgBaseAtk', formatValue(dbg.baseAtk || stats.finalAtk || 0));
+        setDebugText('dbgBaseAtk', formatValue(dbg.estimatedBaseAtk || 0));
+        setDebugText('dbgResearchAtk', '+' + formatValue(dbg.researchAtk || RESEARCH_BONUS.atk));
+        setDebugText('dbgPanelAtk', formatValue(dbg.panelAtk || 0));
         setDebugText('dbgAtkAfterBuff', formatValue(dbg.atkAfterBuff || 0));
         setDebugText('dbgSkillMultiplier', formatValue(dbg.skillMultiplierTotal || stats.totalSkillMultiplier || 0));
         setDebugText('dbgNonCrit', formatValue(result.nonCritHit || 0));
@@ -2343,6 +2651,13 @@ const CHARACTER_TEMPLATES = {
         setDebugText('dbgBuffSummary', `Buff：${(dbg.buffText || result.activeBuffText || []).length ? (dbg.buffText || result.activeBuffText).join('｜') : '無'}`);
         setDebugText('dbgSkillSummary', `技能：${dbg.skillText || '未設定技能'}`);
         setDebugText('dbgPassiveSummary', `職業被動：${dbg.passiveText || '未啟用'}`);
+        setDebugText('dbgTitleSummary', `稱號：${dbg.titleText || '未裝備'}`);
+        const setTip = (id, value) => { const node = document.getElementById(id); if (node) node.title = value; };
+        setTip('dbgBaseAtkBox', `公式：目前面板攻擊 ${formatValue(dbg.panelAtk || 0)} - 研究院攻擊 ${formatValue(dbg.researchAtk || RESEARCH_BONUS.atk)} = ${formatValue(dbg.estimatedBaseAtk || 0)}`);
+        setTip('dbgSkillMultiplierBox', dbg.skillDetailText || '未設定技能');
+        setTip('dbgNonCritBox', dbg.nonCritFormula || '');
+        setTip('dbgCritBox', dbg.critFormula || '');
+        setTip('dbgAvgBox', dbg.avgFormula || '');
       }
     }
 
@@ -2362,6 +2677,9 @@ const CHARACTER_TEMPLATES = {
         isLeader: el.charLeader.value === '1',
         templateKey: el.charTemplate.value || '',
         grade6Key: el.grade6Key?.value || '',
+        legendTitleKey: el.legendTitleKey?.value || '',
+        legendTitleKeys: [el.legendTitleKey?.value || '', el.legendTitleKey2?.value || '', el.legendTitleKey3?.value || ''].filter(Boolean),
+        healTriggerEnabled: (el.healTriggerEnabled?.value || '0') === '1',
         jobPassiveKey: el.jobPassiveKey?.value || '',
         jobPassiveEnabled: (el.jobPassiveEnabled?.value || '1') === '1',
         calcMode: el.calcMode.value || 'simple',
@@ -2432,6 +2750,11 @@ function buildCharacterFromForm() {
       el.charTeam.value = String(character?.team || 1);
       el.charTemplate.value = character?.templateKey || '';
       if (el.grade6Key) el.grade6Key.value = character?.grade6Key || '';
+      const titleKeys = Array.isArray(character?.legendTitleKeys) ? character.legendTitleKeys : [character?.legendTitleKey || ''];
+      if (el.legendTitleKey) el.legendTitleKey.value = titleKeys[0] || '';
+      if (el.legendTitleKey2) el.legendTitleKey2.value = titleKeys[1] || '';
+      if (el.legendTitleKey3) el.legendTitleKey3.value = titleKeys[2] || '';
+      if (el.healTriggerEnabled) el.healTriggerEnabled.value = character?.healTriggerEnabled ? '1' : '0';
       if (el.jobPassiveKey) el.jobPassiveKey.value = character?.jobPassiveKey || inferPassiveKeyFromCharacter(character) || '';
       if (el.jobPassiveEnabled) el.jobPassiveEnabled.value = character?.jobPassiveEnabled === false ? '0' : '1';
       updateGrade6Info(character?.grade6Key || '');
@@ -2729,6 +3052,14 @@ function attachEvents() {
         updateLivePreview();
       });
 
+      ['legendTitleKey','legendTitleKey2','legendTitleKey3'].forEach((id) => {
+        el[id]?.addEventListener('change', () => { updateLivePreview(); });
+      });
+
+      el.healTriggerEnabled?.addEventListener('change', () => {
+        updateLivePreview();
+      });
+
       document.getElementById('applyGrade6Btn')?.addEventListener('click', () => {
         const key = el.grade6Key?.value || '';
         if (!key) return;
@@ -2996,6 +3327,7 @@ function attachEvents() {
         state.monsterKey = payload.monsterKey || state.monsterKey;
         state.fightSeconds = Number(payload.fightSeconds) || state.fightSeconds;
         state.characters = Array.isArray(payload.characters) ? payload.characters : [];
+        state.characters = state.characters.map((item) => { if (!Array.isArray(item.legendTitleKeys)) item.legendTitleKeys = [item.legendTitleKey || ''].filter(Boolean); return item; });
         state.selectedId = payload.selectedId || (state.characters[0]?.id || null);
         if (state.selectedId && !state.characters.some((item) => item.id === state.selectedId)) {
           state.selectedId = state.characters[0]?.id || null;
@@ -3021,7 +3353,9 @@ function attachEvents() {
 
     createEffectRows(el.buffRows, '自身Buff', 1);
     createEffectRows(el.teamBuffRows, '團隊Buff', 1);
+    populateCharacterTemplateSelect();
     populateGrade6Select();
+    populateLegendTitleSelect();
     initMonsterSelect();
     el.monsterSelect.value = state.monsterKey;
     el.fightSeconds.value = state.fightSeconds;
@@ -3084,7 +3418,7 @@ function syncDebugLayout(){
   const sideMount = document.getElementById('debugPanelSideMount');
 
   if (page) page.classList.toggle('debug-layout-on', debugMode);
-  if (pill) pill.textContent = `Debug：${debugMode ? '開啟' : '關閉'}`;
+  if (pill) pill.textContent = `傷害組成：${debugMode ? '開啟' : '關閉'}`;
 
   if (panel) {
     panel.classList.toggle('open', debugMode);
@@ -3213,205 +3547,459 @@ function setDebugText(id, value){
     observer.observe(root, { childList: true, subtree: true });
   });
 })();
-</script><style>
-.feedback-wrap{
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
-  margin-top:20px;
-}
-.card{
-  flex:1;
-  min-width:320px;
-  padding:20px;
-  border-radius:18px;
-  background:linear-gradient(145deg,#111827,#1f2937);
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 10px 30px rgba(0,0,0,0.35);
-}
-.card h3{
-  margin:0 0 14px 0;
-  color:#fff;
-  font-size:22px;
-}
-.form-group{
-  margin-bottom:12px;
-}
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-size:13px;
-  color:#b7c0d1;
-}
-.form-group input,
-.form-group textarea,
-.form-group select{
-  width:100%;
-  padding:12px 14px;
-  border:none;
-  border-radius:12px;
-  background:#0b1220;
-  color:#fff;
-  outline:none;
-  box-sizing:border-box;
-}
-.form-group textarea{
-  resize:vertical;
-  min-height:130px;
-}
-.btn-submit{
-  width:100%;
-  padding:13px 16px;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  font-weight:700;
-  color:#081018;
-  background:linear-gradient(135deg,#4ade80,#22c55e);
-  transition:transform .15s ease, filter .15s ease;
-}
-.btn-submit:hover{
-  transform:translateY(-1px);
-  filter:brightness(1.05);
-}
-.contact-btn{
-  display:block;
-  margin-top:12px;
-  padding:13px 16px;
-  border-radius:14px;
-  text-decoration:none;
-  text-align:center;
-  color:#fff;
-  font-weight:700;
-  background:linear-gradient(135deg,#1b2838,#2a475e);
-}
-.discord-box{
-  margin-top:12px;
-  padding:13px 16px;
-  border-radius:14px;
-  background:rgba(88,101,242,.16);
-  color:#d7ddff;
-  text-align:center;
-  font-weight:700;
-}
-.status-msg{
-  margin-top:12px;
-  font-size:14px;
-  color:#86efac;
-  min-height:20px;
-}
-.tip{
-  margin-top:10px;
-  color:#9ca3af;
-  font-size:13px;
-  line-height:1.5;
-}
-</style>
-
-<section class="feedback-wrap">
-  <div class="card">
-    <h3>📩 留言 / 回報</h3>
-
-    <form id="feedbackForm">
-      <input type="text" name="honeypot" style="display:none">
-
-      <div class="form-group">
-        <label>留言類型</label>
-        <select name="type" required oninvalid="this.setCustomValidity('請選擇留言類型')" oninput="this.setCustomValidity('')">
-          <option value="">請選擇類型</option>
-          <option value="BUG回報">🐞 BUG 回報</option>
-          <option value="角色數值建議">📊 角色數值建議</option>
-          <option value="新功能建議">✨ 新功能建議</option>
-          <option value="資料錯誤回報">⚠️ 資料錯誤回報</option>
-          <option value="其他留言">💬 其他留言</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>暱稱</label>
-        <input type="text" name="name" required maxlength="40">
-      </div>
-
-      <div class="form-group">
-        <label>聯絡方式（可填 Discord / Email）</label>
-        <input type="text" name="contact" maxlength="100">
-      </div>
-
-      <div class="form-group">
-        <label>內容</label>
-        <textarea name="message" required maxlength="2000"></textarea>
-      </div>
-
-      <button class="btn-submit" type="submit">送出留言</button>
-    </form>
-
-    <div id="status" class="status-msg"></div>
-  </div>
-
-  <div class="card">
-    <h3>📡 直接聯絡我</h3>
-
-    <a class="contact-btn" href="https://steamcommunity.com/profiles/76561199862648252/" target="_blank" rel="noopener noreferrer">
-      🎮 Steam 聯絡我
-    </a>
-
-    <div class="discord-box">
-      💬 Discord：as91003
-    </div>
-
-    <div class="tip">
-      建議優先用左邊表單回報，我比較好整理 BUG、建議與資料修正。
-    </div>
-  </div>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+</script>
 <script>
 (function () {
-  emailjs.init("RGDi2G4G_6qDR3vbi");
+  const TEAM_PRESET_STORAGE_KEY = 'dps_sim_team_presets_v80';
 
-  const form = document.getElementById("feedbackForm");
-  const statusEl = document.getElementById("status");
+  function normalizeName(value) {
+    return String(value || '').replace(/\s+/g, '').toLowerCase();
+  }
 
-  if (!form) return;
+  function isAltanianCharacter(character) {
+    const n = normalizeName(character && character.name);
+    return n.includes('阿爾塔尼昂') || n.includes('女槍') || n.includes('altanian');
+  }
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+  function isNightingaleCharacter(character) {
+    const n = normalizeName(character && character.name);
+    return n.includes('南丁格爾') || n.includes('nightingale');
+  }
 
-    if (form.honeypot.value !== "") return;
+  function createEffectRow(label, type, value, enabled, applyToSelf, condition) {
+    return {
+      label: label || '',
+      type: type || 'none',
+      value: Number(value || 0),
+      enabled: enabled !== false,
+      applyToSelf: applyToSelf !== false,
+      condition: condition || ''
+    };
+  }
 
-    const data = {
-      type: form.type.value,
-      name: form.name.value.trim(),
-      contact: form.contact.value.trim() || "未填寫",
-      message: form.message.value.trim()
+  function createV80Skill(name, multiplier, hits, cycle, damageType) {
+    return {
+      id: 'skill-' + Math.random().toString(36).slice(2, 9),
+      name: name,
+      damageType: damageType || 'physical',
+      hits: Number(hits || 1),
+      hitMultiplier: Number(multiplier || 0),
+      cycle: Number(cycle || 2)
+    };
+  }
+
+  function createHealPassiveTestCharacters() {
+    const altanian = {
+      id: 'char-' + Math.random().toString(36).slice(2, 9),
+      name: '阿爾塔尼昂（女槍測試）',
+      team: 1,
+      isLeader: false,
+      templateKey: '',
+      grade6Key: '',
+      jobPassiveKey: '',
+      jobPassiveEnabled: true,
+      calcMode: 'simple',
+      level: 60,
+      finalAtkInput: 1550,
+      finalHpInput: 5198,
+      initialAttDmg: 1550,
+      growthAttDmg: 0,
+      initialHp: 5198,
+      growthHp: 0,
+      weaponAtk: 0,
+      flatAttack: 0,
+      攻擊週期: 2,
+      atk: 1550,
+      hp: 5198,
+      pdef: 0,
+      mdef: 0,
+      pPen: 325,
+      mPen: 325,
+      crit: 65,
+      critDmg: 135,
+      buffs: [],
+      selfBuffs: [],
+      teamBuffs: [],
+      skills: [createV80Skill('1C', 21, 9, 2, 'physical')],
+      healTriggerEnabled: true,
+      v80PassiveProfile: {
+        key: 'altanian_on_heal',
+        labelZh: '女槍受治療觸發被動',
+        trigger: 'onHeal',
+        sourceStat: 'atk',
+        damageType: 'physical',
+        multiplier: 110,
+        hits: 9,
+        cd: 2.5,
+        canCrit: true
+      }
     };
 
-    if (!data.type || !data.name || !data.message) {
-      statusEl.innerText = "請先填完必填欄位。";
+    const nightingale = {
+      id: 'char-' + Math.random().toString(36).slice(2, 9),
+      name: '南丁格爾（治療測試）',
+      team: 1,
+      isLeader: false,
+      templateKey: '',
+      grade6Key: '',
+      jobPassiveKey: '',
+      jobPassiveEnabled: true,
+      calcMode: 'simple',
+      level: 60,
+      finalAtkInput: 1200,
+      finalHpInput: 6500,
+      initialAttDmg: 1200,
+      growthAttDmg: 0,
+      initialHp: 6500,
+      growthHp: 0,
+      weaponAtk: 0,
+      flatAttack: 0,
+      攻擊週期: 6,
+      atk: 1200,
+      hp: 6500,
+      pdef: 0,
+      mdef: 0,
+      pPen: 0,
+      mPen: 0,
+      crit: 0,
+      critDmg: 100,
+      buffs: [],
+      selfBuffs: [],
+      teamBuffs: [],
+      skills: [createV80Skill('3C', 0, 1, 6, 'magic')],
+      v80HealSupportProfile: {
+        key: 'nightingale_3c',
+        labelZh: '南丁格爾 3C',
+        healEvents: 5,
+        healWindow: 5,
+        buffDuration: 10,
+        targetRule: 'lowestHp',
+        targetRuleZh: '目前 HP 最低角色吃滿',
+        buffs: [
+          createEffectRow('南丁格爾 3C 暴擊率', 'critPct', 46, true, false, '3C 後 10 秒'),
+          createEffectRow('南丁格爾 3C 攻速', 'none', 58, true, false, '3C 後 10 秒')
+        ]
+      }
+    };
+
+    return [altanian, nightingale];
+  }
+
+  function addHealPassiveTestCharacters() {
+    if (!window.state || !Array.isArray(window.state.characters)) return;
+    const presets = createHealPassiveTestCharacters();
+    const presetNames = new Set(['阿爾塔尼昂（女槍測試）', '南丁格爾（治療測試）']);
+    const filtered = window.state.characters.filter(function (item) {
+      return !presetNames.has(item.name);
+    });
+    const availableSlots = Math.max(0, 12 - filtered.length);
+    const finalPresets = presets.slice(0, availableSlots);
+    if (!finalPresets.length) {
+      alert('目前角色已滿，無法加入南丁＋女槍測試組。');
       return;
+    }
+    window.state.characters = filtered.concat(finalPresets);
+    if (!window.state.selectedId) window.state.selectedId = finalPresets[0].id;
+    if (typeof normalizeLeaders === 'function') normalizeLeaders();
+    if (typeof renderAll === 'function') renderAll();
+    alert('已加入南丁＋女槍測試組。');
+  }
+
+  function deepClone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function loadSavedTeamPresets() {
+    try {
+      return JSON.parse(localStorage.getItem(TEAM_PRESET_STORAGE_KEY) || '[]');
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }
+
+  function saveSavedTeamPresets(list) {
+    localStorage.setItem(TEAM_PRESET_STORAGE_KEY, JSON.stringify(list || []));
+  }
+
+  function saveCurrentTeamPreset() {
+    if (!window.state || !Array.isArray(window.state.characters) || !window.state.characters.length) {
+      alert('目前沒有隊伍可儲存。');
+      return;
+    }
+    const name = (prompt('請輸入這組隊伍名稱', '我的隊伍' + new Date().toLocaleDateString('zh-TW')) || '').trim();
+    if (!name) return;
+
+    const presets = loadSavedTeamPresets();
+    const payload = {
+      id: 'preset-' + Math.random().toString(36).slice(2, 9),
+      name: name,
+      createdAt: new Date().toISOString(),
+      characters: deepClone(window.state.characters)
+    };
+
+    const next = presets.filter(function (item) { return item.name !== name; });
+    next.push(payload);
+    saveSavedTeamPresets(next);
+    alert('已儲存隊伍：' + name);
+  }
+
+  function loadTeamPresetIntoState() {
+    const presets = loadSavedTeamPresets();
+    if (!presets.length) {
+      alert('目前沒有已儲存的隊伍。');
+      return;
+    }
+    const summary = presets.map(function (item, index) {
+      return (index + 1) + '. ' + item.name + '（' + (item.characters || []).length + ' 隻）';
+    }).join('\n');
+    const raw = prompt('輸入要快速新增的隊伍編號：\n' + summary, '1');
+    const idx = Number(raw) - 1;
+    if (!Number.isFinite(idx) || idx < 0 || idx >= presets.length) return;
+
+    const chosen = presets[idx];
+    const characters = deepClone(chosen.characters || []);
+    if (!characters.length) {
+      alert('這筆隊伍是空的。');
+      return;
+    }
+
+    const existing = Array.isArray(window.state.characters) ? window.state.characters.slice() : [];
+    const room = Math.max(0, 12 - existing.length);
+    if (!room) {
+      alert('目前角色已滿，無法快速新增已存隊伍。');
+      return;
+    }
+
+    const merged = existing.concat(characters.slice(0, room).map(function (c) {
+      c.id = 'char-' + Math.random().toString(36).slice(2, 9);
+      return c;
+    }));
+
+    window.state.characters = merged;
+    if (!window.state.selectedId && merged.length) window.state.selectedId = merged[0].id;
+    if (typeof normalizeLeaders === 'function') normalizeLeaders();
+    if (typeof renderAll === 'function') renderAll();
+    alert('已快速新增隊伍：' + chosen.name);
+  }
+
+  function getTeamMembers(character) {
+    if (!window.state || !Array.isArray(window.state.characters)) return [];
+    return window.state.characters.filter(function (item) {
+      return Number(item.team) === Number(character.team);
+    });
+  }
+
+  function getLowestHpCharacterInTeam(teamMembers) {
+    if (!Array.isArray(teamMembers) || !teamMembers.length) return null;
+    return teamMembers.reduce(function (lowest, current) {
+      if (!lowest) return current;
+      return Number(current.hp || 0) < Number(lowest.hp || 0) ? current : lowest;
+    }, null);
+  }
+
+  function getNightingaleSupportForTarget(character) {
+    const teamMembers = getTeamMembers(character);
+    const supports = teamMembers.filter(isNightingaleCharacter);
+    if (!supports.length) return null;
+    const lowest = getLowestHpCharacterInTeam(teamMembers);
+    if (!lowest || lowest.id !== character.id) return null;
+    return supports[0];
+  }
+
+  function computeHealPassiveSynergy(character, currentResult) {
+    const support = character.healTriggerEnabled ? { name: '手動指定治療觸發', v80HealSupportProfile: { healEvents: 5, healWindow: 5, buffDuration: 10 } } : getNightingaleSupportForTarget(character);
+    if (!support || !isAltanianCharacter(character)) {
+      return {
+        applied: false,
+        addedDps: 0,
+        buffAddedDps: 0,
+        passiveAddedDps: 0,
+        baseDps: currentResult.totalDps,
+        finalDps: currentResult.totalDps,
+        extraCritPct: 0,
+        atkSpeedPct: 0,
+        healPerSec: 0,
+        effectiveRate: 0,
+        summaryZh: '未套用治療聯動'
+      };
+    }
+
+    const passive = character.v80PassiveProfile || {
+      multiplier: 110,
+      hits: 9,
+      cd: 2.5,
+      sourceStat: 'atk',
+      canCrit: true,
+      damageType: 'physical'
+    };
+
+    const supportProfile = support.v80HealSupportProfile || {
+      healEvents: 5,
+      healWindow: 5,
+      buffDuration: 10
+    };
+
+    const healPerSec = Number(supportProfile.healEvents || 0) / Math.max(0.01, Number(supportProfile.healWindow || 1));
+    const effectiveRate = Math.min(healPerSec, 1 / Math.max(0.01, Number(passive.cd || 1)));
+
+    const critBefore = Number(character.crit || 0);
+    const critAfter = Math.min(100, critBefore + 46);
+    const atkSpeedPct = 58;
+
+    const buffedCharacter = JSON.parse(JSON.stringify(character));
+    buffedCharacter.crit = critAfter;
+    buffedCharacter.攻擊週期 = Number(character.攻擊週期 || 2) / (1 + atkSpeedPct / 100);
+
+    const baseCompute = window.__baseComputeCharacter;
+    const buffedResult = baseCompute(buffedCharacter, MONSTERS[window.state.monsterKey], window.state.fightSeconds);
+
+    const passiveBaseValue = passive.sourceStat === 'hp' ? Number(character.hp || 0) : Number(character.atk || 0);
+    const passiveNonCrit = passiveBaseValue * (Number(passive.multiplier || 0) / 100) * Number(passive.hits || 1);
+    const critRateAvg = Math.min(1, Math.max(0, critAfter / 100));
+    const critPower = 1 + Math.max(0, Number(character.critDmg || 0) / 100);
+    const passiveAvgCast = passive.canCrit ? passiveNonCrit * (1 - critRateAvg) + passiveNonCrit * critPower * critRateAvg : passiveNonCrit;
+    const passiveAddedDps = passiveAvgCast * effectiveRate;
+
+    const finalDps = buffedResult.totalDps + passiveAddedDps;
+    const addedDps = finalDps - currentResult.totalDps;
+
+    return {
+      applied: true,
+      supportName: support.name,
+      targetRuleZh: '目前 HP 最低角色吃滿',
+      addedDps: addedDps,
+      buffAddedDps: buffedResult.totalDps - currentResult.totalDps,
+      passiveAddedDps: passiveAddedDps,
+      baseDps: currentResult.totalDps,
+      finalDps: finalDps,
+      extraCritPct: 46,
+      atkSpeedPct: atkSpeedPct,
+      healPerSec: healPerSec,
+      effectiveRate: effectiveRate,
+      summaryZh: '南丁格爾 3C → 女槍吃滿治療與 Buff'
+    };
+  }
+
+  // Wrap computeCharacter
+  if (typeof computeCharacter === 'function' && !window.__baseComputeCharacter) {
+    window.__baseComputeCharacter = computeCharacter;
+    computeCharacter = function (character, monster, fightSeconds) {
+      const base = window.__baseComputeCharacter(character, monster, fightSeconds);
+      const synergy = computeHealPassiveSynergy(character, base);
+      if (!synergy.applied) {
+        base.healSynergy = synergy;
+        return base;
+      }
+
+      const merged = Object.assign({}, base);
+      merged.healSynergy = synergy;
+      merged.totalDps = synergy.finalDps;
+      merged.fightDamage = synergy.finalDps * fightSeconds;
+      merged.activeBuffText = (base.activeBuffText || []).concat([
+        '南丁格爾 3C：暴擊率 +46%',
+        '南丁格爾 3C：攻速 +58%',
+        '南丁格爾 3C：目前 HP 最低角色吃滿'
+      ]);
+      merged.debug = Object.assign({}, base.debug || {});
+      merged.debug.passiveText = (merged.debug.passiveText || '未啟用') + '｜治療聯動被動 DPS ' + (synergy.passiveAddedDps || 0).toFixed(2);
+      return merged;
+    };
+  }
+
+  // Patch renderResults to show synergy line by observing render changes on dps node
+  const originalRenderAll = typeof renderAll === 'function' ? renderAll : null;
+  if (originalRenderAll && !window.__v80RenderWrapped) {
+    window.__v80RenderWrapped = true;
+    renderAll = function () {
+      originalRenderAll();
+      try {
+        const infoNode = document.getElementById('healSynergyInfo');
+        if (!infoNode || !window.state || !window.state.selectedId) {
+          if (infoNode) infoNode.textContent = '治療聯動：-';
+          return;
+        }
+        const character = (window.state.characters || []).find(function (item) { return item.id === window.state.selectedId; });
+        if (!character) {
+          infoNode.textContent = '治療聯動：-';
+          return;
+        }
+        const result = computeCharacter(character, MONSTERS[window.state.monsterKey], window.state.fightSeconds);
+        const s = result.healSynergy || {};
+        if (!s.applied) {
+          infoNode.textContent = '治療聯動：目前未套用。';
+          return;
+        }
+        infoNode.textContent =
+          '治療聯動：基礎 DPS ' + (s.baseDps || 0).toFixed(2) +
+          '｜聯動後 DPS ' + (s.finalDps || 0).toFixed(2) +
+          '｜南丁格爾貢獻 +' + (s.addedDps || 0).toFixed(2) +
+          '｜其中被動 +' + (s.passiveAddedDps || 0).toFixed(2) +
+          '｜Buff +' + (s.buffAddedDps || 0).toFixed(2);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  }
+
+  function bindV80Buttons() {
+    document.getElementById('generateHealPassiveTestBtn')?.addEventListener('click', addHealPassiveTestCharacters);
+    document.getElementById('saveTeamPresetBtn')?.addEventListener('click', saveCurrentTeamPreset);
+    document.getElementById('loadTeamPresetBtn')?.addEventListener('click', loadTeamPresetIntoState);
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    bindV80Buttons();
+  });
+})();
+</script>
+<h2>💬 留言回饋</h2>
+
+<form id="feedbackForm">
+    <input type="text" id="name" placeholder="你的名字" required>
+    <textarea id="message" placeholder="想說什麼..." required></textarea>
+    <button type="submit">送出留言</button>
+</form>
+
+<div id="status"></div>
+
+<script>
+const form = document.getElementById("feedbackForm");
+const statusEl = document.getElementById("status");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !message) {
+        statusEl.innerText = "請填完整";
+        return;
     }
 
     statusEl.innerText = "送出中...";
 
     try {
-      await emailjs.send("service_98pr9k8", "template_pabduqa", data);
+        const res = await fetch("/api/discord-feedback", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, message })
+        });
 
-      await fetch("/api/discord-feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
+        if (res.ok) {
+            statusEl.innerText = "✅ 送出成功！";
+            form.reset();
+        } else {
+            statusEl.innerText = "❌ 送出失敗";
+        }
 
-      statusEl.innerText = "已送出！感謝你的回報 🙏";
-      form.reset();
     } catch (err) {
-      console.error(err);
-      statusEl.innerText = "送出失敗，請稍後再試。";
+        statusEl.innerText = "❌ 送出失敗，請稍後再試";
     }
-  });
-})();
-</script></body>
+});
+</script>
+</body>
 </html>
